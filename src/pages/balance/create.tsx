@@ -65,19 +65,19 @@ export default function CreateUser() {
           p={["6", "8"]}
         >
           <Heading size="lg" fontWeight="normal">
-            Criar usuário
+            Criar Orçamento
           </Heading>
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
               <Input
-                label="Nome completo"
+                label="Conta"
                 {...register("name")}
                 error={errors.name}
               />
               <Input
                 type="email"
-                label="E-mail"
+                label="Conta"
                 {...register("email")}
                 error={errors.email}
               />
@@ -99,12 +99,12 @@ export default function CreateUser() {
           </VStack>
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
-              <Link href="/users" passHref>
+              <Link href="/balance" passHref>
                 <Button as="a" colorScheme="whiteAlpha">
                   Cancelar
                 </Button>
               </Link>
-              <Button colorScheme="pink" isLoading={formState.isSubmitting}>
+              <Button colorScheme="green" isLoading={formState.isSubmitting}>
                 Salvar
               </Button>
             </HStack>

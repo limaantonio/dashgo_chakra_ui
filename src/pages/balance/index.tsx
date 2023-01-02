@@ -33,14 +33,14 @@ export default function UserList() {
         <Box flex="1" borderRadius={8} bg="gray.800" p="8">
           <Flex mb="8" justify="space-between" align="center">
             <Heading size="lg" fontWeight="normal">
-              Usuários
+              Balanço
             </Heading>
-            <Link href="/users/create" passHref>
+            <Link href="/balance/create" passHref>
               <Button
                 as="a"
                 size="sm"
                 fontSize="small"
-                colorScheme="pink"
+                colorScheme="green"
                 leftIcon={<Icon as={RiAddLine} fontSize="20" />}
               >
                 Criar novo
@@ -51,9 +51,9 @@ export default function UserList() {
             <Thead>
               <Tr>
                 <Th px={["4", "4", "6"]} color="gray.300" width="8">
-                  <Checkbox colorScheme="pink"></Checkbox>
+                  <Checkbox colorScheme="green"></Checkbox>
                 </Th>
-                <Th>Usuário</Th>
+                <Th>Mês</Th>
                 {isWideVersion && <Th>Data de cadastro</Th>}
                 <Th width=""></Th>
               </Tr>
@@ -61,7 +61,7 @@ export default function UserList() {
             <Tbody>
               <Tr>
                 <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="pink"></Checkbox>
+                  <Checkbox colorScheme="green"></Checkbox>
                 </Td>
                 <Td>
                   <Box>
@@ -86,7 +86,7 @@ export default function UserList() {
               </Tr>
               <Tr>
                 <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="pink"></Checkbox>
+                  <Checkbox colorScheme="green"></Checkbox>
                 </Td>
                 <Td>
                   <Box>
@@ -111,7 +111,7 @@ export default function UserList() {
               </Tr>
               <Tr>
                 <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="pink"></Checkbox>
+                  <Checkbox colorScheme="green"></Checkbox>
                 </Td>
                 <Td>
                   <Box>
@@ -136,7 +136,7 @@ export default function UserList() {
               </Tr>
               <Tr>
                 <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="pink"></Checkbox>
+                  <Checkbox colorScheme="green"></Checkbox>
                 </Td>
                 <Td>
                   <Box>
