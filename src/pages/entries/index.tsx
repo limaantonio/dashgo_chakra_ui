@@ -3,11 +3,10 @@ import {
   Button,
   Checkbox,
   Flex,
-  HStack,
   Heading,
   Icon,
-  Stack,
   Table,
+  HStack,
   Tbody,
   Td,
   Text,
@@ -18,16 +17,24 @@ import {
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
-import { RiAddLine, RiPencilLine, RiDeleteBack2Line } from "react-icons/ri";
+import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import { Pagination } from "../../components/Pagination";
 import Link from "next/link";
 import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 
-interface Budget {
+interface Entry {
   id: string;
-  year: Number;
+  description: string;
+  amount: Number;
+  account: {
+    id: string;
+    name: string;
+    amount: Number;
+    number_of_installments: Number;
+  };
+  number_of_installments: Number;
   created_at: Date;
   updated_at: Date;
 }
@@ -38,26 +45,11 @@ export default function UserList() {
     lg: true,
   });
 
-  const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [entries, setEntries] = useState<Entry[]>([]);
 
   useEffect(() => {
-    api.get("budget").then((response) => setBudgets(response.data));
-  }, [setBudgets]);
-
-  async function handleDelete(id: string) {
-    try {
-      await api.delete(`budget/${id}`);
-
-      const budgetIndex = budgets.findIndex((budget) => budget.id === id);
-      const newBudget = [...budgets];
-
-      newBudget.splice(budgetIndex, 1);
-      setBudgets(newBudget);
-    } catch (err) {
-      alert("Ocorreu um erro ao deletar essa ferramenta, tente novamente.");
-    }
-    console.log(id);
-  }
+    api.get("entry").then((response) => setEntries(response.data));
+  }, []);
 
   return (
     <Box>
@@ -68,9 +60,9 @@ export default function UserList() {
         <Box flex="1" borderRadius={8} bg="gray.800" p="8">
           <Flex mb="8" justify="space-between" align="center">
             <Heading size="lg" fontWeight="normal">
-              Orçamentos
+              Lançamentos
             </Heading>
-            <Link href="/budgets/create" passHref>
+            <Link href="/entries/create" passHref>
               <Button
                 as="a"
                 size="sm"
@@ -88,13 +80,15 @@ export default function UserList() {
                 <Th px={["4", "4", "6"]} color="gray.300" width="8">
                   <Checkbox colorScheme="green"></Checkbox>
                 </Th>
-                <Th>Ano</Th>
-                <Th>Data de atualização</Th>
-                <Th></Th>
+                <Th>Conta</Th>
+                <Th>Valor</Th>
+                <Th>Parcela</Th>
+                {isWideVersion && <Th>Data de cadastro</Th>}
+                <Th width=""></Th>
               </Tr>
             </Thead>
             <Tbody>
-              {budgets.map((budget) => (
+              {entries.map((entry) => (
                 // eslint-disable-next-line react/jsx-key
                 <Tr>
                   <Td px={["4", "4", "6"]}>
@@ -102,45 +96,49 @@ export default function UserList() {
                   </Td>
                   <Td>
                     <Box>
-                      <Text fontWeight="bold">{budget.year}</Text>
+                      <Text fontWeight="bold">{entry.account.name}</Text>
                       <Text fontSize="sm" color="gray.300">
-                        {format(new Date(budget.created_at), "yyyy-MM-dd")}
+                        {entry.description}
                       </Text>
                     </Box>
                   </Td>
-
                   <Td>
-                    {budget.updated_at ? (
-                      format(new Date(budget.updated_at), "yyyy-MM-dd")
-                    ) : (
-                      <>-</>
-                    )}
+                    <Text fontWeight="bold">{entry.amount}</Text>
                   </Td>
-
+                  <Td>
+                    <Text fontWeight="bold">
+                      {entry.number_of_installments}
+                    </Text>
+                  </Td>
+                  {isWideVersion && (
+                    <Td>
+                      {entry.updated_at ? (
+                        format(new Date(entry.updated_at), "yyyy-MM-dd")
+                      ) : (
+                        <>-</>
+                      )}
+                    </Td>
+                  )}
                   <Td>
                     <HStack>
                       <Box ml="auto">
-                        <Link href={`/budgets/edit?id=${budget.id}`}>
-                          <Button
-                            mr="2"
-                            as="a"
-                            size="sm"
-                            fontSize="small"
-                            colorScheme="purple"
-                            leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                          >
-                            Editar
-                          </Button>
-                        </Link>
                         <Button
-                          onClick={() => handleDelete(budget.id)}
+                          mr="2"
+                          as="a"
+                          size="sm"
+                          fontSize="small"
+                          colorScheme="purple"
+                          leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                        >
+                          Editar
+                        </Button>
+
+                        <Button
                           as="a"
                           size="sm"
                           fontSize="small"
                           colorScheme="red"
-                          leftIcon={
-                            <Icon as={RiDeleteBack2Line} fontSize="16" />
-                          }
+                          leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
                         >
                           Excluir
                         </Button>

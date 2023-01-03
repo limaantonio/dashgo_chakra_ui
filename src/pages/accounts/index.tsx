@@ -4,6 +4,7 @@ import {
   Checkbox,
   Flex,
   Heading,
+  HStack,
   Icon,
   Table,
   Tbody,
@@ -75,7 +76,7 @@ export default function UserList() {
                 </Th>
                 <Th>Ano</Th>
                 {isWideVersion && <Th>Data de cadastro</Th>}
-                <Th width=""></Th>
+                <Th></Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -103,15 +104,30 @@ export default function UserList() {
                     </Td>
                   )}
                   <Td>
-                    <Button
-                      as="a"
-                      size="sm"
-                      fontSize="small"
-                      colorScheme="purple"
-                      leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                    >
-                      Editar
-                    </Button>
+                    <HStack>
+                      <Box ml="auto">
+                        <Button
+                          mr="2"
+                          as="a"
+                          size="sm"
+                          fontSize="small"
+                          colorScheme="purple"
+                          leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                        >
+                          Editar
+                        </Button>
+
+                        <Button
+                          as="a"
+                          size="sm"
+                          fontSize="small"
+                          colorScheme="red"
+                          leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                        >
+                          Excluir
+                        </Button>
+                      </Box>
+                    </HStack>
                   </Td>
                 </Tr>
               ))}

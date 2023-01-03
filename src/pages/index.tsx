@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { SubmitHandler } from "react-hook-form/dist/types";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Link from "next/link";
 
 type SingInFormData = {
   email: string;
@@ -60,16 +61,17 @@ export default function SingIn() {
             error={errors.password}
           />
         </Stack>
-
-        <Button
-          type="submit"
-          mt="6"
-          colorScheme="green"
-          size="lg"
-          isLoading={formState.isSubmitting}
-        >
-          Entrar
-        </Button>
+        <Link href="/dashboard" passHref>
+          <Button
+            as="a"
+            mt="6"
+            colorScheme="green"
+            size="lg"
+            isLoading={formState.isSubmitting}
+          >
+            Entrar
+          </Button>
+        </Link>
       </Flex>
     </Flex>
   );

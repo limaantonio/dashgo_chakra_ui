@@ -4,7 +4,11 @@ import { NavSection } from "./NavSection";
 import {
   RiDashboardLine,
   RiContactsLine,
+  RiMoneyDollarBoxFill,
+  RiCurrencyLine,
   RiInputMethodLine,
+  RiCalendar2Line,
+  RiAddFill,
   RiGitMergeLine,
 } from "react-icons/ri";
 
@@ -15,14 +19,20 @@ export function SideBarNav() {
         <NavLink icon={RiDashboardLine} href="/dashboard">
           Dashboard
         </NavLink>
-        <NavLink icon={RiContactsLine} href="/budgets">
+        <NavLink icon={RiMoneyDollarBoxFill} href="/budgets">
           Orçamentos
         </NavLink>
-        <NavLink icon={RiContactsLine} href="/accounts">
+        <NavLink icon={RiCurrencyLine} href="/accounts">
           Contas
         </NavLink>
+        <NavLink icon={RiCalendar2Line} href="/balances">
+          Balanços
+        </NavLink>
+        <NavLink icon={RiAddFill} href="/entries">
+          Lançamentos
+        </NavLink>
       </NavSection>
-      <NavSection title="AUTOMAÇÃO">
+      <NavSection title="INVESTIMENTO">
         <NavLink icon={RiInputMethodLine} href="/forms">
           Formulários
         </NavLink>

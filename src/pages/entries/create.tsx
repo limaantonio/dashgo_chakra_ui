@@ -7,6 +7,7 @@ import {
   SimpleGrid,
   HStack,
   Button,
+  
   FormLabel,
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
@@ -20,136 +21,119 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler } from "react-hook-form/dist/types";
 import api from "../../services/api";
 import { useEffect, useState } from "react";
-import { useRouter } from 'next/router'
 
-enum AccountType {
-  income = "INCOME",
-  expanse = "EXPENSE",
-}
-
-enum SubAccountType {
-  other = "OTHER",
-  wage = "WAGE",
-}
-
-type CreateAccountFormData = {
-  name: string;
+type CreateEntryFormData = {
+  description: string;
   amount: Number;
-  type: AccountType;
   number_of_installments: Number;
-  sub_account: SubAccountType;
+  created_at: Date;
+  updated_at: Date;
 };
 
-interface Budget {
+interface Balance {
   id: string;
-  year: Number;
+  month: Number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+interface Account {
+  id: string;
+  name: string;
+  amount: Number;
+  number_of_installments: Number;
   created_at: Date;
   updated_at: Date;
 }
 
 const createFormSchema = yup.object().shape({
-  name: yup.string().required("Nome obrigatório"),
   amount: yup.string().required("Valor obrigatório"),
 });
 
 export default function CreateBudget() {
-  const router = useRouter()
-
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(createFormSchema),
   });
 
   const errors = formState.errors;
 
-  const hangleCreateBudget: SubmitHandler<CreateAccountFormData> = async (
+  const hangleCreateEntry: SubmitHandler<CreateEntryFormData> = async (
     values
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    await api.post("account", values);
-    router.push('/accounts')
+    await api.post("entry", values);
+    console.log(values);
   };
 
-  const typeAccount = [
-    { id: 1, value: "INCOME", label: "Receita" },
-    { id: 2, value: "EXPENSE", label: "Despesa" },
-  ];
-
-  const sub_account = [
-    { id: 1, value: "OTHER", label: "Outros" },
-    { id: 2, value: "WAGE", label: "Salário" },
-  ];
-
-
-
-  const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [balances, setBalance] = useState<Balance[]>([]);
 
   useEffect(() => {
-    api.get("budget").then((response) => setBudgets(response.data));
+    api.get("balance").then((response) => setBalance(response.data));
   }, []);
 
- 
-   function transformDataToOptions() {
-    const selectBudget = [];
-    budgets.map(
-      (budget) =>
-        (selectBudget.push({
-          id: budget.id,
-          value: budget.id,
-          label: budget.year
+  const [accounts, setAccounts] = useState<Balance[]>([]);
+
+  useEffect(() => {
+    api.get("account").then((response) => setAccounts(response.data));
+  }, []);
+  
+  function transformDataToOptions() {
+    let selectBalance = []
+    balances.map(
+      (balance) =>
+        (selectBalance.push({
+          id: balance.id,
+          value: balance.id,
+          label: balance.month
         }),
     ));
-    return selectBudget
-  }
+   return selectBalance
+ }
+
+ function transformDataAccountToOptions() {
+  let selectAccount = []
+
+  accounts.map(
+    (account) =>
+      (selectAccount.push({
+        id: account.id,
+        value: account.id,
+        label: account.name
+      }),
+  ));
+  return selectAccount
+}
 
   return (
     <Box>
       <Header />
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
-
         <Box
           as="form"
-          onSubmit={handleSubmit(hangleCreateBudget)}
+          onSubmit={handleSubmit(hangleCreateEntry)}
           flex="1"
           borderRadius={8}
           bg="gray.800"
-          p={["8", "8"]}
+          p={["6", "8"]}
         >
           <Heading size="lg" fontWeight="normal">
-            Criar Conta
+            Criar Lançamento
           </Heading>
           <Divider my="6" borderColor="gray.700" />
-          <VStack spacing="6" paddingY="6">
+          <VStack spacing="8" paddingY="6">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              <Select
-                label="Tipo"
-                {...register("type")}
-                placeholder="Selecione"
-                options={typeAccount}
-              />
-
-              <Select
-                label="Sub-Conta"
-                {...register("sub_account")}
-                placeholder="Selecione"
-                options={sub_account}
-              />
-
-              <Select
-                label="Orçamento"
-                {...register("budget_id")}
-                placeholder="Selecione"
-                options={transformDataToOptions()}
-              />
+              <Select {...register("balance_id")} placeholder="Selecione" label="Mês" options={transformDataToOptions()} />
+              <Select {...register("account_id")} placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()}/>
             </SimpleGrid>
           </VStack>
           <VStack spacing="8">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
               <Input
-                label="Nome"
+                label="Descrição"
                 type="text"
-                {...register("name")}
-                error={errors.name}
+                {...register("description")}
+                error={errors.description}
               />
               <Input
                 label="Valor"
@@ -157,7 +141,6 @@ export default function CreateBudget() {
                 {...register("amount")}
                 error={errors.amount}
               />
-
               <Input
                 label="Número de parcelas"
                 type="number"
@@ -168,7 +151,7 @@ export default function CreateBudget() {
           </VStack>
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
-              <Link href="/accounts" passHref>
+              <Link href="/entries" passHref>
                 <Button as="a" colorScheme="whiteAlpha">
                   Cancelar
                 </Button>
