@@ -23,6 +23,7 @@ import Link from "next/link";
 import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import AlertDelete from "../../components/AlertDelete";
 
 interface Account {
   id: string;
@@ -44,6 +45,26 @@ export default function UserList() {
   useEffect(() => {
     api.get("account").then((response) => setAccounts(response.data));
   }, []);
+
+  async function handleDelete(id: string) {
+    await api.delete(`account/${id}`);
+
+    const budgetIndex = accounts.findIndex((b) => b.id === id);
+    const budget = [...accounts];
+
+    budget.splice(budgetIndex, 1);
+    setAccounts(budget);
+  }
+
+  const [modalRemoveTool, setModalRemoveTool] = useState(false);
+
+  function openModalRemove() {
+    setModalRemoveTool(true);
+  }
+
+  function toggleModalRemove(): void {
+    setModalRemoveTool(!modalRemoveTool);
+  }
 
   return (
     <Box>
@@ -106,18 +127,21 @@ export default function UserList() {
                   <Td>
                     <HStack>
                       <Box ml="auto">
-                        <Button
-                          mr="2"
-                          as="a"
-                          size="sm"
-                          fontSize="small"
-                          colorScheme="purple"
-                          leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                        >
-                          Editar
-                        </Button>
+                        <Link href={`/accounts/edit?id=${account.id}`}>
+                          <Button
+                            mr="2"
+                            as="a"
+                            size="sm"
+                            fontSize="small"
+                            colorScheme="purple"
+                            leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                          >
+                            Editar
+                          </Button>
+                        </Link>
 
                         <Button
+                          onClick={() => openModalRemove()}
                           as="a"
                           size="sm"
                           fontSize="small"
@@ -126,6 +150,11 @@ export default function UserList() {
                         >
                           Excluir
                         </Button>
+                        <AlertDelete
+                          isOpen={modalRemoveTool}
+                          setIsOpen={toggleModalRemove}
+                          handleRemove={() => handleDelete(account.id)}
+                        />
                       </Box>
                     </HStack>
                   </Td>

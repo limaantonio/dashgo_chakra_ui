@@ -33,6 +33,15 @@ enum SubAccountType {
   wage = "WAGE",
 }
 
+interface Account {	
+  id: string; 
+  name: string;
+  amount: Number;
+  type: AccountType;
+  number_of_installments: Number;
+  sub_account: SubAccountType;
+}
+
 type CreateAccountFormData = {
   name: string;
   amount: Number;
@@ -61,12 +70,13 @@ export default function CreateBudget() {
   });
 
   const errors = formState.errors;
+  const { id } = router.query;
 
   const hangleCreateBudget: SubmitHandler<CreateAccountFormData> = async (
     values
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    await api.post("account", values);
+    await api.put(`account/${id}`, values);
     router.push('/accounts')
   };
 
@@ -81,15 +91,19 @@ export default function CreateBudget() {
   ];
 
   const [budgets, setBudgets] = useState<Budget[]>([]);
-
-  useEffect(() => {
-    api.get("budget").then((response) => setBudgets(response.data));
-  }, []);
-
+  const [accounts, setAccounts] = useState<Account>();
  
-   function transformDataToOptions() {
+  async function getBudget() {
+    await api.get("budget").then((response) => setBudgets(response.data));
+  }
+
+  async function getAccount() {
+    await api.get(`account/${id}`).then((response) => setAccounts(response.data));
+  }
+
+  function transformDataToOptions() {
     const selectBudget = [];
-    budgets.map(
+     budgets.map(
       (budget) =>
         (selectBudget.push({
           id: budget.id,
@@ -100,8 +114,13 @@ export default function CreateBudget() {
     return selectBudget
   }
 
-  const toast = useToast();
+  useEffect(() => {
+    getAccount()
+    getBudget()
+  }, [id]);
 
+  const toast = useToast();
+ 
   return (
     <Box>
       <Header />
@@ -127,6 +146,10 @@ export default function CreateBudget() {
                 {...register("type")}
                 placeholder="Selecione"
                 options={typeAccount}
+                onChange={(e) => {
+                  setAccounts(e.target.value);
+                }}
+                value={accounts?.type}
               />
 
               <Select
@@ -134,13 +157,22 @@ export default function CreateBudget() {
                 {...register("sub_account")}
                 placeholder="Selecione"
                 options={sub_account}
+                onChange={(e) => {
+                  setAccounts(e.target.value);
+                }}
+                value={accounts?.sub_account}
               />
 
               <Select
                 label="Orçamento"
                 {...register("budget_id")}
                 placeholder="Selecione"
-                options={transformDataToOptions()}
+                options={transformDataToOptions()
+                }
+                onChange={(e) => {
+                  setAccounts(e.target.value);
+                }}
+                value={accounts?.budget_id}
               />
             </SimpleGrid>
           </VStack>
@@ -151,12 +183,21 @@ export default function CreateBudget() {
                 type="text"
                 {...register("name")}
                 error={errors.name}
+                {...register("name")}
+                onChange={(e) => {
+                  setAccounts(e.target.value);
+                }}
+                value={accounts?.name}
               />
               <Input
                 label="Valor"
                 type="number"
                 {...register("amount")}
                 error={errors.amount}
+                onChange={(e) => {
+                  setAccounts(e.target.value);
+                }}
+                value={accounts?.amount}
               />
 
               <Input
@@ -164,6 +205,10 @@ export default function CreateBudget() {
                 type="number"
                 {...register("number_of_installments")}
                 error={errors.number_of_installments}
+                onChange={(e) => {
+                  setAccounts(e.target.value);
+                }}
+                value={accounts?.number_of_installments}
               />
             </SimpleGrid>
           </VStack>
@@ -180,8 +225,8 @@ export default function CreateBudget() {
                 isLoading={formState.isSubmitting}
                 onClick={() =>
                   toast({
-                    title: "Conta criada.",
-                    description: "A conta foi criado com sucesso.",
+                    title: "Orçamento atualizado.",
+                    description: "O orçamento foi atualizado com sucesso.",
                     status: "success",
                     duration: 9000,
                     isClosable: true,

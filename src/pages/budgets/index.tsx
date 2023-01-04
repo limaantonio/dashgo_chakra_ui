@@ -6,7 +6,6 @@ import {
   HStack,
   Heading,
   Icon,
-  Stack,
   Table,
   Tbody,
   Td,
@@ -24,6 +23,7 @@ import Link from "next/link";
 import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import AlertDelete from "../../components/AlertDelete";
 
 interface Budget {
   id: string;
@@ -40,23 +40,32 @@ export default function UserList() {
 
   const [budgets, setBudgets] = useState<Budget[]>([]);
 
+  async function loadBudgets() {
+    await api.get("budget").then((response) => setBudgets(response.data));
+  }
+
   useEffect(() => {
-    api.get("budget").then((response) => setBudgets(response.data));
+    loadBudgets();
   }, [setBudgets]);
 
   async function handleDelete(id: string) {
-    try {
-      await api.delete(`budget/${id}`);
+    await api.delete(`budget/${id}`);
 
-      const budgetIndex = budgets.findIndex((budget) => budget.id === id);
-      const newBudget = [...budgets];
+    const budgetIndex = budgets.findIndex((b) => b.id === id);
+    const budget = [...budgets];
 
-      newBudget.splice(budgetIndex, 1);
-      setBudgets(newBudget);
-    } catch (err) {
-      alert("Ocorreu um erro ao deletar essa ferramenta, tente novamente.");
-    }
-    console.log(id);
+    budget.splice(budgetIndex, 1);
+    setBudgets(budget);
+  }
+
+  const [modalRemoveTool, setModalRemoveTool] = useState(false);
+
+  function openModalRemove() {
+    setModalRemoveTool(true);
+  }
+
+  function toggleModalRemove(): void {
+    setModalRemoveTool(!modalRemoveTool);
   }
 
   return (
@@ -133,7 +142,7 @@ export default function UserList() {
                           </Button>
                         </Link>
                         <Button
-                          onClick={() => handleDelete(budget.id)}
+                          onClick={() => openModalRemove()}
                           as="a"
                           size="sm"
                           fontSize="small"
@@ -144,6 +153,11 @@ export default function UserList() {
                         >
                           Excluir
                         </Button>
+                        <AlertDelete
+                          isOpen={modalRemoveTool}
+                          setIsOpen={toggleModalRemove}
+                          handleRemove={() => handleDelete(budget.id)}
+                        />
                       </Box>
                     </HStack>
                   </Td>

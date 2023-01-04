@@ -17,6 +17,9 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler } from "react-hook-form/dist/types";
 import api from "../../services/api";
+import { Tooltip } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
+import router from "next/router";
 
 type CreateBudgetFormData = {
   year: Number;
@@ -38,8 +41,10 @@ export default function CreateBudget() {
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     await api.post("budget", values);
-    console.log(values);
+    router.push("/budgets");
   };
+
+  const toast = useToast();
 
   return (
     <Box>
@@ -76,10 +81,20 @@ export default function CreateBudget() {
                   Cancelar
                 </Button>
               </Link>
+
               <Button
                 colorScheme="green"
                 type="submit"
                 isLoading={formState.isSubmitting}
+                onClick={() =>
+                  toast({
+                    title: "Orçamento criado.",
+                    description: "O orçamento foi criado com sucesso.",
+                    status: "success",
+                    duration: 9000,
+                    isClosable: true,
+                  })
+                }
               >
                 Salvar
               </Button>

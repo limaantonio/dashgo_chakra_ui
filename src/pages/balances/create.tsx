@@ -19,6 +19,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler } from "react-hook-form/dist/types";
 import api from "../../services/api";
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/router'
+import { useToast } from "@chakra-ui/react";
 
 type CreateBalanceFormData = {
   month: Number;
@@ -42,12 +44,14 @@ export default function CreateBalance() {
 
   const errors = formState.errors;
 
+  const router = useRouter()
+
   const hangleCreateBalance: SubmitHandler<CreateBalanceFormData> = async (
     values
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     await api.post("balance", values);
-    console.log(values);
+    router.push("/balances");
   };
 
   const [budgets, setBudgets] = useState<Budget[]>([]);
@@ -69,6 +73,9 @@ export default function CreateBalance() {
    ));
    return selectBudget
  }
+
+
+ const toast = useToast();
 
   return (
     <Box>
@@ -116,6 +123,15 @@ export default function CreateBalance() {
                 colorScheme="green"
                 type="submit"
                 isLoading={formState.isSubmitting}
+                onClick={() =>
+                  toast({
+                    title: "Balanço criado.",
+                    description: "O balanço foi criado com sucesso.",
+                    status: "success",
+                    duration: 9000,
+                    isClosable: true,
+                  })
+                }
               >
                 Salvar
               </Button>

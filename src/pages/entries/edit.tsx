@@ -22,7 +22,9 @@ import { SubmitHandler } from "react-hook-form/dist/types";
 import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
-import router from "next/router";
+import {useRouter} from "next/router";
+import { EntryType } from "perf_hooks";
+
 
 type CreateEntryFormData = {
   description: string;
@@ -57,7 +59,10 @@ export default function CreateBudget() {
     resolver: yupResolver(createFormSchema),
   });
 
+  const router = useRouter()
+
   const errors = formState.errors;
+  const { id } = router.query;
 
   const hangleCreateEntry: SubmitHandler<CreateEntryFormData> = async (
     values
@@ -68,16 +73,8 @@ export default function CreateBudget() {
   };
 
   const [balances, setBalance] = useState<Balance[]>([]);
-
-  useEffect(() => {
-    api.get("balance").then((response) => setBalance(response.data));
-  }, []);
-
-  const [accounts, setAccounts] = useState<Balance[]>([]);
-
-  useEffect(() => {
-    api.get("account").then((response) => setAccounts(response.data));
-  }, []);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [entries, setEntries] = useState<EntryType[]>([]);
   
   function transformDataToOptions() {
     let selectBalance = []
@@ -104,7 +101,28 @@ export default function CreateBudget() {
       }),
   ));
   return selectAccount
+  }
+
+
+  async function getAccount() {
+    await api.get(`account`).then((response) => setAccounts(response.data));
+  }
+
+
+async function getBalance() {
+  await api.get("balance").then((response) => setBalance(response.data));
 }
+
+async function getEntry() {
+  await api.get(`entry/${id}`).then((response) => setEntries(response.data));
+}
+
+useEffect(() => {
+  getAccount()
+  getBalance()
+  getEntry()
+}, [id]);
+
 
 const toast = useToast();
 
@@ -122,13 +140,20 @@ const toast = useToast();
           p={["6", "8"]}
         >
           <Heading size="lg" fontWeight="normal">
-            Criar Lançamento
+            Editar Lançamento
           </Heading>
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8" paddingY="6">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              <Select {...register("balance_id")} placeholder="Selecione" label="Mês" options={transformDataToOptions()} />
-              <Select {...register("account_id")} placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()}/>
+              <Select {...register("balance_id")} placeholder="Selecione" label="Mês" options={transformDataToOptions()}  onChange={(e) => {
+                  setEntries(e.target.value);
+                }}
+                value={entries?.description}/>
+              <Select {...register("account_id")} placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()} 
+               onChange={(e) => {
+                setEntries(e.target.value);
+              }}
+              value={entries?.account}/>
             </SimpleGrid>
           </VStack>
           <VStack spacing="8">
@@ -138,18 +163,30 @@ const toast = useToast();
                 type="text"
                 {...register("description")}
                 error={errors.description}
+                onChange={(e) => {
+                  setEntries(e.target.value);
+                }}
+                value={entries?.description}
               />
               <Input
                 label="Valor"
                 type="number"
                 {...register("amount")}
                 error={errors.amount}
+                onChange={(e) => {
+                  setEntries(e.target.value);
+                }}
+                value={entries?.amount}
               />
               <Input
                 label="Número de parcelas"
                 type="number"
                 {...register("number_of_installments")}
                 error={errors.number_of_installments}
+                onChange={(e) => {
+                  setEntries(e.target.value);
+                }}
+                value={entries?.number_of_installments}
               />
             </SimpleGrid>
           </VStack>

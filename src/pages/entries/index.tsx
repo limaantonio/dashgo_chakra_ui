@@ -23,6 +23,7 @@ import Link from "next/link";
 import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import AlertDelete from "../../components/AlertDelete";
 
 interface Entry {
   id: string;
@@ -50,6 +51,26 @@ export default function UserList() {
   useEffect(() => {
     api.get("entry").then((response) => setEntries(response.data));
   }, []);
+
+  async function handleDelete(id: string) {
+    await api.delete(`entry/${id}`);
+
+    const entryIndex = entries.findIndex((b) => b.id === id);
+    const entry = [...entries];
+
+    entry.splice(entryIndex, 1);
+    setEntries(entry);
+  }
+
+  const [modalRemoveTool, setModalRemoveTool] = useState(false);
+
+  function openModalRemove() {
+    setModalRemoveTool(true);
+  }
+
+  function toggleModalRemove(): void {
+    setModalRemoveTool(!modalRemoveTool);
+  }
 
   return (
     <Box>
@@ -122,18 +143,20 @@ export default function UserList() {
                   <Td>
                     <HStack>
                       <Box ml="auto">
+                        <Link href={`/entries/edit?id=${entry.id}`}>
+                          <Button
+                            mr="2"
+                            as="a"
+                            size="sm"
+                            fontSize="small"
+                            colorScheme="purple"
+                            leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                          >
+                            Editar
+                          </Button>
+                        </Link>
                         <Button
-                          mr="2"
-                          as="a"
-                          size="sm"
-                          fontSize="small"
-                          colorScheme="purple"
-                          leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                        >
-                          Editar
-                        </Button>
-
-                        <Button
+                          onClick={() => openModalRemove()}
                           as="a"
                           size="sm"
                           fontSize="small"
@@ -142,6 +165,11 @@ export default function UserList() {
                         >
                           Excluir
                         </Button>
+                        <AlertDelete
+                          isOpen={modalRemoveTool}
+                          setIsOpen={toggleModalRemove}
+                          handleRemove={() => handleDelete(entry.id)}
+                        />
                       </Box>
                     </HStack>
                   </Td>
