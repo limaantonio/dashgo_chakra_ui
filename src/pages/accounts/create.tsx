@@ -118,9 +118,9 @@ export default function CreateBudget() {
     budgets.map(
       (budget) =>
         (selectBudget.push({
-          id: budget.id,
-          value: budget.id,
-          label: budget.year
+          id: budget.budget.id,
+          value: budget.budget.id,
+          label: budget.budget.year
         }),
     ));
     return selectBudget

@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import AlertDelete from "../../components/AlertDelete";
 import Summary from "../../components/Summary";
+import SummaryAccount from "../../components/SummaryAccount";
 
 interface Account {
   id: string;
@@ -82,12 +83,14 @@ export default function UserList() {
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
         <Box flex="1">
-          <Summary
+          {resultAccounts && 
+          <SummaryAccount
             id={1}
-            income={resultAccounts?.balance.available_value}
-            expense={resultAccounts?.balance.used_value}
-            total={resultAccounts?.balance.used_value}
+            income={resultAccounts?.balance?.available_value}
+            expense={resultAccounts?.balance?.used_value}
+            total={resultAccounts?.balance?.used_value}
           />
+        }
           <Box flex="1" borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
               <Heading size="lg" fontWeight="normal">

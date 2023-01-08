@@ -119,6 +119,7 @@ export default function UserList() {
                     <Checkbox colorScheme="green"></Checkbox>
                   </Th>
                   <Th>Ano</Th>
+                  <Th>Mês</Th>
                   <Th>Data de atualização</Th>
                   <Th></Th>
                 </Tr>
@@ -126,9 +127,21 @@ export default function UserList() {
               <Tbody>
                 {budgets.map((budget) => (
                   // eslint-disable-next-line react/jsx-key
-                  <Tr>
+                  <Link href="/accounts">
+                  <Tr cursor="pointer">
                     <Td px={["4", "4", "6"]}>
                       <Checkbox colorScheme="green"></Checkbox>
+                    </Td>
+                    <Td>
+                      <Box>
+                        <Text fontWeight="bold">{budget.budget.year}</Text>
+                        <Text fontSize="sm" color="gray.300">
+                          {format(
+                            new Date(budget.budget.created_at),
+                            "yyyy-MM-dd"
+                          )}
+                        </Text>
+                      </Box>
                     </Td>
                     <Td>
                       <Box>
@@ -188,6 +201,7 @@ export default function UserList() {
                       </HStack>
                     </Td>
                   </Tr>
+                  </Link>
                 ))}
               </Tbody>
             </Table>
