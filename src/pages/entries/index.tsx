@@ -104,8 +104,9 @@ export default function UserList() {
                 <Th>Conta</Th>
                 <Th>Valor</Th>
                 <Th>Parcela</Th>
-                {isWideVersion && <Th>Data de cadastro</Th>}
-                <Th width=""></Th>
+                <Th>Data de atualização</Th>
+                <Th>Status</Th>
+                <Th></Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -118,9 +119,15 @@ export default function UserList() {
                   <Td>
                     <Box>
                       <Text fontWeight="bold">{entry.account.name}</Text>
-                      <Text fontSize="sm" color="gray.300">
-                        {entry.description}
-                      </Text>
+                      {entry.account.type === "INCOME" ? (
+                        <Text fontSize="sm" color="blue.300">
+                          Receita
+                        </Text>
+                      ) : (
+                        <Text fontSize="sm" color="red.300">
+                          Despesa
+                        </Text>
+                      )}
                     </Box>
                   </Td>
                   <Td>
@@ -140,6 +147,7 @@ export default function UserList() {
                       )}
                     </Td>
                   )}
+                  <Td>Pago</Td>
                   <Td>
                     <HStack>
                       <Box ml="auto">

@@ -8,6 +8,11 @@ import {
   HStack,
   Button,
   FormLabel,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
@@ -29,8 +34,18 @@ enum AccountType {
 }
 
 enum SubAccountType {
-  other = "OTHER",
   wage = "WAGE",
+	wage_bone = 'WAGE_BONUS',
+	wage_extra = 'WAGE_EXTRA',
+	wage_other = 'WAGE_OTHER',
+	retirement = 'RETIREMENT',
+	family_fund = 'FAMILY_FUND',
+	investiment = 'INVESTIMENT',
+	investiment_other = 'INVESTIMENT_OTHER',
+	current_expenses = 'CURRENT_EXPENSES',
+	current_expenses_other = 'CURRENT_EXPENSES_OTHER',
+	interest_and_chages = 'INTEREST_AND_CHARGES',
+  other = "OTHER",
 }
 
 type CreateAccountFormData = {
@@ -76,8 +91,19 @@ export default function CreateBudget() {
   ];
 
   const sub_account = [
-    { id: 1, value: "OTHER", label: "Outros" },
     { id: 2, value: "WAGE", label: "Salário" },
+    { id: 3, value: "WAGE_BONUS", label: "Salário Bônus" },
+    { id: 4, value: "WAGE_EXTRA", label: "Salário Extra" },
+    { id: 5, value: "WAGE_OTHER", label: "Salário Outros" },
+    { id: 6, value: "RETIREMENT", label: "Aposentadoria" },
+    { id: 7, value: "FAMILY_FUND", label: "Fundo Familiar" },
+    { id: 8, value: "INVESTIMENT", label: "Investimento" },
+    { id: 9, value: "INVESTIMENT_OTHER", label: "Investimento Outros" },
+    { id: 10, value: "CURRENT_EXPENSES", label: "Despesas Correntes" },
+    { id: 11, value: "CURRENT_EXPENSES_OTHER", label: "Despesas Correntes Outros" },
+    { id: 12, value: "INTEREST_AND_CHARGES", label: "Juros e Tarifas" },
+    { id: 13, value: "OTHER", label: "Outros" },
+   
   ];
 
   const [budgets, setBudgets] = useState<Budget[]>([]);
@@ -101,6 +127,11 @@ export default function CreateBudget() {
   }
 
   const toast = useToast();
+
+  const format = (val) => `R$` + val
+  const parse = (val) => val.replace(/^\$/, '')
+
+  const [value, setValue] = useState(0.00)
 
   return (
     <Box>
@@ -152,13 +183,15 @@ export default function CreateBudget() {
                 {...register("name")}
                 error={errors.name}
               />
-              <Input
+            
+            <Input
                 label="Valor"
-                type="number"
+                type="text"
                 {...register("amount")}
                 error={errors.amount}
               />
-
+          
+             
               <Input
                 label="Número de parcelas"
                 type="number"
