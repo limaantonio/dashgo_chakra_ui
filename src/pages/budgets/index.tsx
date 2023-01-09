@@ -143,17 +143,6 @@ export default function UserList() {
                         </Text>
                       </Box>
                     </Td>
-                    <Td>
-                      <Box>
-                        <Text fontWeight="bold">{budget.budget.year}</Text>
-                        <Text fontSize="sm" color="gray.300">
-                          {format(
-                            new Date(budget.budget.created_at),
-                            "yyyy-MM-dd"
-                          )}
-                        </Text>
-                      </Box>
-                    </Td>
 
                     <Td>
                       {budget.updated_at ? (

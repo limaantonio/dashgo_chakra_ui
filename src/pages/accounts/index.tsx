@@ -50,7 +50,7 @@ export default function UserList() {
     lg: true,
   });
 
-  const [accounts, setAccounts] = useState<Account>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [resultAccounts, setResultAccounts] = useState();
 
   useEffect(() => {
@@ -83,14 +83,7 @@ export default function UserList() {
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
         <Box flex="1">
-          {resultAccounts && 
-          <SummaryAccount
-            id={1}
-            income={resultAccounts?.balance?.available_value}
-            expense={resultAccounts?.balance?.used_value}
-            total={resultAccounts?.balance?.used_value}
-          />
-        }
+         
           <Box flex="1" borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
               <Heading size="lg" fontWeight="normal">
@@ -122,16 +115,17 @@ export default function UserList() {
                 </Tr>
               </Thead>
               <Tbody>
-                {resultAccounts?.accounts?.map((account) => (
+                {resultAccounts?.map((account) => (
                   // eslint-disable-next-line react/jsx-key
-                  <Tr>
+                  <Link href={`/entries?id=${account.account.id}`}>
+                  <Tr as="a" cursor="pointer">
                     <Td px={["4", "4", "6"]}>
                       <Checkbox colorScheme="green"></Checkbox>
                     </Td>
                     <Td>
                       <Box>
-                        <Text fontWeight="bold">{account.name}</Text>
-                        {account.type === "INCOME" ? (
+                        <Text fontWeight="bold">{account.account.name}</Text>
+                        {account.account.type === "INCOME" ? (
                           <Text fontSize="sm" color="blue.300">
                             Receita
                           </Text>
@@ -148,12 +142,12 @@ export default function UserList() {
                         {Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
-                        }).format(account.amount)}
+                        }).format(account.account.amount)}
                       </Text>
                     </Td>
                     <Td>
                       <Text fontWeight="bold">
-                        {account.number_of_installments}
+                        {account.account.number_of_installments}
                       </Text>
                     </Td>
                     <Td>
@@ -162,7 +156,7 @@ export default function UserList() {
                           style: "currency",
                           currency: "BRL",
                         }).format(
-                          account.amount * account.number_of_installments
+                          account.account.amount * account.account.number_of_installments
                         )}
                       </Text>
                     </Td>
@@ -204,6 +198,7 @@ export default function UserList() {
                       </HStack>
                     </Td>
                   </Tr>
+                  </Link>
                 ))}
               </Tbody>
             </Table>
