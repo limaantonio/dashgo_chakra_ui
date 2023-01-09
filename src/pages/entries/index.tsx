@@ -24,14 +24,26 @@ import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import AlertDelete from "../../components/AlertDelete";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
 interface Account {
   id: string;
   name: string;
   amount: Number;
   type: string;
+  entry: Entry;
   number_of_installments: Number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+interface Balance {
+  id: string;
+  month: Number;
+  incomes: Number;
+  entries: Entry;
+  expense: Number;
+  result: Number;
   created_at: Date;
   updated_at: Date;
 }
@@ -57,24 +69,22 @@ export default function UserList() {
     lg: true,
   });
 
-  const router = useRouter()
+  const router = useRouter();
   const { id } = router.query;
-  console.log(id)
 
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
-
- 
-
-  async function getAccount() {
-   const x  = await api.get('account/70dfd681-c339-4ca9-b404-12d957c69a5e').then((response) => setAccounts(response.data));
-    console.log('fldfdk')
-  }
+  const [accounts, setAccounts] = useState<Account>();
 
   useEffect(() => {
-    getAccount()
-  }, []);
-  console.log(accounts)
+    getAccount();
+  }, [id]);
+
+  async function getAccount() {
+    await api
+      .get(`account/${id}`)
+      .then((response) => setAccounts(response.data));
+  }
+
   async function handleDelete(id: string) {
     await api.delete(`entry/${id}`);
 
@@ -133,7 +143,7 @@ export default function UserList() {
               </Tr>
             </Thead>
             <Tbody>
-              {accounts.map((account) => (
+              {accounts?.entry.map((entry) => (
                 // eslint-disable-next-line react/jsx-key
                 <Tr>
                   <Td px={["4", "4", "6"]}>
@@ -141,8 +151,8 @@ export default function UserList() {
                   </Td>
                   <Td>
                     <Box>
-                      <Text fontWeight="bold">{account.name}</Text>
-                      {account.type === "INCOME" ? (
+                      <Text fontWeight="bold">{entry.description}</Text>
+                      {accounts?.type === "INCOME" ? (
                         <Text fontSize="sm" color="blue.300">
                           Receita
                         </Text>
@@ -154,12 +164,16 @@ export default function UserList() {
                     </Box>
                   </Td>
                   <Td>
-                    <Text fontWeight="bold">{entry.amount}</Text>
+                    <Text fontWeight="bold">
+                      {" "}
+                      {Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(entry.amount)}
+                    </Text>
                   </Td>
                   <Td>
-                    <Text fontWeight="bold">
-                      {entry.number_of_installments}
-                    </Text>
+                    <Text fontWeight="bold">{entry.installment}</Text>
                   </Td>
                   {isWideVersion && (
                     <Td>

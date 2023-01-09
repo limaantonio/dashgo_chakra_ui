@@ -3,11 +3,9 @@ import { NavLink } from "./NavLink";
 import { NavSection } from "./NavSection";
 import {
   RiDashboardLine,
-  RiContactsLine,
   RiMoneyDollarBoxFill,
   RiCurrencyLine,
   RiInputMethodLine,
-  RiCalendar2Line,
   RiAddFill,
   RiGitMergeLine,
 } from "react-icons/ri";
@@ -24,9 +22,6 @@ export function SideBarNav() {
         </NavLink>
         <NavLink icon={RiCurrencyLine} href="/accounts">
           Contas
-        </NavLink>
-        <NavLink icon={RiCalendar2Line} href="/balances">
-          Balanços
         </NavLink>
         <NavLink icon={RiAddFill} href="/entries">
           Lançamentos

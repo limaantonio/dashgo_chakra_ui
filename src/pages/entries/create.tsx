@@ -32,12 +32,6 @@ type CreateEntryFormData = {
   updated_at: Date;
 };
 
-interface Balance {
-  id: string;
-  month: Number;
-  created_at: Date;
-  updated_at: Date;
-}
 
 interface Account {
   id: string;
@@ -67,11 +61,6 @@ export default function CreateBudget() {
     router.push("/entries");
   };
 
-  const [balances, setBalance] = useState<Balance[]>([]);
-
-  useEffect(() => {
-    api.get("balance").then((response) => setBalance(response.data));
-  }, []);
 
   const [accounts, setAccounts] = useState<Balance[]>([]);
 
@@ -79,18 +68,6 @@ export default function CreateBudget() {
     api.get("account").then((response) => setAccounts(response.data));
   }, []);
   
-  function transformDataToOptions() {
-    let selectBalance = []
-    balances.map(
-      (balance) =>
-        (selectBalance.push({
-          id: balance.id,
-          value: balance.id,
-          label: balance.month
-        }),
-    ));
-   return selectBalance
- }
 
  function transformDataAccountToOptions() {
   let selectAccount = []
@@ -127,7 +104,6 @@ const toast = useToast();
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8" paddingY="6">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              <Select {...register("balance_id")} placeholder="Selecione" label="Mês" options={transformDataToOptions()} />
               <Select {...register("account_id")} placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()}/>
             </SimpleGrid>
           </VStack>

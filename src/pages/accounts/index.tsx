@@ -83,7 +83,6 @@ export default function UserList() {
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
         <Box flex="1">
-         
           <Box flex="1" borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
               <Heading size="lg" fontWeight="normal">
@@ -118,86 +117,89 @@ export default function UserList() {
                 {resultAccounts?.map((account) => (
                   // eslint-disable-next-line react/jsx-key
                   <Link href={`/entries?id=${account.account.id}`}>
-                  <Tr as="a" cursor="pointer">
-                    <Td px={["4", "4", "6"]}>
-                      <Checkbox colorScheme="green"></Checkbox>
-                    </Td>
-                    <Td>
-                      <Box>
-                        <Text fontWeight="bold">{account.account.name}</Text>
-                        {account.account.type === "INCOME" ? (
-                          <Text fontSize="sm" color="blue.300">
-                            Receita
-                          </Text>
-                        ) : (
-                          <Text fontSize="sm" color="red.300">
-                            Despesa
-                          </Text>
-                        )}
-                      </Box>
-                    </Td>
+                    <Tr cursor="pointer">
+                      <Td px={["4", "4", "6"]}>
+                        <Checkbox colorScheme="green"></Checkbox>
+                      </Td>
+                      <Td>
+                        <Box>
+                          <Text fontWeight="bold">{account.account.name}</Text>
+                          {account.account.type === "INCOME" ? (
+                            <Text fontSize="sm" color="blue.300">
+                              Receita
+                            </Text>
+                          ) : (
+                            <Text fontSize="sm" color="red.300">
+                              Despesa
+                            </Text>
+                          )}
+                        </Box>
+                      </Td>
 
-                    <Td>
-                      <Text fontWeight="bold">
-                        {Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(account.account.amount)}
-                      </Text>
-                    </Td>
-                    <Td>
-                      <Text fontWeight="bold">
-                        {account.account.number_of_installments}
-                      </Text>
-                    </Td>
-                    <Td>
-                      <Text fontWeight="bold">
-                        {Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(
-                          account.account.amount * account.account.number_of_installments
-                        )}
-                      </Text>
-                    </Td>
+                      <Td>
+                        <Text fontWeight="bold">
+                          {Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(account.account.amount)}
+                        </Text>
+                      </Td>
+                      <Td>
+                        <Text fontWeight="bold">
+                          {account.account.number_of_installments}
+                        </Text>
+                      </Td>
+                      <Td>
+                        <Text fontWeight="bold">
+                          {Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(
+                            account.account.amount *
+                              account.account.number_of_installments
+                          )}
+                        </Text>
+                      </Td>
 
-                    <Td>
-                      <HStack>
-                        <Box ml="auto">
-                          <Link href={`/accounts/edit?id=${account.id}`}>
+                      <Td>
+                        <HStack>
+                          <Box ml="auto">
+                            <Link href={`/accounts/edit?id=${account.id}`}>
+                              <Button
+                                mr="2"
+                                as="a"
+                                size="sm"
+                                fontSize="small"
+                                colorScheme="purple"
+                                leftIcon={
+                                  <Icon as={RiPencilLine} fontSize="16" />
+                                }
+                              >
+                                Editar
+                              </Button>
+                            </Link>
+
                             <Button
-                              mr="2"
+                              onClick={() => openModalRemove()}
                               as="a"
                               size="sm"
                               fontSize="small"
-                              colorScheme="purple"
+                              colorScheme="red"
                               leftIcon={
                                 <Icon as={RiPencilLine} fontSize="16" />
                               }
                             >
-                              Editar
+                              Excluir
                             </Button>
-                          </Link>
-
-                          <Button
-                            onClick={() => openModalRemove()}
-                            as="a"
-                            size="sm"
-                            fontSize="small"
-                            colorScheme="red"
-                            leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                          >
-                            Excluir
-                          </Button>
-                          <AlertDelete
-                            isOpen={modalRemoveTool}
-                            setIsOpen={toggleModalRemove}
-                            handleRemove={() => handleDelete(account.id)}
-                          />
-                        </Box>
-                      </HStack>
-                    </Td>
-                  </Tr>
+                            <AlertDelete
+                              isOpen={modalRemoveTool}
+                              setIsOpen={toggleModalRemove}
+                              handleRemove={() => handleDelete(account.id)}
+                            />
+                          </Box>
+                        </HStack>
+                      </Td>
+                    </Tr>
                   </Link>
                 ))}
               </Tbody>
