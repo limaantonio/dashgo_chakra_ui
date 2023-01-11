@@ -6,6 +6,12 @@ import {
   Heading,
   HStack,
   Icon,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuGroup,
+  MenuItem,
+  MenuList,
   Table,
   Tbody,
   Td,
@@ -17,7 +23,13 @@ import {
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
-import { RiAddLine, RiPencilLine } from "react-icons/ri";
+import {
+  RiAddLine,
+  RiArrowDownSFill,
+  RiDeleteBin6Line,
+  RiFilter2Line,
+  RiPencilLine,
+} from "react-icons/ri";
 import { Pagination } from "../../components/Pagination";
 import Link from "next/link";
 import api from "../../services/api";
@@ -88,17 +100,38 @@ export default function UserList() {
               <Heading size="lg" fontWeight="normal">
                 Contas
               </Heading>
-              <Link href="/accounts/create" passHref>
-                <Button
-                  as="a"
-                  size="sm"
-                  fontSize="small"
-                  colorScheme="green"
-                  leftIcon={<Icon as={RiAddLine} fontSize="20" />}
-                >
-                  Criar novo
-                </Button>
-              </Link>
+              <Box>
+                <Menu>
+                  <MenuButton
+                    bg="blue.400"
+                    as={Button}
+                    mr="4"
+                    rightIcon={<RiArrowDownSFill />}
+                  >
+                    Filtrar
+                  </MenuButton>
+                  <MenuList textColor="black">
+                    <MenuGroup title="Balanço">
+                      <MenuItem>Janeiro</MenuItem>
+                      <MenuItem>Fevereiro</MenuItem>
+                      <MenuItem>Março</MenuItem>
+                      <MenuItem>Abril</MenuItem>
+                      <MenuItem>Attend a Workshop</MenuItem>
+                    </MenuGroup>
+                  </MenuList>
+                </Menu>
+                <Link href="/accounts/create" passHref>
+                  <Button
+                    as="a"
+                    size="md"
+                    fontSize="small"
+                    colorScheme="green"
+                    leftIcon={<Icon as={RiAddLine} fontSize="20" />}
+                  >
+                    Criar novo
+                  </Button>
+                </Link>
+              </Box>
             </Flex>
             <Table colorScheme="whiteAlpha">
               <Thead>
@@ -110,97 +143,98 @@ export default function UserList() {
                   <Th>Valor</Th>
                   <Th>Parcelas</Th>
                   <Th>Total</Th>
+                  <Th>Lançamentos</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {resultAccounts?.map((account) => (
                   // eslint-disable-next-line react/jsx-key
-                  <Link href={`/entries?id=${account.account.id}`}>
-                    <Tr cursor="pointer">
-                      <Td px={["4", "4", "6"]}>
-                        <Checkbox colorScheme="green"></Checkbox>
-                      </Td>
-                      <Td>
-                        <Box>
-                          <Text fontWeight="bold">{account.account.name}</Text>
-                          {account.account.type === "INCOME" ? (
-                            <Text fontSize="sm" color="blue.300">
-                              Receita
-                            </Text>
-                          ) : (
-                            <Text fontSize="sm" color="red.300">
-                              Despesa
-                            </Text>
-                          )}
-                        </Box>
-                      </Td>
+                  <Tr cursor="pointer">
+                    <Td px={["4", "4", "6"]}>
+                      <Checkbox colorScheme="green"></Checkbox>
+                    </Td>
+                    <Td>
+                      <Box>
+                        <Text fontWeight="bold">{account.account.name}</Text>
+                        {account.account.type === "INCOME" ? (
+                          <Text fontSize="sm" color="blue.300">
+                            Receita
+                          </Text>
+                        ) : (
+                          <Text fontSize="sm" color="red.300">
+                            Despesa
+                          </Text>
+                        )}
+                      </Box>
+                    </Td>
 
-                      <Td>
-                        <Text fontWeight="bold">
-                          {Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(account.account.amount)}
-                        </Text>
-                      </Td>
-                      <Td>
-                        <Text fontWeight="bold">
-                          {account.account.number_of_installments}
-                        </Text>
-                      </Td>
-                      <Td>
-                        <Text fontWeight="bold">
-                          {Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(
-                            account.account.amount *
-                              account.account.number_of_installments
-                          )}
-                        </Text>
-                      </Td>
+                    <Td>
+                      <Text fontWeight="bold">
+                        {Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(account.account.amount)}
+                      </Text>
+                    </Td>
+                    <Td>
+                      <Text fontWeight="bold">
+                        {account.account.number_of_installments}
+                      </Text>
+                    </Td>
+                    <Td>
+                      <Text fontWeight="bold">
+                        {Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(
+                          account.account.amount *
+                            account.account.number_of_installments
+                        )}
+                      </Text>
+                    </Td>
 
-                      <Td>
-                        <HStack>
-                          <Box ml="auto">
-                            <Link href={`/accounts/edit?id=${account.id}`}>
-                              <Button
-                                mr="2"
-                                as="a"
-                                size="sm"
-                                fontSize="small"
-                                colorScheme="purple"
-                                leftIcon={
-                                  <Icon as={RiPencilLine} fontSize="16" />
-                                }
-                              >
-                                Editar
-                              </Button>
-                            </Link>
+                    <Td>
+                      <Link href={`/entries?id=${account.account.id}`}>
+                        <Text color="green.300" fontWeight="">
+                          Vizualizar
+                        </Text>
+                      </Link>
+                    </Td>
 
+                    <Td>
+                      <HStack>
+                        <Box ml="auto">
+                          <Link href={`/accounts/edit?id=${account.id}`}>
                             <Button
-                              onClick={() => openModalRemove()}
+                              mr="2"
                               as="a"
                               size="sm"
                               fontSize="small"
-                              colorScheme="red"
-                              leftIcon={
-                                <Icon as={RiPencilLine} fontSize="16" />
-                              }
+                              colorScheme="purple"
                             >
-                              Excluir
+                              <Icon as={RiPencilLine} fontSize="16" />
                             </Button>
-                            <AlertDelete
-                              isOpen={modalRemoveTool}
-                              setIsOpen={toggleModalRemove}
-                              handleRemove={() => handleDelete(account.id)}
-                            />
-                          </Box>
-                        </HStack>
-                      </Td>
-                    </Tr>
-                  </Link>
+                          </Link>
+
+                          <Button
+                            onClick={() => openModalRemove()}
+                            as="a"
+                            size="sm"
+                            fontSize="small"
+                            colorScheme="red"
+                          >
+                            <Icon as={RiDeleteBin6Line} fontSize="16" />
+                          </Button>
+                          <AlertDelete
+                            isOpen={modalRemoveTool}
+                            setIsOpen={toggleModalRemove}
+                            handleRemove={() => handleDelete(account.id)}
+                          />
+                        </Box>
+                      </HStack>
+                    </Td>
+                  </Tr>
                 ))}
               </Tbody>
             </Table>

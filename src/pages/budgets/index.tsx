@@ -24,6 +24,7 @@ import {
   RiMoneyDollarBoxLine,
   RiPencilLine,
   RiDeleteBack2Line,
+  RiDeleteBin6Line,
 } from "react-icons/ri";
 import { Pagination } from "../../components/Pagination";
 import Link from "next/link";
@@ -119,8 +120,8 @@ export default function UserList() {
                     <Checkbox colorScheme="green"></Checkbox>
                   </Th>
                   <Th>Ano</Th>
-                  <Th>Mês</Th>
                   <Th>Data de atualização</Th>
+                  <Th>Contas</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
@@ -128,68 +129,69 @@ export default function UserList() {
                 {budgets.map((budget) => (
                   // eslint-disable-next-line react/jsx-key
                   <Link href="/accounts">
-                  <Tr cursor="pointer">
-                    <Td px={["4", "4", "6"]}>
-                      <Checkbox colorScheme="green"></Checkbox>
-                    </Td>
-                    <Td>
-                      <Box>
-                        <Text fontWeight="bold">{budget.budget.year}</Text>
-                        <Text fontSize="sm" color="gray.300">
-                          {format(
-                            new Date(budget.budget.created_at),
-                            "yyyy-MM-dd"
-                          )}
-                        </Text>
-                      </Box>
-                    </Td>
+                    <Tr cursor="pointer">
+                      <Td px={["4", "4", "6"]}>
+                        <Checkbox colorScheme="green"></Checkbox>
+                      </Td>
+                      <Td>
+                        <Box>
+                          <Text fontWeight="bold">{budget.budget.year}</Text>
+                          <Text fontSize="sm" color="gray.300">
+                            {format(
+                              new Date(budget.budget.created_at),
+                              "yyyy-MM-dd"
+                            )}
+                          </Text>
+                        </Box>
+                      </Td>
 
-                    <Td>
-                      {budget.updated_at ? (
-                        format(new Date(budget.updated_at), "yyyy-MM-dd")
-                      ) : (
-                        <>-</>
-                      )}
-                    </Td>
+                      <Td>
+                        {budget.updated_at ? (
+                          format(new Date(budget.updated_at), "yyyy-MM-dd")
+                        ) : (
+                          <>-</>
+                        )}
+                      </Td>
+                      <Td>
+                        <Link href={`/accounts?id=${budget.budget.id}`}>
+                          <Text color="green.300" fontWeight="">
+                            Vizualizar
+                          </Text>
+                        </Link>
+                      </Td>
 
-                    <Td>
-                      <HStack>
-                        <Box ml="auto">
-                          <Link href={`/budgets/edit?id=${budget.id}`}>
+                      <Td>
+                        <HStack>
+                          <Box ml="auto">
+                            <Link href={`/budgets/edit?id=${budget.id}`}>
+                              <Button
+                                mr="2"
+                                as="a"
+                                size="sm"
+                                fontSize="small"
+                                colorScheme="purple"
+                              >
+                                <Icon as={RiPencilLine} fontSize="16" />
+                              </Button>
+                            </Link>
                             <Button
-                              mr="2"
+                              onClick={() => openModalRemove()}
                               as="a"
                               size="sm"
                               fontSize="small"
-                              colorScheme="purple"
-                              leftIcon={
-                                <Icon as={RiPencilLine} fontSize="16" />
-                              }
+                              colorScheme="red"
                             >
-                              Editar
+                              <Icon as={RiDeleteBin6Line} fontSize="16" />
                             </Button>
-                          </Link>
-                          <Button
-                            onClick={() => openModalRemove()}
-                            as="a"
-                            size="sm"
-                            fontSize="small"
-                            colorScheme="red"
-                            leftIcon={
-                              <Icon as={RiDeleteBack2Line} fontSize="16" />
-                            }
-                          >
-                            Excluir
-                          </Button>
-                          <AlertDelete
-                            isOpen={modalRemoveTool}
-                            setIsOpen={toggleModalRemove}
-                            handleRemove={() => handleDelete(budget.id)}
-                          />
-                        </Box>
-                      </HStack>
-                    </Td>
-                  </Tr>
+                            <AlertDelete
+                              isOpen={modalRemoveTool}
+                              setIsOpen={toggleModalRemove}
+                              handleRemove={() => handleDelete(budget.id)}
+                            />
+                          </Box>
+                        </HStack>
+                      </Td>
+                    </Tr>
                   </Link>
                 ))}
               </Tbody>

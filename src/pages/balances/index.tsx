@@ -98,6 +98,34 @@ export default function UserList() {
       id: 5,
       month: "Maio",
     },
+    {
+      id: 6,
+      month: "Junho",
+    },
+    {
+      id: 7,
+      month: "Julho",
+    },
+    {
+      id: 8,
+      month: "Agosto",
+    },
+    {
+      id: 9,
+      month: "Setembro",
+    },
+    {
+      id: 10,
+      month: "Outubro",
+    },
+    {
+      id: 11,
+      month: "Novembro",
+    },
+    {
+      id: 12,
+      month: "Dezembro",
+    },
   ];
   const [balance, setBalance] = useState(1);
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -109,9 +137,7 @@ export default function UserList() {
 
   async function getAccount() {
     await api
-      .get(
-        `entry?month=${balance}&account=${"7c97849e-74de-4a00-b04c-b3e21aeab7da"}`
-      )
+      .get(`entry?month=${balance}`)
       .then((response) => setEntries(response.data));
     console.log(entries);
   }
@@ -163,31 +189,23 @@ export default function UserList() {
                 </MenuButton>
                 <MenuList textColor="black">
                   <MenuGroup title="Balanço">
-                    {balances.map((balance) => (
+                    {balances.map((b) => (
                       <MenuItem
                         as="button"
+                        bg={b.id === balance ? "gray.50" : "white"}
+                        _hover={{ bg: "gray.50" }}
                         onClick={() => {
-                          getByMonth(balance.id);
+                          getByMonth(b.id);
                         }}
-                        key={balance.id}
+                        key={b.id}
+                        value={b.month}
                       >
-                        {balance.month}
+                        {b.month}
                       </MenuItem>
                     ))}
                   </MenuGroup>
                 </MenuList>
               </Menu>
-              <Link href="/entries/create" passHref>
-                <Button
-                  as="a"
-                  size="md"
-                  fontSize="small"
-                  colorScheme="green"
-                  leftIcon={<Icon as={RiAddLine} fontSize="20" />}
-                >
-                  Criar novo
-                </Button>
-              </Link>
             </Box>
           </Flex>
           <Table colorScheme="whiteAlpha">
@@ -197,6 +215,7 @@ export default function UserList() {
                   <Checkbox colorScheme="green"></Checkbox>
                 </Th>
                 <Th>Conta</Th>
+                <Th>Mês</Th>
                 <Th>Valor</Th>
                 <Th>Parcela</Th>
                 <Th>Status</Th>
@@ -206,7 +225,7 @@ export default function UserList() {
             </Thead>
             <Tbody>
               {entries?.map((entry) => (
-                <Tr key={entry.id} cursor="pointer">
+                <Tr key={entry.id}>
                   <Td px={["4", "4", "6"]}>
                     <Checkbox colorScheme="green"></Checkbox>
                   </Td>
@@ -223,6 +242,9 @@ export default function UserList() {
                         </Text>
                       )}
                     </Box>
+                  </Td>
+                  <Td>
+                    <Text>{entry.month}</Text>
                   </Td>
                   <Td>
                     <Text fontWeight="bold">
