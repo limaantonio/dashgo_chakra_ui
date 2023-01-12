@@ -26,6 +26,9 @@ import { Header } from "../../components/Header";
 import {
   RiAddLine,
   RiArrowDownSFill,
+  RiArrowDropLeftFill,
+  RiArrowLeftLine,
+  RiDeleteBack2Line,
   RiDeleteBin6Line,
   RiPencilLine,
 } from "react-icons/ri";
@@ -98,26 +101,70 @@ export default function UserList() {
       id: 5,
       month: "Maio",
     },
+    {
+      id: 6,
+      month: "Junho",
+    },
+    {
+      id: 7,
+      month: "Julho",
+    },
+    {
+      id: 8,
+      month: "Agosto",
+    },
+    {
+      id: 9,
+      month: "Setembro",
+    },
+    {
+      id: 10,
+      month: "Outubro",
+    },
+    {
+      id: 11,
+      month: "Novembro",
+    },
+    {
+      id: 12,
+      month: "Dezembro",
+    },
   ];
-  const [balance, setBalance] = useState(1);
+
+  const [balance, setBalance] = useState();
+  const [account, setAccount] = useState();
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [accounts, setAccounts] = useState<Account>();
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accountsFilter, setAccountsFilter] = useState<Account[]>([]);
 
   useEffect(() => {
     getAccount();
-  }, [id, balance]);
+  }, [account, balance]);
 
   async function getAccount() {
-    await api
-      .get(
-        `entry?month=${balance}&account=${"7c97849e-74de-4a00-b04c-b3e21aeab7da"}`
-      )
-      .then((response) => setEntries(response.data));
-    console.log(entries);
-  }
+    if (id) {
+      setAccount(id);
+    }
 
-  async function getByMonth(month: Number) {
-    setBalance(month);
+    console.log(account);
+    if (balance && account) {
+      await api
+        .get(`entry?month=${balance}&account=${account}`)
+        .then((response) => setAccounts(response.data));
+    } else if (balance) {
+      await api
+        .get(`entry?month=${balance}`)
+        .then((response) => setAccounts(response.data));
+    } else if (account) {
+      await api
+        .get(`entry?account=${account}`)
+        .then((response) => setAccounts(response.data));
+    } else {
+      await api.get(`entry`).then((response) => setAccounts(response.data));
+    }
+    await api
+      .get("account")
+      .then((response) => setAccountsFilter(response.data));
   }
 
   async function handleDelete(id: string) {
@@ -143,6 +190,16 @@ export default function UserList() {
   return (
     <Box>
       <Header />
+      <Link href="/accounts" passHref>
+        <Button
+          ml="6"
+          _hover={{ bg: "transparent", textColor: "green.400" }}
+          bg="transparent"
+        >
+          <RiArrowLeftLine fontSize="28" />
+        </Button>
+      </Link>
+
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
 
@@ -154,29 +211,84 @@ export default function UserList() {
             <Box>
               <Menu>
                 <MenuButton
-                  bg="blue.400"
+                  bg="gray.700"
                   as={Button}
                   mr="4"
                   rightIcon={<RiArrowDownSFill />}
                 >
-                  Filtrar
+                  Mês
                 </MenuButton>
                 <MenuList textColor="black">
                   <MenuGroup title="Balanço">
-                    {balances.map((balance) => (
+                    {balances.map((b) => (
                       <MenuItem
                         as="button"
+                        bg={b.id === balance ? "green.400" : "white"}
+                        textColor={b.id === balance ? "white" : "black"}
+                        _hover={{ bg: "gray.50" }}
                         onClick={() => {
-                          getByMonth(balance.id);
+                          setBalance(b.id);
                         }}
-                        key={balance.id}
+                        key={b.id}
+                        value={b.month}
                       >
-                        {balance.month}
+                        {b.month}
                       </MenuItem>
                     ))}
+                    <MenuItem
+                      bg="gray.50"
+                      onClick={() => {
+                        setBalance(0);
+                      }}
+                      as="button"
+                    >
+                      Limpar filtro
+                    </MenuItem>
                   </MenuGroup>
                 </MenuList>
               </Menu>
+              {!id && (
+                <Menu>
+                  <MenuButton
+                    bg="gray.700"
+                    as={Button}
+                    mr="4"
+                    rightIcon={<RiArrowDownSFill />}
+                  >
+                    Conta
+                  </MenuButton>
+                  <MenuList textColor="black">
+                    <MenuGroup title="Balanço">
+                      {accountsFilter?.map((b) => (
+                        <MenuItem
+                          as="button"
+                          bg={b.account.id === account ? "green.400" : "white"}
+                          textColor={
+                            b.account.id === account ? "white" : "black"
+                          }
+                          _hover={{ bg: "gray.50" }}
+                          onClick={() => {
+                            setAccount(b.account.id);
+                          }}
+                          key={b.account.id}
+                          value={b.account.name}
+                        >
+                          {b.account.name}
+                        </MenuItem>
+                      ))}
+                      <MenuItem
+                        bg="gray.50"
+                        onClick={() => {
+                          setAccount(0);
+                        }}
+                        as="button"
+                      >
+                        Limpar filtro
+                      </MenuItem>
+                    </MenuGroup>
+                  </MenuList>
+                </Menu>
+              )}
               <Link href="/entries/create" passHref>
                 <Button
                   as="a"
@@ -196,6 +308,8 @@ export default function UserList() {
                 <Th px={["4", "4", "6"]} color="gray.300" width="8">
                   <Checkbox colorScheme="green"></Checkbox>
                 </Th>
+                <Th>Titulo</Th>
+                <Th>Mês</Th>
                 <Th>Conta</Th>
                 <Th>Valor</Th>
                 <Th>Parcela</Th>
@@ -205,80 +319,91 @@ export default function UserList() {
               </Tr>
             </Thead>
             <Tbody>
-              {entries?.map((entry) => (
-                <Tr key={entry.id} cursor="pointer">
-                  <Td px={["4", "4", "6"]}>
-                    <Checkbox colorScheme="green"></Checkbox>
-                  </Td>
-                  <Td>
-                    <Box>
-                      <Text fontWeight="bold">{entry.description}</Text>
-                      {entries.type === "INCOME" ? (
-                        <Text fontSize="sm" color="blue.300">
-                          Receita
-                        </Text>
-                      ) : (
-                        <Text fontSize="sm" color="red.300">
-                          Despesa
-                        </Text>
-                      )}
-                    </Box>
-                  </Td>
-                  <Td>
-                    <Text fontWeight="bold">
-                      {" "}
-                      {Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(entry.amount)}
-                    </Text>
-                  </Td>
-                  <Td>
-                    <Text fontWeight="bold">{entry.installment}</Text>
-                  </Td>
-
-                  <Td>Pago</Td>
-                  <Td>
-                    <Link href={`/items?id=${entry.id}`}>
-                      <Text color="green.300" fontWeight="">
-                        Vizualizar
+              {accounts?.map((account) =>
+                account?.account_entries?.entry?.map((entry) => (
+                  <Tr
+                    key={account?.account_entries?.entry?.id}
+                    cursor="pointer"
+                  >
+                    <Td px={["4", "4", "6"]}>
+                      <Checkbox colorScheme="green"></Checkbox>
+                    </Td>
+                    <Td>
+                      <Box>
+                        <Text fontWeight="bold">{entry?.description}</Text>
+                        {account?.account_entries?.type === "INCOME" ? (
+                          <Text fontSize="sm" color="blue.300">
+                            Receita
+                          </Text>
+                        ) : (
+                          <Text fontSize="sm" color="red.300">
+                            Despesa
+                          </Text>
+                        )}
+                      </Box>
+                    </Td>
+                    <Td>
+                      <Text>{entry?.month}</Text>
+                    </Td>
+                    <Td>
+                      <Text>{account?.account_entries?.name}</Text>
+                    </Td>
+                    <Td>
+                      <Text fontWeight="bold">
+                        {" "}
+                        {Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(entry?.amount)}
                       </Text>
-                    </Link>
-                  </Td>
+                    </Td>
+                    <Td>
+                      <Text fontWeight="bold">{entry?.installment}</Text>
+                    </Td>
 
-                  <Td>
-                    <HStack>
-                      <Box ml="auto">
-                        <Link href={`/entries/edit?id=${entry.entry_id}`}>
+                    <Td>Pago</Td>
+                    <Td>
+                      <Link href={`/items?id=${entry?.id}`}>
+                        <Text color="green.300" fontWeight="">
+                          Vizualizar
+                        </Text>
+                      </Link>
+                    </Td>
+
+                    <Td>
+                      <HStack>
+                        <Box ml="auto">
+                          <Link href={`/entries/edit?id=${entry?.id}`}>
+                            <Button
+                              mr="2"
+                              as="a"
+                              size="sm"
+                              fontSize="small"
+                              colorScheme="purple"
+                            >
+                              <Icon as={RiPencilLine} fontSize="16" />
+                            </Button>
+                          </Link>
                           <Button
-                            mr="2"
+                            onClick={() => openModalRemove()}
                             as="a"
                             size="sm"
                             fontSize="small"
-                            colorScheme="purple"
+                            colorScheme="red"
                           >
-                            <Icon as={RiPencilLine} fontSize="16" />
+                            <Icon as={RiDeleteBin6Line} fontSize="16" />
                           </Button>
-                        </Link>
-                        <Button
-                          onClick={() => openModalRemove()}
-                          as="a"
-                          size="sm"
-                          fontSize="small"
-                          colorScheme="red"
-                        >
-                          <Icon as={RiDeleteBin6Line} fontSize="16" />
-                        </Button>
-                        <AlertDelete
-                          isOpen={modalRemoveTool}
-                          setIsOpen={toggleModalRemove}
-                          handleRemove={() => handleDelete(entry.entry_id)}
-                        />
-                      </Box>
-                    </HStack>
-                  </Td>
-                </Tr>
-              ))}
+                          <AlertDelete
+                            isOpen={modalRemoveTool}
+                            setIsOpen={toggleModalRemove}
+                            handleRemove={() => handleDelete(entry.id)}
+                          />
+                        </Box>
+                      </HStack>
+                    </Td>
+                  </Tr>
+                ))
+              )}
             </Tbody>
           </Table>
           <Pagination />

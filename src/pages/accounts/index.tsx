@@ -26,6 +26,7 @@ import { Header } from "../../components/Header";
 import {
   RiAddLine,
   RiArrowDownSFill,
+  RiArrowLeftLine,
   RiDeleteBin6Line,
   RiFilter2Line,
   RiPencilLine,
@@ -92,6 +93,15 @@ export default function UserList() {
   return (
     <Box>
       <Header />
+      <Link href="/budgets" passHref>
+        <Button
+          ml="6"
+          _hover={{ bg: "transparent", textColor: "green.400" }}
+          bg="transparent"
+        >
+          <RiArrowLeftLine fontSize="28" />
+        </Button>
+      </Link>
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
         <Box flex="1">
@@ -101,25 +111,6 @@ export default function UserList() {
                 Contas
               </Heading>
               <Box>
-                <Menu>
-                  <MenuButton
-                    bg="blue.400"
-                    as={Button}
-                    mr="4"
-                    rightIcon={<RiArrowDownSFill />}
-                  >
-                    Filtrar
-                  </MenuButton>
-                  <MenuList textColor="black">
-                    <MenuGroup title="Balanço">
-                      <MenuItem>Janeiro</MenuItem>
-                      <MenuItem>Fevereiro</MenuItem>
-                      <MenuItem>Março</MenuItem>
-                      <MenuItem>Abril</MenuItem>
-                      <MenuItem>Attend a Workshop</MenuItem>
-                    </MenuGroup>
-                  </MenuList>
-                </Menu>
                 <Link href="/accounts/create" passHref>
                   <Button
                     as="a"

@@ -32,7 +32,7 @@ import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import router from "next/router";
-import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
+import { RiAddLine, RiArrowLeftLine, RiDeleteBin6Line, RiPencilLine, RiSave2Fill } from "react-icons/ri";
 
 type CreateEntryFormData = {
   description: string;
@@ -93,7 +93,7 @@ export default function CreateBudget() {
     console.log(data)
     
     await api.post("item", data);
-    router.push(`/accounts`);
+    router.push(`/entries`);
   };
 
   function addItem(e: Event) {
@@ -142,13 +142,22 @@ const toast = useToast();
   return (
     <Box>
       <Header />
+      <Link href="/entries" passHref>
+        <Button
+          ml="6"
+          _hover={{ bg: "transparent", textColor: "green.400" }}
+          bg="transparent"
+        >
+          <RiArrowLeftLine fontSize="28" />
+        </Button>
+      </Link>
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
         <Box
           as="form"
           onSubmit={handleSubmit(hangleCreateEntry)}
           flex="1"
-          borderRadius={8}
+          borderLeftRadius={8}
           bg="gray.800"
           p={["6", "8"]}
         >
@@ -169,22 +178,25 @@ const toast = useToast();
                 {...register("description")}
       //error={errors.description}
               />
+              <HStack>
               <Input
                 label="Parcela"
                 type="number"
-                {...register("month")}
+                {...register("installment")}
                // error={errors.month}
               />
               <Input
-                label="Mês"
+                label="Mês"month
                 type="number"
-                {...register("number_of_installments")}
+                {...register("month")}
                // error={errors.number_of_installments}
               />
+              </HStack>
+             
             </SimpleGrid>
           
           </VStack>
-          <Flex mt="8" justify="flex-end">
+          <Flex mt="8" >
             <HStack spacing="4">
              
               <Button
@@ -200,6 +212,7 @@ const toast = useToast();
                     isClosable: true,
                   })
                 }
+                leftIcon={<RiSave2Fill />}
               >
                 Salvar
               </Button>
@@ -211,11 +224,11 @@ const toast = useToast();
           as="form"
           onSubmit={addItem} 
           flex="1"
-          borderRadius={8}
+          borderRightRadius={8}
           bg="gray.800"
           p={["6", "8"]}
         >
-          <Heading size="lg" fontWeight="normal">
+          <Heading size="md" fontWeight="normal">
            Adicionar Item
           </Heading>
           <Divider my="6" borderColor="gray.700" />
@@ -232,6 +245,9 @@ const toast = useToast();
                
                // error={errors.description}
               />
+              <HStack>
+
+             
               <Input
                 label="Valor"
                 type="number"
@@ -247,6 +263,7 @@ const toast = useToast();
                 {...register("qtde")}
                 //error={errors.number_of_installments}
               />
+               </HStack>
             </SimpleGrid>
           </VStack>
           <Table colorScheme="whiteAlpha">
@@ -293,13 +310,8 @@ const toast = useToast();
           </Table>
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
-              <Link href="/entries" passHref>
-                <Button as="a" colorScheme="whiteAlpha">
-                  Voltar
-                </Button>
-              </Link>
               <Button
-                colorScheme="green"
+                colorScheme="purple"
                 type="submit"
                 isLoading={formState.isSubmitting}
                 onClick={() =>
@@ -311,6 +323,7 @@ const toast = useToast();
                     isClosable: true,
                   })
                 }
+                leftIcon={<Icon as={RiAddLine} fontSize="20" />}
               >
                 Adicionar
               </Button>
