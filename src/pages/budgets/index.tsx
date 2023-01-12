@@ -14,6 +14,10 @@ import {
   Thead,
   Tr,
   useBreakpointValue,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
@@ -33,6 +37,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import AlertDelete from "../../components/AlertDelete";
 import Summary from "../../components/Summary";
+import { SlOptionsVertical } from "react-icons/sl";
 
 interface Budget {
   id: string;
@@ -127,72 +132,91 @@ export default function UserList() {
               </Thead>
               <Tbody>
                 {budgets.map((budget) => (
-                  // eslint-disable-next-line react/jsx-key
-                  <Link href="/accounts">
-                    <Tr cursor="pointer">
-                      <Td px={["4", "4", "6"]}>
-                        <Checkbox colorScheme="green"></Checkbox>
-                      </Td>
-                      <Td>
-                        <Box>
-                          <Text fontWeight="bold">{budget.budget.year}</Text>
-                          <Text fontSize="sm" color="gray.300">
-                            {format(
-                              new Date(budget.budget.created_at),
-                              "yyyy-MM-dd"
-                            )}
-                          </Text>
-                        </Box>
-                      </Td>
+                  <Tr key={budget.budget.id} cursor="pointer">
+                    <Td px={["4", "4", "6"]}>
+                      <Checkbox colorScheme="green"></Checkbox>
+                    </Td>
+                    <Td>
+                      <Box>
+                        <Text fontWeight="bold">{budget.budget.year}</Text>
+                        <Text fontSize="sm" color="gray.300">
+                          {format(
+                            new Date(budget.budget.created_at),
+                            "yyyy-MM-dd"
+                          )}
+                        </Text>
+                      </Box>
+                    </Td>
 
-                      <Td>
-                        {budget.updated_at ? (
-                          format(new Date(budget.updated_at), "yyyy-MM-dd")
-                        ) : (
-                          <>-</>
-                        )}
-                      </Td>
-                      <Td>
-                        <Link href={`/accounts?id=${budget.budget.id}`}>
-                          <Text color="green.300" fontWeight="">
-                            Vizualizar
-                          </Text>
-                        </Link>
-                      </Td>
+                    <Td>
+                      {budget.updated_at ? (
+                        format(new Date(budget.updated_at), "yyyy-MM-dd")
+                      ) : (
+                        <>-</>
+                      )}
+                    </Td>
+                    <Td>
+                      <Link href={`/accounts?id=${budget.budget.id}`}>
+                        <Text color="green.300" fontWeight="">
+                          Vizualizar
+                        </Text>
+                      </Link>
+                    </Td>
 
-                      <Td>
-                        <HStack>
-                          <Box ml="auto">
-                            <Link href={`/budgets/edit?id=${budget.id}`}>
+                    <Td>
+                      <Menu>
+                        <MenuButton
+                          bg="transparent"
+                          _hover={{ bg: "transparent" }}
+                          as={Button}
+                        >
+                          <SlOptionsVertical />
+                        </MenuButton>
+                        <MenuList textColor="black">
+                          <Link href={`/budgets/edit?id=${budget.id}`}>
+                            <MenuItem as="button" _hover={{ bg: "gray.50" }}>
                               <Button
                                 mr="2"
                                 as="a"
                                 size="sm"
                                 fontSize="small"
-                                colorScheme="purple"
+                                colorScheme="gray.50"
+                                textColor="black"
+                                leftIcon={
+                                  <Icon as={RiPencilLine} fontSize="16" />
+                                }
                               >
-                                <Icon as={RiPencilLine} fontSize="16" />
+                                Editar
                               </Button>
-                            </Link>
+                            </MenuItem>
+                          </Link>
+                          <MenuItem
+                            onClick={() => openModalRemove()}
+                            as="button"
+                            _hover={{ bg: "gray.50" }}
+                          >
                             <Button
-                              onClick={() => openModalRemove()}
+                              mr="2"
                               as="a"
                               size="sm"
                               fontSize="small"
-                              colorScheme="red"
+                              colorScheme="gray.50"
+                              textColor="black"
+                              leftIcon={
+                                <Icon
+                                  textColor="red.400"
+                                  as={RiDeleteBin6Line}
+                                  fontSize="16"
+                                />
+                              }
                             >
-                              <Icon as={RiDeleteBin6Line} fontSize="16" />
+                              <Text textColor="red.400">Excluir</Text>
                             </Button>
-                            <AlertDelete
-                              isOpen={modalRemoveTool}
-                              setIsOpen={toggleModalRemove}
-                              handleRemove={() => handleDelete(budget.id)}
-                            />
-                          </Box>
-                        </HStack>
-                      </Td>
-                    </Tr>
-                  </Link>
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
+                    </Td>
+                  </Tr>
                 ))}
               </Tbody>
             </Table>

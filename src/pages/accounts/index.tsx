@@ -39,6 +39,7 @@ import { format } from "date-fns";
 import AlertDelete from "../../components/AlertDelete";
 import Summary from "../../components/Summary";
 import SummaryAccount from "../../components/SummaryAccount";
+import { SlOptionsVertical } from "react-icons/sl";
 
 interface Account {
   id: string;
@@ -127,27 +128,21 @@ export default function UserList() {
             <Table colorScheme="whiteAlpha">
               <Thead>
                 <Tr>
-                  <Th px={["4", "4", "6"]} color="gray.300" width="8">
-                    <Checkbox colorScheme="green"></Checkbox>
-                  </Th>
                   <Th>Nome</Th>
-                  <Th>Valor</Th>
                   <Th>Parcelas</Th>
-                  <Th>Total</Th>
+                  <Th>V. Total</Th>
+                  <Th>Usado</Th>
+                  <Th>Disponivel</Th>
                   <Th>Lançamentos</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {resultAccounts?.map((account) => (
-                  // eslint-disable-next-line react/jsx-key
-                  <Tr cursor="pointer">
-                    <Td px={["4", "4", "6"]}>
-                      <Checkbox colorScheme="green"></Checkbox>
-                    </Td>
+                  <Tr key="account.id" cursor="pointer">
                     <Td>
                       <Box>
-                        <Text fontWeight="bold">{account.account.name}</Text>
+                        <Text fontWeight="">{account.account.name}</Text>
                         {account.account.type === "INCOME" ? (
                           <Text fontSize="sm" color="blue.300">
                             Receita
@@ -159,22 +154,14 @@ export default function UserList() {
                         )}
                       </Box>
                     </Td>
-
-                    <Td>
-                      <Text fontWeight="bold">
-                        {Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(account.account.amount)}
-                      </Text>
-                    </Td>
                     <Td>
                       <Text fontWeight="bold">
                         {account.account.number_of_installments}
                       </Text>
                     </Td>
+
                     <Td>
-                      <Text fontWeight="bold">
+                      <Text fontWeight="">
                         {Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
@@ -182,6 +169,24 @@ export default function UserList() {
                           account.account.amount *
                             account.account.number_of_installments
                         )}
+                      </Text>
+                    </Td>
+
+                    <Td>
+                      <Text textColor="red.300" fontWeight="">
+                        {Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(account.balance.used_value)}
+                      </Text>
+                    </Td>
+
+                    <Td>
+                      <Text textColor="blue.300" fontWeight="">
+                        {Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(account.balance.available_value)}
                       </Text>
                     </Td>
 
@@ -194,36 +199,59 @@ export default function UserList() {
                     </Td>
 
                     <Td>
-                      <HStack>
-                        <Box ml="auto">
+                      <Menu>
+                        <MenuButton
+                          bg="transparent"
+                          _hover={{ bg: "transparent" }}
+                          as={Button}
+                        >
+                          <SlOptionsVertical />
+                        </MenuButton>
+                        <MenuList textColor="black">
                           <Link href={`/accounts/edit?id=${account.id}`}>
+                            <MenuItem as="button" _hover={{ bg: "gray.50" }}>
+                              <Button
+                                mr="2"
+                                as="a"
+                                size="sm"
+                                fontSize="small"
+                                colorScheme="gray.50"
+                                textColor="black"
+                                leftIcon={
+                                  <Icon as={RiPencilLine} fontSize="16" />
+                                }
+                              >
+                                Editar
+                              </Button>
+                            </MenuItem>
+                          </Link>
+                          <MenuItem
+                            onClick={() => openModalRemove()}
+                            as="button"
+                            _hover={{ bg: "gray.50" }}
+                          >
                             <Button
                               mr="2"
                               as="a"
                               size="sm"
                               fontSize="small"
-                              colorScheme="purple"
+                              colorScheme="gray.50"
+                              textColor="red.400"
+                              leftIcon={
+                                <Icon as={RiDeleteBin6Line} fontSize="16" />
+                              }
                             >
-                              <Icon as={RiPencilLine} fontSize="16" />
+                              <Text textColor="red.400">Excluir</Text>
                             </Button>
-                          </Link>
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
 
-                          <Button
-                            onClick={() => openModalRemove()}
-                            as="a"
-                            size="sm"
-                            fontSize="small"
-                            colorScheme="red"
-                          >
-                            <Icon as={RiDeleteBin6Line} fontSize="16" />
-                          </Button>
-                          <AlertDelete
-                            isOpen={modalRemoveTool}
-                            setIsOpen={toggleModalRemove}
-                            handleRemove={() => handleDelete(account.id)}
-                          />
-                        </Box>
-                      </HStack>
+                      <AlertDelete
+                        isOpen={modalRemoveTool}
+                        setIsOpen={toggleModalRemove}
+                        handleRemove={() => handleDelete(account.id)}
+                      />
                     </Td>
                   </Tr>
                 ))}

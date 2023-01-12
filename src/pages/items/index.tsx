@@ -14,6 +14,10 @@ import {
   Thead,
   Tr,
   useBreakpointValue,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
@@ -25,6 +29,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import AlertDelete from "../../components/AlertDelete";
 import { useRouter } from "next/router";
+import { SlOptionsVertical } from "react-icons/sl";
 
 interface Account {
   id: string;
@@ -128,11 +133,11 @@ export default function UserList() {
                 <Th px={["4", "4", "6"]} color="gray.300" width="8">
                   <Checkbox colorScheme="green"></Checkbox>
                 </Th>
+                <Th>Nome</Th>
                 <Th>Lançamento</Th>
                 <Th>Valor</Th>
-                <Th>Data de atualização</Th>
-                <Th>Status</Th>
-                <Th></Th>
+
+                <Th width="8"></Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -154,7 +159,7 @@ export default function UserList() {
                     </Text>
                   </Td>
 
-                  {isWideVersion && (
+                  {/* {isWideVersion && (
                     <Td>
                       {entry.updated_at ? (
                         format(new Date(entry.updated_at), "yyyy-MM-dd")
@@ -162,38 +167,61 @@ export default function UserList() {
                         <>-</>
                       )}
                     </Td>
-                  )}
-                  <Td>Pago</Td>
+                  )} */}
+
                   <Td>
-                    <HStack>
-                      <Box ml="auto">
+                    <Menu>
+                      <MenuButton
+                        bg="transparent"
+                        _hover={{ bg: "transparent" }}
+                        as={Button}
+                      >
+                        <SlOptionsVertical />
+                      </MenuButton>
+                      <MenuList textColor="black">
                         <Link href={`/entries/edit?id=${entry.id}`}>
+                          <MenuItem as="button" _hover={{ bg: "gray.50" }}>
+                            <Button
+                              mr="2"
+                              as="a"
+                              size="sm"
+                              fontSize="small"
+                              colorScheme="gray.50"
+                              textColor="black"
+                              leftIcon={
+                                <Icon as={RiPencilLine} fontSize="16" />
+                              }
+                            >
+                              Editar
+                            </Button>
+                          </MenuItem>
+                        </Link>
+                        <MenuItem
+                          onClick={() => openModalRemove()}
+                          as="button"
+                          _hover={{ bg: "gray.50" }}
+                        >
                           <Button
                             mr="2"
                             as="a"
                             size="sm"
                             fontSize="small"
-                            colorScheme="purple"
+                            colorScheme="gray.50"
+                            textColor="black"
+                            leftIcon={
+                              <Icon as={RiDeleteBin6Line} fontSize="16" />
+                            }
                           >
-                            <Icon as={RiPencilLine} fontSize="16" />
+                            Excluir
                           </Button>
-                        </Link>
-                        <Button
-                          onClick={() => openModalRemove()}
-                          as="a"
-                          size="sm"
-                          fontSize="small"
-                          colorScheme="red"
-                        >
-                          <Icon as={RiDeleteBin6Line} fontSize="16" />
-                        </Button>
-                        <AlertDelete
-                          isOpen={modalRemoveTool}
-                          setIsOpen={toggleModalRemove}
-                          handleRemove={() => handleDelete(entry.id)}
-                        />
-                      </Box>
-                    </HStack>
+                        </MenuItem>
+                      </MenuList>
+                    </Menu>
+                    <AlertDelete
+                      isOpen={modalRemoveTool}
+                      setIsOpen={toggleModalRemove}
+                      handleRemove={() => handleDelete(entry.id)}
+                    />
                   </Td>
                 </Tr>
               ))}
