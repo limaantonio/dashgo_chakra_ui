@@ -67,6 +67,16 @@ const createFormSchema = yup.object().shape({
   description: yup.string().required("Valor obrigatório"),
 });
 
+const status = [{
+  id: 1,
+  label: 'Pendente',
+  value: 'PENDING'
+}, {
+  id: 2,
+  label: 'Pago',
+  value: 'CLOSED'
+}]
+
 export default function CreateBudget() {
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(createFormSchema),
@@ -92,8 +102,19 @@ export default function CreateBudget() {
     }
     console.log(data)
     
-    await api.post("item", data);
-    router.push(`/entries`);
+    const res = await api.post("item", data);
+    if (res && res.status === 200) {
+      router.push(`/entries`);
+    } else {
+      toast({
+        title: "Erro ao criar lançamento.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+
+    
   };
 
   function addItem(e: Event) {
@@ -104,7 +125,7 @@ export default function CreateBudget() {
     }
 
     setItems([...items, item])
-    console.log(items)
+    
   }
 
 
@@ -117,7 +138,7 @@ export default function CreateBudget() {
  function transformDataAccountToOptions() {
   let selectAccount = []
 
-  accounts.map(
+  accounts?.accounts?.map(
     (account) =>
       (selectAccount.push({
         id: account.account.id,
@@ -186,11 +207,18 @@ const toast = useToast();
                // error={errors.month}
               />
               <Input
-                label="Mês"month
+                label="Mês"
                 type="number"
                 {...register("month")}
                // error={errors.number_of_installments}
               />
+              <Select
+                label="Status"
+                {...register("status")}
+                placeholder="Selecione"
+                options={status}
+              />
+                 
               </HStack>
              
             </SimpleGrid>

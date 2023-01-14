@@ -94,18 +94,25 @@ export default function UserList() {
   return (
     <Box>
       <Header />
-      <Link href="/budgets" passHref>
-        <Button
-          ml="6"
-          _hover={{ bg: "transparent", textColor: "green.400" }}
-          bg="transparent"
-        >
-          <RiArrowLeftLine fontSize="28" />
-        </Button>
-      </Link>
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
         <Box flex="1">
+          <Link href="/budgets" passHref>
+            <Button
+              ml="6"
+              _hover={{ bg: "transparent", textColor: "green.400" }}
+              bg="transparent"
+            >
+              <RiArrowLeftLine fontSize="28" />
+            </Button>
+          </Link>
+          <Summary
+            id={1}
+            income={resultAccounts?.income}
+            expense={resultAccounts?.expense}
+            total={resultAccounts?.income - resultAccounts?.expense}
+          />
+
           <Box flex="1" borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
               <Heading size="lg" fontWeight="normal">
@@ -130,7 +137,7 @@ export default function UserList() {
                 <Tr>
                   <Th>Nome</Th>
                   <Th>Parcelas</Th>
-                  <Th>V. Total</Th>
+                  <Th>Total</Th>
                   <Th>Usado</Th>
                   <Th>Disponivel</Th>
                   <Th>Lançamentos</Th>
@@ -138,7 +145,7 @@ export default function UserList() {
                 </Tr>
               </Thead>
               <Tbody>
-                {resultAccounts?.map((account) => (
+                {resultAccounts?.accounts?.map((account) => (
                   <Tr key="account.id" cursor="pointer">
                     <Td>
                       <Box>
@@ -165,10 +172,7 @@ export default function UserList() {
                         {Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
-                        }).format(
-                          account.account.amount *
-                            account.account.number_of_installments
-                        )}
+                        }).format(account.account.amount)}
                       </Text>
                     </Td>
 

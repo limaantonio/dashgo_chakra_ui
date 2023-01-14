@@ -28,6 +28,7 @@ import {
   RiArrowDownSFill,
   RiArrowDropLeftFill,
   RiArrowLeftLine,
+  RiArrowRightCircleFill,
   RiDeleteBack2Line,
   RiDeleteBin6Line,
   RiMenu2Line,
@@ -36,6 +37,7 @@ import {
   RiMenuLine,
   RiMenuUnfoldFill,
   RiPencilLine,
+  RiPlayCircleLine,
 } from "react-icons/ri";
 import { SlOptionsVertical } from "react-icons/sl";
 import { Pagination } from "../../components/Pagination";
@@ -143,6 +145,9 @@ export default function UserList() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [accountsFilter, setAccountsFilter] = useState<Account[]>([]);
+  const [incomeAmount, setIncomeAmount] = useState(0);
+  const [expenseAmount, seTExpenseAmount] = useState(0);
+  const [status, setStatus] = useState();
 
   useEffect(() => {
     getAccount();
@@ -166,14 +171,13 @@ export default function UserList() {
       await api
         .get(`entry?account=${account}`)
         .then((response) => setAccounts(response.data));
-    } else {
-      await api.get(`entry`).then((response) => setAccounts(response.data));
     }
+    await api.get(`entry`).then((response) => setAccounts(response.data));
+
     await api
       .get("account")
       .then((response) => setAccountsFilter(response.data));
   }
-
   async function handleDelete(id: string) {
     await api.delete(`entry/${id}`);
 
@@ -194,6 +198,11 @@ export default function UserList() {
     setModalRemoveTool(!modalRemoveTool);
   }
 
+  async function handlePay(id: string) {
+    await api.post(`entry/${id}`);
+    getAccount();
+  }
+
   return (
     <Box>
       <Header />
@@ -210,15 +219,13 @@ export default function UserList() {
               <RiArrowLeftLine fontSize="28" />
             </Button>
           </Link>
-          {accounts.map((budget) => (
-            // eslint-disable-next-line react/jsx-key
-            <Summary
-              id={budget.id}
-              income={budget.incomeAmount}
-              expense={budget.expenseAmount}
-              total={budget.totalAmount}
-            />
-          ))}
+
+          <Summary
+            id={1}
+            income={accounts?.income}
+            expense={accounts?.expense}
+            total={accounts?.income - accounts?.expense}
+          />
 
           <Box flex="1" borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
@@ -243,9 +250,6 @@ export default function UserList() {
                           bg={b.id === balance ? "green.400" : "white"}
                           textColor={b.id === balance ? "white" : "black"}
                           _hover={{ bg: "gray.50" }}
-                          onClick={() => {
-                            setBalance(b.id);
-                          }}
                           key={b.id}
                           value={b.month}
                         >
@@ -276,7 +280,7 @@ export default function UserList() {
                     </MenuButton>
                     <MenuList textColor="black">
                       <MenuGroup title="Balanço">
-                        {accountsFilter?.map((b) => (
+                        {accountsFilter?.account?.map((b) => (
                           <MenuItem
                             as="button"
                             bg={
@@ -334,11 +338,10 @@ export default function UserList() {
                   <Th>Parcela</Th>
                   <Th>Status</Th>
                   <Th>Items</Th>
-                  <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {accounts?.map((account) =>
+                {accounts?.entrys?.map((account) =>
                   account?.account_entries?.entry?.map((entry) => (
                     <Tr
                       key={account?.account_entries?.entry?.id}
@@ -408,6 +411,27 @@ export default function UserList() {
                             <SlOptionsVertical />
                           </MenuButton>
                           <MenuList textColor="black">
+                            <MenuItem as="button" _hover={{ bg: "gray.50" }}>
+                              <Button
+                                mr="2"
+                                as="a"
+                                size="sm"
+                                fontSize="small"
+                                colorScheme="gray.50"
+                                textColor="black"
+                                onClick={() => {
+                                  handlePay(entry?.id);
+                                }}
+                                leftIcon={
+                                  <Icon
+                                    as={RiArrowRightCircleFill}
+                                    fontSize="16"
+                                  />
+                                }
+                              >
+                                Pagar
+                              </Button>
+                            </MenuItem>
                             <Link href={`/entries/edit?id=${entry?.id}`}>
                               <MenuItem as="button" _hover={{ bg: "gray.50" }}>
                                 <Button

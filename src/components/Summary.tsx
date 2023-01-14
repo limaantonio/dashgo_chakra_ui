@@ -36,7 +36,7 @@ export default function Summary({ id, income, expense, total }) {
       </Box>
       <Box w="100%" key={id} borderRadius={8} bg="gray.800" p="8">
         <Flex justify="space-between" align="center">
-          <Text fontWeight="bold">Total</Text>
+          <Text fontWeight="bold">Sado</Text>
           <RiMoneyDollarBoxLine color="orange" size="28" />
         </Flex>
 
