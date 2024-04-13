@@ -215,6 +215,12 @@ export default function UserList() {
                           </MenuItem>
                         </MenuList>
                       </Menu>
+
+                      <AlertDelete
+                        isOpen={modalRemoveTool}
+                        setIsOpen={toggleModalRemove}
+                        handleRemove={() => handleDelete(budget.budget.id)}
+                      />
                     </Td>
                   </Tr>
                 ))}

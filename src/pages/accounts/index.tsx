@@ -71,19 +71,28 @@ export default function UserList() {
   const router = useRouter();
   const { id } = router.query;
 
+  async function loadAccounts() {
+    await api.get(`account/buget/${id}`).then((response) => {
+      setResultAccounts(response.data);
+    });
+  }
+
+  
+
   useEffect(() => {
-    api.get(`account/budget/${id}`).then((response) => setResultAccounts(response.data));
-  }, []);
+    loadAccounts();
+  }, [setResultAccounts]);
 
 
   async function handleDelete(id: string) {
     await api.delete(`account/${id}`);
+    console.log(id)
 
-    const budgetIndex = accounts.findIndex((b) => b.id === id);
-    const budget = [...accounts];
+    const accoutIndex = accounts.findIndex((b) => b.id === id);
+    const account = [...accounts];
 
-    budget.splice(budgetIndex, 1);
-    setAccounts(budget);
+    account.splice(accoutIndex, 1);
+    setResultAccounts(account);
   }
 
   const [modalRemoveTool, setModalRemoveTool] = useState(false);
@@ -259,7 +268,7 @@ export default function UserList() {
                       <AlertDelete
                         isOpen={modalRemoveTool}
                         setIsOpen={toggleModalRemove}
-                        handleRemove={() => handleDelete(account.id)}
+                        handleRemove={() => handleDelete(account.account.id)}
                       />
                     </Td>
                   </Tr>

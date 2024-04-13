@@ -142,31 +142,38 @@ export default function UserList() {
   ];
 
   const [balance, setBalance] = useState();
-  const [account, setAccount] = useState();
-  const [entriesAccout, setEntries] = useState(0);
+  const [account, setAccount] = useState(0);
+  const [entriesAccout, setAccountEntries] = useState(0);
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [entries, setEntries] = useState<Entry[]>([]);
   const [accountsFilter, setAccountsFilter] = useState<Account[]>([]);
   const [incomeAmount, setIncomeAmount] = useState(0);
   const [expenseAmount, seTExpenseAmount] = useState(0);
   const [status, setStatus] = useState();
 
-  if (id != null) {
-    useEffect(() => {
-      api.get(`entry/account/${id}`).then((response) => setEntries(response.data));
-    }, []);
+
+  async function loadAccount() {
+    await api.get(`entry/account/${id}`).then((response) => setAccountEntries(response.data));
   }
+
+ 
+    useEffect(() => {
+      loadAccount();
+    }, [setAccountEntries]);
+  
 
   console.log(entriesAccout)
 
   
   async function handleDelete(id: string) {
     await api.delete(`entry/${id}`);
+    console.log(id)
 
-    const entryIndex = entriesAccout.entries.findIndex((b) => b.id === id);
-    const entry = [...entriesAccout.entries];
+    const entryIndex = entriesAccout.findIndex((b) => b.id === id);
+    const entry = [...entriesAccout];
 
     entry.splice(entryIndex, 1);
-    setEntries(entry);
+    setAccountEntries(entry);
     
   }
 
@@ -293,7 +300,7 @@ export default function UserList() {
               </Thead>
               <Tbody>
                 {
-                  entriesAccout?.entries?.map((entry) => (
+                  entriesAccout?.map((entry) => (
                     <Tr
                       key={entry?.id}
                       cursor="pointer"
