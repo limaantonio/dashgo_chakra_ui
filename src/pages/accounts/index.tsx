@@ -40,6 +40,7 @@ import AlertDelete from "../../components/AlertDelete";
 import Summary from "../../components/Summary";
 import SummaryAccount from "../../components/SummaryAccount";
 import { SlOptionsVertical } from "react-icons/sl";
+import { useRouter } from "next/router";
 
 interface Account {
   id: string;
@@ -67,9 +68,13 @@ export default function UserList() {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [resultAccounts, setResultAccounts] = useState();
 
+  const router = useRouter();
+  const { id } = router.query;
+
   useEffect(() => {
-    api.get("account").then((response) => setResultAccounts(response.data));
+    api.get(`account/budget/${id}`).then((response) => setResultAccounts(response.data));
   }, []);
+
 
   async function handleDelete(id: string) {
     await api.delete(`account/${id}`);

@@ -48,6 +48,7 @@ import { format } from "date-fns";
 import AlertDelete from "../../components/AlertDelete";
 import { useRouter } from "next/router";
 import Summary from "../../components/Summary";
+import { useHistory } from "next/router";
 
 interface Account {
   id: string;
@@ -142,50 +143,31 @@ export default function UserList() {
 
   const [balance, setBalance] = useState();
   const [account, setAccount] = useState();
-  const [entries, setEntries] = useState<Entry[]>([]);
+  const [entriesAccout, setEntries] = useState(0);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [accountsFilter, setAccountsFilter] = useState<Account[]>([]);
   const [incomeAmount, setIncomeAmount] = useState(0);
   const [expenseAmount, seTExpenseAmount] = useState(0);
   const [status, setStatus] = useState();
 
-  useEffect(() => {
-    getAccount();
-  }, [account, balance]);
-
-  async function getAccount() {
-    if (id) {
-      setAccount(id);
-    }
-
-    console.log(account);
-    if (balance && account) {
-      await api
-        .get(`entry?month=${balance}&account=${account}`)
-        .then((response) => setAccounts(response.data));
-    } else if (balance) {
-      await api
-        .get(`entry?month=${balance}`)
-        .then((response) => setAccounts(response.data));
-    } else if (account) {
-      await api
-        .get(`entry?account=${account}`)
-        .then((response) => setAccounts(response.data));
-    }
-    await api.get(`entry`).then((response) => setAccounts(response.data));
-
-    await api
-      .get("account")
-      .then((response) => setAccountsFilter(response.data));
+  if (id != null) {
+    useEffect(() => {
+      api.get(`entry/account/${id}`).then((response) => setEntries(response.data));
+    }, []);
   }
+
+  console.log(entriesAccout)
+
+  
   async function handleDelete(id: string) {
     await api.delete(`entry/${id}`);
 
-    const entryIndex = entries.findIndex((b) => b.id === id);
-    const entry = [...entries];
+    const entryIndex = entriesAccout.entries.findIndex((b) => b.id === id);
+    const entry = [...entriesAccout.entries];
 
     entry.splice(entryIndex, 1);
     setEntries(entry);
+    
   }
 
   const [modalRemoveTool, setModalRemoveTool] = useState(false);
@@ -220,12 +202,12 @@ export default function UserList() {
             </Button>
           </Link>
 
-          <Summary
+          {/* <Summary
             id={1}
-            income={accounts?.income}
-            expense={accounts?.expense}
-            total={accounts?.income - accounts?.expense}
-          />
+            income={accountsFilter?.month}
+            expense={accountsFilter?.month}
+            total={accountsFilter?.month - accountsFilter?.month}
+          /> */}
 
           <Box flex="1" borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
@@ -278,41 +260,10 @@ export default function UserList() {
                     >
                       Conta
                     </MenuButton>
-                    <MenuList textColor="black">
-                      <MenuGroup title="Balanço">
-                        {accountsFilter?.account?.map((b) => (
-                          <MenuItem
-                            as="button"
-                            bg={
-                              b.account.id === account ? "green.400" : "white"
-                            }
-                            textColor={
-                              b.account.id === account ? "white" : "black"
-                            }
-                            _hover={{ bg: "gray.50" }}
-                            onClick={() => {
-                              setAccount(b.account.id);
-                            }}
-                            key={b.account.id}
-                            value={b.account.name}
-                          >
-                            {b.account.name}
-                          </MenuItem>
-                        ))}
-                        <MenuItem
-                          bg="gray.50"
-                          onClick={() => {
-                            setAccount(0);
-                          }}
-                          as="button"
-                        >
-                          Limpar filtro
-                        </MenuItem>
-                      </MenuGroup>
-                    </MenuList>
+
                   </Menu>
                 )}
-                <Link href="/entries/create" passHref>
+                <Link href={`/entries/create?id=${entriesAccout?.account?.id}`} passHref>
                   <Button
                     as="a"
                     size="md"
@@ -341,10 +292,10 @@ export default function UserList() {
                 </Tr>
               </Thead>
               <Tbody>
-                {accounts?.entrys?.map((account) =>
-                  account?.account_entries?.entry?.map((entry) => (
+                {
+                  entriesAccout?.entries?.map((entry) => (
                     <Tr
-                      key={account?.account_entries?.entry?.id}
+                      key={entry?.id}
                       cursor="pointer"
                     >
                       <Td px={["4", "4", "6"]}>
@@ -353,7 +304,7 @@ export default function UserList() {
                       <Td>
                         <Box>
                           <Text fontWeight="bold">{entry?.description}</Text>
-                          {account?.account_entries?.type === "INCOME" ? (
+                          {entriesAccout?.account?.type === "INCOME" ? (
                             <Text fontSize="sm" color="blue.300">
                               Receita
                             </Text>
@@ -368,7 +319,7 @@ export default function UserList() {
                         <Text>{entry?.month}</Text>
                       </Td>
                       <Td>
-                        <Text>{account?.account_entries?.name}</Text>
+                        <Text>{entry?.name}</Text>
                       </Td>
                       <Td>
                         <Text fontWeight="bold">
@@ -376,7 +327,7 @@ export default function UserList() {
                           {Intl.NumberFormat("pt-BR", {
                             style: "currency",
                             currency: "BRL",
-                          }).format(entry?.amount)}
+                          }).format(entry?.entry_amount)}
                         </Text>
                       </Td>
                       <Td>
@@ -396,7 +347,7 @@ export default function UserList() {
                       <Td>
                         <Link href={`/items?id=${entry?.id}`}>
                           <Text color="green.300" fontWeight="">
-                            Vizualizar
+                            Visualizar
                           </Text>
                         </Link>
                       </Td>
@@ -478,7 +429,7 @@ export default function UserList() {
                       </Td>
                     </Tr>
                   ))
-                )}
+                }
               </Tbody>
             </Table>
             <Pagination />

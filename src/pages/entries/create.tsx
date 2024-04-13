@@ -18,6 +18,7 @@ import {
   Checkbox,
   Text,
   Td,
+  Paragraph,
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
@@ -32,6 +33,7 @@ import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import router from "next/router";
+import { useRouter } from "next/router";
 import { RiAddLine, RiArrowLeftLine, RiDeleteBin6Line, RiPencilLine, RiSave2Fill } from "react-icons/ri";
 
 type CreateEntryFormData = {
@@ -83,10 +85,14 @@ export default function CreateBudget() {
   });
 
   const errors = formState.errors;
+  
 
   const [items, setItems] = useState<Item[]>([])
   const [amount, setAmount] = useState<Number>(0);
   const [name, setName] = useState<string>("");
+  const r = useRouter();
+  const { id } = r.query;
+
 
   const hangleCreateEntry: SubmitHandler<CreateEntryFormData> = async (
     values
@@ -95,16 +101,16 @@ export default function CreateBudget() {
     // setEntry(values);
     // console.log(entry);
     const entry = values
+    entry.account_id = id
 
     const data = {
       items,
       entry
     }
-    console.log(data)
     
     const res = await api.post("item", data);
     if (res && res.status === 200) {
-      router.push(`/entries`);
+      router.push(`/entries?id=${data.entry.account_id}`);
     } else {
       toast({
         title: "Erro ao criar lançamento.",
@@ -113,8 +119,6 @@ export default function CreateBudget() {
         isClosable: true,
       });
     }
-
-    
   };
 
   function addItem(e: Event) {
@@ -123,31 +127,20 @@ export default function CreateBudget() {
       name, 
       amount
     }
-
     setItems([...items, item])
     
   }
 
 
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [account, setAccount] = useState(0);
 
+  
   useEffect(() => {
-    api.get("account").then((response) => setAccounts(response.data));
+    api.get(`account/${id}`).then((response) => setAccount(response.data));
   }, []);
 
- function transformDataAccountToOptions() {
-  let selectAccount = []
+  let account_name = account.name;
 
-  accounts?.accounts?.map(
-    (account) =>
-      (selectAccount.push({
-        id: account.account.id,
-        value: account.account.id,
-        label: account.account.name
-      }),
-  ));
-  return selectAccount
-}
 
 async function handleDelete(id: string) {
  
@@ -188,7 +181,15 @@ const toast = useToast();
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8" paddingY="6">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              <Select {...register("account_id")} placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()}/>
+              
+              <Text
+                label="Conta"
+                type="number"
+               
+                isDisabled={true}
+                {...register("account")}
+               // error={errors.month}
+              >{account_name}</Text>
             </SimpleGrid>
           </VStack>
           <VStack spacing="8">

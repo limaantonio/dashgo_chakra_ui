@@ -91,7 +91,7 @@ export default function UserList() {
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
         <Box flex="1">
-          {budgets.map((budget) => (
+          {/* {budgets.map((budget) => (
             // eslint-disable-next-line react/jsx-key
             <Summary
               id={budget.id}
@@ -99,7 +99,7 @@ export default function UserList() {
               expense={budget.expenseAmount}
               total={budget.totalAmount}
             />
-          ))}
+          ))} */}
 
           <Box borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">

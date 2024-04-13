@@ -18,17 +18,17 @@ export function SideBarNav() {
           Dashboard
         </NavLink>
         <NavLink icon={RiMoneyDollarBoxFill} href="/budgets">
-          Orçamento
+          Minhas contas
         </NavLink>
-        <NavLink icon={RiCurrencyLine} href="/accounts">
+        {/* <NavLink icon={RiCurrencyLine} href="/accounts">
           Contas
-        </NavLink>
+        </NavLink> */}
         {/* <NavLink icon={RiAddFill} href="/balances">
           Lançamentos
         </NavLink> */}
-        <NavLink icon={RiAddFill} href="/entries">
+        {/* <NavLink icon={RiAddFill} href="/entries">
           Lançamentos
-        </NavLink>
+        </NavLink> */}
         {/*   <NavLink icon={RiAddFill} href="/items">
           Items
         </NavLink> */}
