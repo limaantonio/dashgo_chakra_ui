@@ -143,7 +143,7 @@ export default function UserList() {
 
   const [balance, setBalance] = useState();
   const [account, setAccount] = useState(0);
-  const [entriesAccout, setAccountEntries] = useState(0);
+  const [entriesAccout, setAccountEntries] = useState<Entry[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [accountsFilter, setAccountsFilter] = useState<Account[]>([]);
@@ -270,7 +270,7 @@ export default function UserList() {
 
                   </Menu>
                 )}
-                <Link href={`/entries/create?id=${entriesAccout?.account?.id}`} passHref>
+                <Link href={`/entries/create?id=${id}`} passHref>
                   <Button
                     as="a"
                     size="md"
