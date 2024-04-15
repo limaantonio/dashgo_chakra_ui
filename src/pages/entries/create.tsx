@@ -91,7 +91,7 @@ export default function CreateBudget() {
   const [amount, setAmount] = useState<Number>(0);
   const [name, setName] = useState<string>("");
   const r = useRouter();
-  const { id } = r.query;
+  const { id, budget_month } = r.query;
 
 
   const hangleCreateEntry: SubmitHandler<CreateEntryFormData> = async (
@@ -101,7 +101,8 @@ export default function CreateBudget() {
     // setEntry(values);
     // console.log(entry);
     const entry = values
-    entry.account_id = id
+    console.log(entry)
+    entry.budget_month_id = budget_month
 
     const data = {
       items,
@@ -110,7 +111,8 @@ export default function CreateBudget() {
     
     const res = await api.post("item", data);
     if (res && res.status === 200) {
-      router.push(`/entries?id=${data.entry.account_id}`);
+      console.log(data);
+      router.push(`/entries?id=${data.entry.budget_month_id}`);
     } else {
       toast({
         title: "Erro ao criar lançamento.",
@@ -132,14 +134,7 @@ export default function CreateBudget() {
   }
 
 
-  const [account, setAccount] = useState(0);
-
   
-  useEffect(() => {
-    api.get(`account/${id}`).then((response) => setAccount(response.data));
-  }, []);
-
-  let account_name = account.name;
 
 
 async function handleDelete(id: string) {
@@ -149,6 +144,27 @@ async function handleDelete(id: string) {
 
   item.splice(itemIndex, 1);
   setItems(item);
+}
+
+const [accounts, setAccounts] = useState<Account[]>([]);
+const [account, setAccount] = useState(0);
+
+  useEffect(() => {
+    api.get(`account/budget/${id}`).then((response) => setAccounts(response.data));
+  }, []);
+
+function transformDataAccountToOptions() {
+  let selectAccount = []
+
+  accounts?.map(
+    (account) =>
+      (selectAccount.push({
+        id: account.account.id,
+        value: account.account.id,
+        label: account.account.name
+      }),
+  ));
+  return selectAccount
 }
 
 const toast = useToast();
@@ -181,15 +197,7 @@ const toast = useToast();
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8" paddingY="6">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              
-              <Text
-                label="Conta"
-                type="number"
-               
-                isDisabled={true}
-                {...register("account")}
-               // error={errors.month}
-              >{account_name}</Text>
+              <Select {...register("account_id")} placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()}/>
             </SimpleGrid>
           </VStack>
           <VStack spacing="8">
@@ -206,12 +214,6 @@ const toast = useToast();
                 type="number"
                 {...register("installment")}
                // error={errors.month}
-              />
-              <Input
-                label="Mês"
-                type="number"
-                {...register("month")}
-               // error={errors.number_of_installments}
               />
               <Select
                 label="Status"

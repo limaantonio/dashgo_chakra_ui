@@ -78,7 +78,7 @@ export default function UserList() {
       setResultAccounts(response.data);
     });
 
-    await api.get(`account/balance/${resultAccounts[0]?.account?.id}`).then((response) => {
+    await api.get(`account/balance/${resultAccounts?.account?.id}`).then((response) => {
       setBalance(response.data);
     });
   }

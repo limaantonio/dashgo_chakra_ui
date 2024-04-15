@@ -38,6 +38,7 @@ import { format } from "date-fns";
 import AlertDelete from "../../components/AlertDelete";
 import Summary from "../../components/Summary";
 import { SlOptionsVertical } from "react-icons/sl";
+import { useRouter } from "next/router";
 
 interface Budget {
   id: string;
@@ -49,7 +50,7 @@ interface Budget {
   updated_at: Date;
 }
 
-export default function UserList() {
+export default function MonthList() {
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,
@@ -57,8 +58,12 @@ export default function UserList() {
 
   const [budgets, setBudgets] = useState<Budget[]>([]);
 
+  
+  const router = useRouter();
+  const { id } = router.query;
+
   async function loadBudgets() {
-    await api.get("budget").then((response) => setBudgets(response.data));
+    await api.get(`months/budget/${id}`).then((response) => setBudgets(response.data));
   }
 
   useEffect(() => {
@@ -66,7 +71,7 @@ export default function UserList() {
   }, [setBudgets]);
 
   async function handleDelete(id: string) {
-    await api.delete(`budget/${id}`);
+    await api.delete(`budget/month/${id}`);
 
     const budgetIndex = budgets.findIndex((b) => b.id === id);
     const budget = [...budgets];
@@ -106,7 +111,7 @@ export default function UserList() {
               <Heading size="lg" fontWeight="normal">
                 Orçamentos
               </Heading>
-              <Link href="/budgets/create" passHref>
+              <Link href={`/months/create?id=${id}`} passHref>
                 <Button
                   as="a"
                   size="sm"
@@ -127,22 +132,21 @@ export default function UserList() {
                   <Th>Ano</Th>
                   <Th>Data de atualização</Th>
                   <Th>Contas</Th>
-                  <Th>Orçamento Mensal</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {budgets.map((budget) => (
-                  <Tr key={budget.budget.id} cursor="pointer">
+                  <Tr key={budget.id} cursor="pointer">
                     <Td px={["4", "4", "6"]}>
                       <Checkbox colorScheme="green"></Checkbox>
                     </Td>
                     <Td>
                       <Box>
-                        <Text fontWeight="bold">{budget.budget.year}</Text>
+                        <Text fontWeight="bold">{budget.month}</Text>
                         <Text fontSize="sm" color="gray.300">
                           {format(
-                            new Date(budget.budget.created_at),
+                            new Date(budget.created_at),
                             "yyyy-MM-dd"
                           )}
                         </Text>
@@ -157,15 +161,7 @@ export default function UserList() {
                       )}
                     </Td>
                     <Td>
-                      <Link href={`/accounts?id=${budget.budget.id}`}>
-                        <Text color="green.300" fontWeight="">
-                          Vizualizar
-                        </Text>
-                      </Link>
-                    </Td>
-
-                    <Td>
-                      <Link href={`/months?id=${budget.budget.id}`}>
+                      <Link href={`/entries?id=${budget.id}&budget=${budget.budget_id}`}>
                         <Text color="green.300" fontWeight="">
                           Vizualizar
                         </Text>
@@ -228,7 +224,7 @@ export default function UserList() {
                       <AlertDelete
                         isOpen={modalRemoveTool}
                         setIsOpen={toggleModalRemove}
-                        handleRemove={() => handleDelete(budget.budget.id)}
+                        handleRemove={() => handleDelete(budget.id)}
                       />
                     </Td>
                   </Tr>

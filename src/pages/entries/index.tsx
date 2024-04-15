@@ -88,7 +88,7 @@ export default function UserList() {
   });
 
   const router = useRouter();
-  const { id } = router.query;
+  const { id, budget } = router.query;
 
   const balances = [
     {
@@ -153,13 +153,13 @@ export default function UserList() {
 
 
   async function loadAccount() {
-    await api.get(`entry/account/${id}`).then((response) => setAccountEntries(response.data));
+    await api.get(`entry/month/${id}`).then((response) => setEntries(response.data));
   }
 
  
     useEffect(() => {
       loadAccount();
-    }, [setAccountEntries]);
+    }, [setEntries]);
   
 
   console.log(entriesAccout)
@@ -173,7 +173,7 @@ export default function UserList() {
     const entry = [...entriesAccout];
 
     entry.splice(entryIndex, 1);
-    setAccountEntries(entry);
+    setEntries(entry);
     
   }
 
@@ -270,7 +270,7 @@ export default function UserList() {
 
                   </Menu>
                 )}
-                <Link href={`/entries/create?id=${id}`} passHref>
+                <Link href={`/entries/create?id=${budget}&budget_month=${id}`} passHref>
                   <Button
                     as="a"
                     size="md"
@@ -300,7 +300,7 @@ export default function UserList() {
               </Thead>
               <Tbody>
                 {
-                  entriesAccout?.map((entry) => (
+                  entries?.map((entry) => (
                     <Tr
                       key={entry?.id}
                       cursor="pointer"
@@ -311,7 +311,7 @@ export default function UserList() {
                       <Td>
                         <Box>
                           <Text fontWeight="bold">{entry?.description}</Text>
-                          {entriesAccout?.account?.type === "INCOME" ? (
+                          {entries?.account?.type === "INCOME" ? (
                             <Text fontSize="sm" color="blue.300">
                               Receita
                             </Text>
