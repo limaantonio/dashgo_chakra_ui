@@ -58,12 +58,13 @@ export default function MonthList() {
 
   const [budgets, setBudgets] = useState<Budget[]>([]);
 
+
   
   const router = useRouter();
   const { id } = router.query;
 
   async function loadBudgets() {
-    await api.get(`months/budget/${id}`).then((response) => setBudgets(response.data));
+    await api.get(`months/budget/${id}`).then((response) => setBudgets(response.data));  
   }
 
   useEffect(() => {
@@ -96,20 +97,19 @@ export default function MonthList() {
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
         <Box flex="1">
-          {/* {budgets.map((budget) => (
-            // eslint-disable-next-line react/jsx-key
-            <Summary
-              id={budget.id}
-              income={budget.incomeAmount}
-              expense={budget.expenseAmount}
-              total={budget.totalAmount}
-            />
-          ))} */}
+         
+            {/* <Summary
+              id={1}
+              income={balance?.incomeAmount}
+              expense={balance?.expenseAmount}
+              total={balance?.totalAmount}
+            /> */}
+       
 
           <Box borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
               <Heading size="lg" fontWeight="normal">
-                Orçamentos
+                Orçamento Mensal
               </Heading>
               <Link href={`/months/create?id=${id}`} passHref>
                 <Button

@@ -154,15 +154,16 @@ export default function UserList() {
 
   async function loadAccount() {
     await api.get(`entry/month/${id}`).then((response) => setEntries(response.data));
+    await api.get(`months/budget/balance/${id}`).then((response) => setBalance(response.data));
   }
 
  
     useEffect(() => {
       loadAccount();
-    }, [setEntries]);
+    }, [setEntries, setBalance]);
   
 
-  console.log(entriesAccout)
+  console.log(entries)
 
   
   async function handleDelete(id: string) {
@@ -199,7 +200,7 @@ export default function UserList() {
         <SideBar />
 
         <Box flex="1">
-          <Link href="/accounts" passHref>
+          <Link href={`months?id=${budget}`} passHref>
             <Button
               mb="4"
               _hover={{ bg: "transparent", textColor: "green.400" }}
@@ -209,12 +210,12 @@ export default function UserList() {
             </Button>
           </Link>
 
-          {/* <Summary
+          <Summary
             id={1}
-            income={accountsFilter?.month}
-            expense={accountsFilter?.month}
-            total={accountsFilter?.month - accountsFilter?.month}
-          /> */}
+            income={balance?.incomeAmount}
+            expense={balance?.expenseAmount}
+            total={balance?.incomeAmount - balance?.expenseAmount}
+          />
 
           <Box flex="1" borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
@@ -311,7 +312,7 @@ export default function UserList() {
                       <Td>
                         <Box>
                           <Text fontWeight="bold">{entry?.description}</Text>
-                          {entries?.account?.type === "INCOME" ? (
+                          {entry?.account?.type === "INCOME" ? (
                             <Text fontSize="sm" color="blue.300">
                               Receita
                             </Text>
@@ -326,7 +327,7 @@ export default function UserList() {
                         <Text>{entry?.month}</Text>
                       </Td>
                       <Td>
-                        <Text>{entry?.name}</Text>
+                        <Text>{entry?.account.name}</Text>
                       </Td>
                       <Td>
                         <Text fontWeight="bold">
@@ -334,7 +335,7 @@ export default function UserList() {
                           {Intl.NumberFormat("pt-BR", {
                             style: "currency",
                             currency: "BRL",
-                          }).format(entry?.entry_amount)}
+                          }).format(entry?.amount)}
                         </Text>
                       </Td>
                       <Td>

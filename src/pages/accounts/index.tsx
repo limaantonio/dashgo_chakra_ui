@@ -78,7 +78,7 @@ export default function UserList() {
       setResultAccounts(response.data);
     });
 
-    await api.get(`account/balance/${resultAccounts?.account?.id}`).then((response) => {
+    await api.get(`account/balance/budget/${id}`).then((response) => {
       setBalance(response.data);
     });
   }
@@ -142,7 +142,7 @@ export default function UserList() {
               <Heading size="lg" fontWeight="normal">
                 Contas
               </Heading>
-              <Box>
+              {/* <Box>
                 <Link href={`/accounts/create?id=${id}`} passHref>
                   <Button
                     as="a"
@@ -154,7 +154,7 @@ export default function UserList() {
                     Criar novo
                   </Button>
                 </Link>
-              </Box>
+              </Box> */}
             </Flex>
             <Table colorScheme="whiteAlpha">
               <Thead>
