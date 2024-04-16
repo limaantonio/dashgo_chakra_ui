@@ -88,7 +88,7 @@ export default function UserList() {
 
   useEffect(() => {
     loadAccounts();
-  }, [setResultAccounts, setBalance]);
+  }, [setResultAccounts, setBalance, id]);
 
   //console.log(resultAccounts);
 
@@ -169,7 +169,7 @@ export default function UserList() {
                 </Tr>
               </Thead>
               <Tbody>
-                {resultAccounts?.map((account) => (
+                {Array.isArray(resultAccounts) && resultAccounts.map((account) => (
                   <Tr key="account.id" cursor="pointer">
                     <Td>
                       <Box>

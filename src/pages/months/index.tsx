@@ -69,7 +69,7 @@ export default function MonthList() {
 
   useEffect(() => {
     loadBudgets();
-  }, [setBudgets]);
+  }, [setBudgets, id]);
 
   async function handleDelete(id: string) {
     await api.delete(`budget/month/${id}`);
@@ -136,7 +136,7 @@ export default function MonthList() {
                 </Tr>
               </Thead>
               <Tbody>
-                {budgets.map((budget) => (
+                {Array.isArray(budgets) && budgets.map((budget) => (
                   <Tr key={budget.id} cursor="pointer">
                     <Td px={["4", "4", "6"]}>
                       <Checkbox colorScheme="green"></Checkbox>

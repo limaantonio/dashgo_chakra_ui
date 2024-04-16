@@ -160,7 +160,7 @@ export default function UserList() {
  
     useEffect(() => {
       loadAccount();
-    }, [setEntries, setBalance]);
+    }, [setEntries, setBalance, id]);
   
 
   console.log(entries)
@@ -301,7 +301,8 @@ export default function UserList() {
               </Thead>
               <Tbody>
                 {
-                  entries?.map((entry) => (
+                    
+                 Array.isArray(entries) && entries.map((entry) => (
                     <Tr
                       key={entry?.id}
                       cursor="pointer"
