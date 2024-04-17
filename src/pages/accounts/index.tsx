@@ -40,6 +40,7 @@ import AlertDelete from "../../components/AlertDelete";
 import Summary from "../../components/Summary";
 import SummaryAccount from "../../components/SummaryAccount";
 import { SlOptionsVertical } from "react-icons/sl";
+import { useRouter } from "next/router";
 
 interface Account {
   id: string;
@@ -66,19 +67,42 @@ export default function UserList() {
 
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [resultAccounts, setResultAccounts] = useState();
+  const [balance, setBalance] = useState();
+
+
+  const router = useRouter();
+  const { id } = router.query;
+
+  async function loadAccounts() {
+    await api.get(`account/budget/${id}`).then((response) => {
+      setResultAccounts(response.data);
+    });
+
+    await api.get(`account/balance/budget/${id}`).then((response) => {
+      setBalance(response.data);
+    });
+  }
+
+  console.log(balance)
+  
 
   useEffect(() => {
-    api.get("account").then((response) => setResultAccounts(response.data));
-  }, []);
+    loadAccounts();
+  }, [setResultAccounts, setBalance, id]);
+
+  //console.log(resultAccounts);
+
 
   async function handleDelete(id: string) {
     await api.delete(`account/${id}`);
+    console.log(id)
 
-    const budgetIndex = accounts.findIndex((b) => b.id === id);
-    const budget = [...accounts];
+    const accoutIndex = resultAccounts.findIndex((b) => b.id === id);
+    const account = [...resultAccounts];
 
-    budget.splice(budgetIndex, 1);
-    setAccounts(budget);
+    account.splice(accoutIndex, 1);
+   
+    setResultAccounts(account);
   }
 
   const [modalRemoveTool, setModalRemoveTool] = useState(false);
@@ -108,9 +132,9 @@ export default function UserList() {
           </Link>
           <Summary
             id={1}
-            income={resultAccounts?.income}
-            expense={resultAccounts?.expense}
-            total={resultAccounts?.income - resultAccounts?.expense}
+            income={balance?.income}
+            expense={balance?.expense}
+            total={balance?.income - balance?.expense}
           />
 
           <Box flex="1" borderRadius={8} bg="gray.800" p="8">
@@ -118,8 +142,8 @@ export default function UserList() {
               <Heading size="lg" fontWeight="normal">
                 Contas
               </Heading>
-              <Box>
-                <Link href="/accounts/create" passHref>
+              {/* <Box>
+                <Link href={`/accounts/create?id=${id}`} passHref>
                   <Button
                     as="a"
                     size="md"
@@ -130,7 +154,7 @@ export default function UserList() {
                     Criar novo
                   </Button>
                 </Link>
-              </Box>
+              </Box> */}
             </Flex>
             <Table colorScheme="whiteAlpha">
               <Thead>
@@ -145,7 +169,7 @@ export default function UserList() {
                 </Tr>
               </Thead>
               <Tbody>
-                {resultAccounts?.accounts?.map((account) => (
+                {Array.isArray(resultAccounts) && resultAccounts.map((account) => (
                   <Tr key="account.id" cursor="pointer">
                     <Td>
                       <Box>
@@ -254,7 +278,7 @@ export default function UserList() {
                       <AlertDelete
                         isOpen={modalRemoveTool}
                         setIsOpen={toggleModalRemove}
-                        handleRemove={() => handleDelete(account.id)}
+                        handleRemove={() => handleDelete(account.account.id)}
                       />
                     </Td>
                   </Tr>

@@ -18,6 +18,7 @@ import {
   Checkbox,
   Text,
   Td,
+  Paragraph,
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
@@ -32,6 +33,7 @@ import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import router from "next/router";
+import { useRouter } from "next/router";
 import { RiAddLine, RiArrowLeftLine, RiDeleteBin6Line, RiPencilLine, RiSave2Fill } from "react-icons/ri";
 
 type CreateEntryFormData = {
@@ -83,10 +85,14 @@ export default function CreateBudget() {
   });
 
   const errors = formState.errors;
+  
 
   const [items, setItems] = useState<Item[]>([])
   const [amount, setAmount] = useState<Number>(0);
   const [name, setName] = useState<string>("");
+  const r = useRouter();
+  const { id, budget_month } = r.query;
+
 
   const hangleCreateEntry: SubmitHandler<CreateEntryFormData> = async (
     values
@@ -95,16 +101,18 @@ export default function CreateBudget() {
     // setEntry(values);
     // console.log(entry);
     const entry = values
+    console.log(entry)
+    entry.budget_month_id = budget_month
 
     const data = {
       items,
       entry
     }
-    console.log(data)
     
     const res = await api.post("item", data);
     if (res && res.status === 200) {
-      router.push(`/entries`);
+      console.log(data);
+      router.push(`/entries?id=${data.entry.budget_month_id}`);
     } else {
       toast({
         title: "Erro ao criar lançamento.",
@@ -113,8 +121,6 @@ export default function CreateBudget() {
         isClosable: true,
       });
     }
-
-    
   };
 
   function addItem(e: Event) {
@@ -123,31 +129,13 @@ export default function CreateBudget() {
       name, 
       amount
     }
-
     setItems([...items, item])
     
   }
 
 
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  
 
-  useEffect(() => {
-    api.get("account").then((response) => setAccounts(response.data));
-  }, []);
-
- function transformDataAccountToOptions() {
-  let selectAccount = []
-
-  accounts?.accounts?.map(
-    (account) =>
-      (selectAccount.push({
-        id: account.account.id,
-        value: account.account.id,
-        label: account.account.name
-      }),
-  ));
-  return selectAccount
-}
 
 async function handleDelete(id: string) {
  
@@ -156,6 +144,27 @@ async function handleDelete(id: string) {
 
   item.splice(itemIndex, 1);
   setItems(item);
+}
+
+const [accounts, setAccounts] = useState<Account[]>([]);
+const [account, setAccount] = useState(0);
+
+  useEffect(() => {
+    api.get(`account/budget/${id}`).then((response) => setAccounts(response.data));
+  }, []);
+
+function transformDataAccountToOptions() {
+  let selectAccount = []
+
+  accounts?.map(
+    (account) =>
+      (selectAccount.push({
+        id: account.account.id,
+        value: account.account.id,
+        label: account.account.name
+      }),
+  ));
+  return selectAccount
 }
 
 const toast = useToast();
@@ -205,12 +214,6 @@ const toast = useToast();
                 type="number"
                 {...register("installment")}
                // error={errors.month}
-              />
-              <Input
-                label="Mês"
-                type="number"
-                {...register("month")}
-               // error={errors.number_of_installments}
               />
               <Select
                 label="Status"

@@ -13,6 +13,7 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Text
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
@@ -70,6 +71,7 @@ const createFormSchema = yup.object().shape({
 
 export default function CreateBudget() {
   const router = useRouter()
+  const { id } = router.query
 
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(createFormSchema),
@@ -81,8 +83,13 @@ export default function CreateBudget() {
     values
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    await api.post("account", values);
-    router.push('/accounts')
+    const account = values
+    account.budget_id = id
+    const res = await api.post("account", account);
+    if (res.status === 200) {
+      router.push(`/accounts?id=${id}`)
+     
+    }
   };
 
   const typeAccount = [
@@ -167,12 +174,6 @@ export default function CreateBudget() {
                 options={sub_account}
               />
 
-              <Select
-                label="Orçamento"
-                {...register("budget_id")}
-                placeholder="Selecione"
-                options={transformDataToOptions()}
-              />
             </SimpleGrid>
           </VStack>
           <VStack spacing="8">
@@ -190,6 +191,8 @@ export default function CreateBudget() {
                 {...register("amount")}
                 error={errors.amount}
               />
+              
+              <Text>{id}</Text>
           
              
               <Input

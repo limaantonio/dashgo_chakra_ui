@@ -22,8 +22,9 @@ const AlertDelete: React.FC<IModalProps> = ({
   handleRemove,
 }) => {
   const handleSubmit = useCallback(
-    async (id: string) => {
-      await handleRemove(id);
+    (event) => {
+      event.preventDefault();
+      handleRemove();
       setIsOpen();
     },
     [handleRemove, setIsOpen]
