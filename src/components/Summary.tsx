@@ -5,7 +5,7 @@ import {
   RiMoneyDollarBoxLine,
 } from "react-icons/ri";
 
-export default function Summary({ id, income, expense, total }) {
+export default function Summary({ id, income, liquid_income, expense, total }) {
   return (
     <HStack mb="8" justify="space-between" align="center">
       <Box w="100%" key={id} borderRadius={8} bg="gray.800" p="8">
@@ -21,6 +21,23 @@ export default function Summary({ id, income, expense, total }) {
           }).format(income)}
         </Text>
       </Box>
+      {
+        liquid_income  && (
+          <Box w="100%" key={id} borderRadius={8} bg="gray.800" p="8">
+            <Flex justify="space-between" align="center">
+              <Text fontWeight="bold">Entradas Líquidas</Text>
+              <RiArrowUpCircleLine color="green" size="28" />
+            </Flex>
+
+            <Text mt="4" fontSize="2xl" fontWeight="bold">
+              {Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(liquid_income)}
+            </Text>
+          </Box>
+        )
+      }
       <Box w="100%" key={id} borderRadius={8} bg="gray.800" p="8">
         <Flex justify="space-between" align="center">
           <Text fontWeight="bold">Saídas</Text>

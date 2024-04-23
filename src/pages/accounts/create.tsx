@@ -29,25 +29,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from 'next/router'
 import { useToast } from "@chakra-ui/react";
 
-enum AccountType {
-  income = "INCOME",
-  expanse = "EXPENSE",
-}
 
-enum SubAccountType {
-  wage = "WAGE",
-	wage_bone = 'WAGE_BONUS',
-	wage_extra = 'WAGE_EXTRA',
-	wage_other = 'WAGE_OTHER',
-	retirement = 'RETIREMENT',
-	family_fund = 'FAMILY_FUND',
-	investiment = 'INVESTIMENT',
-	investiment_other = 'INVESTIMENT_OTHER',
-	current_expenses = 'CURRENT_EXPENSES',
-	current_expenses_other = 'CURRENT_EXPENSES_OTHER',
-	interest_and_chages = 'INTEREST_AND_CHARGES',
-  other = "OTHER",
-}
+
+
 
 type CreateAccountFormData = {
   name: string;
@@ -84,53 +68,46 @@ export default function CreateBudget() {
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const account = values
-    account.budget_id = id
-    const res = await api.post("account", account);
+    const res = await api.post(`account/budget/${id}`, account);
     if (res.status === 200) {
       router.push(`/accounts?id=${id}`)
      
     }
   };
 
-  const typeAccount = [
-    { id: 1, value: "INCOME", label: "Receita" },
-    { id: 2, value: "EXPENSE", label: "Despesa" },
-  ];
-
-  const sub_account = [
-    { id: 2, value: "WAGE", label: "Salário" },
-    { id: 3, value: "WAGE_BONUS", label: "Salário Bônus" },
-    { id: 4, value: "WAGE_EXTRA", label: "Salário Extra" },
-    { id: 5, value: "WAGE_OTHER", label: "Salário Outros" },
-    { id: 6, value: "RETIREMENT", label: "Aposentadoria" },
-    { id: 7, value: "FAMILY_FUND", label: "Fundo Familiar" },
-    { id: 8, value: "INVESTIMENT", label: "Investimento" },
-    { id: 9, value: "INVESTIMENT_OTHER", label: "Investimento Outros" },
-    { id: 10, value: "CURRENT_EXPENSES", label: "Despesas Correntes" },
-    { id: 11, value: "CURRENT_EXPENSES_OTHER", label: "Despesas Correntes Outros" },
-    { id: 12, value: "INTEREST_AND_CHARGES", label: "Juros e Tarifas" },
-    { id: 13, value: "OTHER", label: "Outros" },
-   
-  ];
-
+  
   const [budgets, setBudgets] = useState<Budget[]>([]);
+
 
   useEffect(() => {
     api.get("budget").then((response) => setBudgets(response.data));
   }, []);
 
+  useEffect(() => {
+    api.get("subaccount").then((response) => setSubAccounts(response.data));
+  }, []);
+
+
+  const [subAccounts, setSubAccounts] = useState<Account[]>([]);
+  const [subAccount, setSubAccount] = useState();
  
    function transformDataToOptions() {
-    const selectBudget = [];
-    budgets.map(
+    const selectSubAccounts = [];
+    subAccounts?.map(
       (budget) =>
-        (selectBudget.push({
-          id: budget.budget.id,
-          value: budget.budget.id,
-          label: budget.budget.year
+        (selectSubAccounts.push({
+          id: budget.id,
+          value: budget.id,
+          label: budget.name
         }),
     ));
-    return selectBudget
+    return selectSubAccounts
+  }
+
+  function selectionSubAccount(value) {
+    const subAccount = subAccounts.find((subAccount) => subAccount.id === value);
+    setSubAccount(subAccount.type);
+    
   }
 
   const toast = useToast();
@@ -160,18 +137,26 @@ export default function CreateBudget() {
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="6" paddingY="6">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              <Select
+              {/* <Select
                 label="Tipo"
                 {...register("type")}
                 placeholder="Selecione"
                 options={typeAccount}
-              />
+              /> */}
 
               <Select
                 label="Sub-Conta"
-                {...register("sub_account")}
+                {...register("sub_account_id")}
+                onChange={(e) => selectionSubAccount(e.target.value)}
                 placeholder="Selecione"
-                options={sub_account}
+                options={transformDataToOptions()}
+              />
+
+              <Input
+                label="Tipo"
+                type="text"
+                value={subAccount}
+                isDisabled={true}
               />
 
             </SimpleGrid>

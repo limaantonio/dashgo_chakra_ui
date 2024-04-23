@@ -32,6 +32,8 @@ import router from "next/router";
 import { Select } from "../../components/Form/Select";
 import { useState } from "react";
 import { RiAddLine, RiDeleteBin6Line } from "react-icons/ri";
+import { useEffect } from "react";
+import { set } from "date-fns";
 
 type CreateBudgetFormData = {
   year: Number;
@@ -62,13 +64,14 @@ export default function CreateBudget() {
     values
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    
-    let account;
-    let budget = values; 
+
+    const y = values.year;
 
     const data = {
       accounts,
-      budget 
+      budget :{
+        year: y,
+      } 
     }
 
     console.log(data)
@@ -77,27 +80,6 @@ export default function CreateBudget() {
     router.push("/budgets");
   };
 
-  const typeAccount = [
-    { id: 1, value: "INCOME", label: "Receita" },
-    { id: 2, value: "EXPENSE", label: "Despesa" },
-  ];
-  
-  const sub_account = [
-    { id: 2, value: "WAGE", label: "Salário" },
-    { id: 3, value: "WAGE_BONUS", label: "Salário Bônus" },
-    { id: 4, value: "WAGE_EXTRA", label: "Salário Extra" },
-    { id: 5, value: "WAGE_OTHER", label: "Salário Outros" },
-    { id: 6, value: "RETIREMENT", label: "Aposentadoria" },
-    { id: 7, value: "FAMILY_FUND", label: "Fundo Familiar" },
-    { id: 8, value: "INVESTIMENT", label: "Investimento" },
-    { id: 9, value: "INVESTIMENT_OTHER", label: "Investimento Outros" },
-    { id: 10, value: "CURRENT_EXPENSES", label: "Despesas Correntes" },
-    { id: 11, value: "CURRENT_EXPENSES_OTHER", label: "Despesas Correntes Outros" },
-    { id: 12, value: "INTEREST_AND_CHARGES", label: "Juros e Tarifas" },
-    { id: 13, value: "OTHER", label: "Outros" },
-   
-  ];
-
   const toast = useToast();
 
   const [accounts, setAccounts] = useState<Account[]>([])
@@ -105,7 +87,10 @@ export default function CreateBudget() {
   const [number_of_installments, setNumberOfInstallments] = useState<Number>(0);
   const [name, setName] = useState<string>("");
   const [type, setType] = useState<string>("");
-  const [subaccount, setSubAccount] = useState<string>("");
+  const [availableAmount, setAvailableAmount] = useState<Number>(0);
+  const [dotacao, setDotacao] = useState<Number>(0);
+  
+ 
 
   function addItem(e: Event) {
     e.preventDefault()
@@ -113,11 +98,35 @@ export default function CreateBudget() {
       name, 
       amount,
       number_of_installments,
-      sub_account: subaccount,
-      type: type
+      sub_account_id: subAccount?.id,
+      sub_account: subAccount?.name,
+      type: subAccount?.type,
 
     }
-    setAccounts([...accounts, item])
+    if (amount > availableAmount) {
+      toast({
+        title: "Erro ao criar lançamento.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      setAccounts([...accounts, item])
+      setName("");
+      setAmount(0);
+      setNumberOfInstallments(0);
+      handleChangeAvailableAmount();
+      setSubAccount("");
+    
+      
+      toast({
+        title: "Item adicionado.",
+        description: "O item foi adicionado com sucesso.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
     
   }
 
@@ -128,6 +137,77 @@ export default function CreateBudget() {
   
     item.splice(itemIndex, 1);
     setAccounts(item);
+  }
+
+  useEffect(() => {
+    api.get("subaccount").then((response) => setSubAccounts(response.data));
+    
+  }, []);
+
+  const [subAccounts, setSubAccounts] = useState<Account[]>([]);
+  const [subAccount, setSubAccount] = useState();
+ 
+  function transformDataToOptions() {
+
+    const selectSubAccounts = [];
+    subAccounts?.map(
+      (budget) =>
+        (selectSubAccounts.push({
+          id: budget.id,
+          value: budget.id,
+          label: budget.name
+        }),
+    ));
+    
+    return selectSubAccounts
+  }
+
+  function selectionSubAccount(value) {
+    const subAccount = subAccounts.find((subAccount) => subAccount.id === value);
+    setSubAccount(subAccount);
+    setType(subAccount.type);
+    setDotacao(subAccount.amount);
+    let used_value = 0;
+
+    if (accounts.length > 0) {
+   
+      accounts?.map((account) => {
+        console.log(account.sub_account)
+        console.log(subAccount.name)
+        if (account.sub_account == subAccount?.name) {
+          used_value += Number(account.amount);
+        }
+      });
+    }
+
+    console.log(used_value)
+    console.log(subAccount?.amount)
+    
+    setAvailableAmount(subAccount?.amount - used_value);
+    
+    
+   
+    
+  }
+
+  function handleChangeAvailableAmount() {
+    let used_value = 0;
+
+    if (accounts.length > 0) {
+   
+      accounts?.map((account) => {
+        //console.log(account.sub_account)
+        //console.log(subAccount.name)
+        if (account.sub_account == subAccount?.name) {
+          used_value += Number(account.amount);
+        }
+      });
+    }
+
+    console.log(used_value)
+    console.log(subAccount?.amount)
+    
+    setAvailableAmount(subAccount?.amount - used_value);
   }
 
   return (
@@ -200,24 +280,36 @@ export default function CreateBudget() {
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8">
           <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              <Select
-                label="Tipo"
-                placeholder="Selecione"
-                options={typeAccount}
-                value={type}
-                onChange={(e) => {
-                  setType(e.target.value);
-                }}
-              />
-
+              
               <Select
                 label="Sub-Conta"
+                //{...register("sub_account_id")}
+                value={subAccount?.id ? subAccount?.id : ""}
+                onChange={(e) => selectionSubAccount(e.target.value)}
                 placeholder="Selecione"
-                options={sub_account}
-                value={subaccount}
-                onChange={(e) => {
-                  setSubAccount(e.target.value);
-                }}
+              
+                options={transformDataToOptions()}
+              />
+
+              <Input
+                label="Tipo"
+                type="text"
+                value={type}
+                isDisabled={true}
+              />
+
+              <Input
+                label="Dotação"
+                type="text"
+                value={dotacao}
+                isDisabled={true}
+              />
+
+              <Input
+                label="Disponivel"
+                type="text"
+                value={availableAmount}
+                isDisabled={true}
               />
 
             </SimpleGrid>
@@ -261,8 +353,8 @@ export default function CreateBudget() {
             <Thead>
               <Tr>
                 <Th>Nome</Th>
-                <Th>Valor</Th>
-                <Th>Mês</Th>
+                <Th>Valor</Th>   
+                <Th>Parcelas</Th>
                 <Th>Tipo</Th>
                 <Th>Sub-Conta</Th>
                
@@ -287,6 +379,7 @@ export default function CreateBudget() {
                     <Td>
                       <Text fontWeight="bold">{entry.sub_account}</Text>
                     </Td>
+                   
                     <Td>
                       <HStack>
                         <Box ml="auto">
@@ -316,15 +409,7 @@ export default function CreateBudget() {
                 colorScheme="purple"
                 type="submit"
                 isLoading={formState.isSubmitting}
-                onClick={() =>
-                  toast({
-                    title: "Item adicionado.",
-                    description: "O item foi adicionado com sucesso.",
-                    status: "success",
-                    duration: 9000,
-                    isClosable: true,
-                  })
-                }
+                
                 leftIcon={<Icon as={RiAddLine} fontSize="20" />}
               >
                 Adicionar
