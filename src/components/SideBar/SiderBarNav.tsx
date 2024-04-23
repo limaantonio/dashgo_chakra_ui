@@ -20,6 +20,9 @@ export function SideBarNav() {
         <NavLink icon={RiMoneyDollarBoxFill} href="/budgets">
           Minhas contas
         </NavLink>
+        <NavLink icon={RiMoneyDollarBoxFill} href="/subaccounts">
+          Classificação de contas
+        </NavLink>
       </NavSection>
       <NavSection title="INVESTIMENTO">
         <NavLink icon={RiInputMethodLine} href="/forms">

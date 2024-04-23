@@ -30,6 +30,7 @@ import {
   RiDeleteBin6Line,
   RiFilter2Line,
   RiPencilLine,
+  RiSearch2Line
 } from "react-icons/ri";
 import { Pagination } from "../../components/Pagination";
 import Link from "next/link";
@@ -103,6 +104,7 @@ export default function UserList() {
     account.splice(accoutIndex, 1);
    
     setResultAccounts(account);
+    loadAccounts()
   }
 
   const [modalRemoveTool, setModalRemoveTool] = useState(false);
@@ -142,7 +144,7 @@ export default function UserList() {
               <Heading size="lg" fontWeight="normal">
                 Contas
               </Heading>
-              {/* <Box>
+              <Box>
                 <Link href={`/accounts/create?id=${id}`} passHref>
                   <Button
                     as="a"
@@ -154,7 +156,7 @@ export default function UserList() {
                     Criar novo
                   </Button>
                 </Link>
-              </Box> */}
+              </Box>
             </Flex>
             <Table colorScheme="whiteAlpha">
               <Thead>
@@ -174,7 +176,7 @@ export default function UserList() {
                     <Td>
                       <Box>
                         <Text fontWeight="">{account.account.name}</Text>
-                        {account.account.type === "INCOME" ? (
+                        {account.account.sub_account.type === "INCOME" ? (
                           <Text fontSize="sm" color="blue.300">
                             Receita
                           </Text>
@@ -220,9 +222,20 @@ export default function UserList() {
 
                     <Td>
                       <Link href={`/entries?id=${account.account.id}`}>
-                        <Text color="green.300" fontWeight="">
-                          Vizualizar
-                        </Text>
+                       
+                        <Button
+                                mr="2"
+                                as="a"
+                                size="sm"
+                                fontSize="small"
+                                colorScheme="gray.50"
+                                textColor="white"
+                                leftIcon={
+                                  <Icon as={RiSearch2Line} fontSize="16" />
+                                }
+                              />
+                               
+                       
                       </Link>
                     </Td>
 
