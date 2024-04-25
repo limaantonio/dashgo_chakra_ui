@@ -129,6 +129,8 @@ export default function CreateBudget() {
     
     const calculed_expense = incomeAmount * (percentage / 100) 
 
+    console.log(incomeAmount)
+
     let amount = 0.0
 
     if (type === 'INCOME') {

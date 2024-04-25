@@ -199,7 +199,7 @@ export default function UserList() {
                           <SlOptionsVertical />
                         </MenuButton>
                         <MenuList textColor="black">
-                          <Link href={`/budgets/edit?id=${budget.id}`}>
+                          <Link href={`/budgets/edit?id=${budget.budget.id}`}>
                             <MenuItem as="button" _hover={{ bg: "gray.50" }}>
                               <Button
                                 mr="2"

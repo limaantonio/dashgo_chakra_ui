@@ -49,7 +49,7 @@ export default function CreateBudget() {
     console.log(values);
     values.budget_id = id;
     console.log(values);
-    await api.post("budget/month", values);
+    await api.post("month", values);
     router.push(`/months?id=${id}`);
   };
 

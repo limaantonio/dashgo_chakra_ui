@@ -76,12 +76,28 @@ export default function CreateBudget() {
 
     console.log(data)
 
-    await api.post("account", data);
-    router.push("/budgets");
+    const response = await api.post("account", data);
+    if (response.status === 200) {
+      toast({
+        title: "Orçamento criado.",
+        description: "Orçamento criado com sucesso!",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      router.push("/budgets");
+    } else {
+       toast({
+        title: "Erro ao criar lançamento. Saldo insulficiente",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+    
   };
 
   const toast = useToast();
-
   const [accounts, setAccounts] = useState<Account[]>([])
   const [amount, setAmount] = useState<Number>(0);
   const [number_of_installments, setNumberOfInstallments] = useState<Number>(0);
@@ -90,8 +106,6 @@ export default function CreateBudget() {
   const [availableAmount, setAvailableAmount] = useState<Number>(0);
   const [dotacao, setDotacao] = useState<Number>(0);
   
- 
-
   function addItem(e: Event) {
     e.preventDefault()
     const item = {
@@ -105,7 +119,7 @@ export default function CreateBudget() {
     }
     if (amount > availableAmount) {
       toast({
-        title: "Erro ao criar lançamento.",
+        title: "Erro ao adicionar item. Saldo insulficiente",
         status: "error",
         duration: 9000,
         isClosable: true,

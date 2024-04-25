@@ -159,9 +159,9 @@ import {
     }
   
    
-      useEffect(() => {
-        loadAccount();
-      }, [setEntries, setBalance, id]);
+    useEffect(() => {
+      loadAccount();
+    }, [setEntries, setBalance, id]);
     
   
     console.log(entries)
@@ -181,8 +181,6 @@ import {
       
     }
 
-    
-  
     const [modalRemoveTool, setModalRemoveTool] = useState(false);
   
     function openModalRemove() {
@@ -335,7 +333,7 @@ import {
                                   Pagar
                                 </Button>
                               </MenuItem>
-                              <Link href={`/entries/edit?id=${entry?.id}`}>
+                              <Link href={`/subaccounts/edit?id=${entry?.id}`}>
                                 <MenuItem as="button" _hover={{ bg: "gray.50" }}>
                                   <Button
                                     mr="2"

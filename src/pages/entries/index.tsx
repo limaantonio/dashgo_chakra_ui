@@ -175,6 +175,7 @@ export default function UserList() {
 
     entry.splice(entryIndex, 1);
     setEntries(entry);
+    loadAccount()
     
   }
 
@@ -297,6 +298,7 @@ export default function UserList() {
                   <Th>Parcela</Th>
                   <Th>Status</Th>
                   <Th>Items</Th>
+                  <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -313,7 +315,7 @@ export default function UserList() {
                       <Td>
                         <Box>
                           <Text fontWeight="bold">{entry?.description}</Text>
-                          {entry?.account?.type === "INCOME" ? (
+                          {entry?.account?.sub_account?.type === "INCOME" ? (
                             <Text fontSize="sm" color="blue.300">
                               Receita
                             </Text>

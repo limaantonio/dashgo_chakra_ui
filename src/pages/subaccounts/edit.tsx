@@ -88,37 +88,18 @@ export default function CreateBudget() {
     router.push('/accounts')
   };
 
-  const [subAccounts, setSubAccounts] = useState();
   const [subAccount, setSubAccount] = useState();
-  const [accounts, setAccounts] = useState<Account>();
  
-  async function getBudget() {
-    await api.get("subaccount").then((response) => setSubAccounts(response.data));
+  async function getSubAccount() {
+    await api.get(`subaccount/${id}`).then((response) => setSubAccount(response.data));
   }
 
-  async function getAccount() {
-    await api.get(`accountid/${id}`).then((response) => setAccounts(response.data));
-  }
-
-  function transformDataToOptions() {
-    const selectBudget = [];
-     subAccounts.map(
-      (budget) =>
-        (selectBudget.push({
-          id: budget.id,
-          value: budget.id,
-          label: budget.name
-        }),
-    ));
-    return selectBudget
-  }
 
   console.log(subAccount)
 
   useEffect(() => {
-    getAccount()
-    getBudget()
-  }, [id]);
+    getSubAccount()
+  }, []);
 
   const toast = useToast();
  
@@ -142,18 +123,7 @@ export default function CreateBudget() {
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="6" paddingY="6">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              
-              <Select
-                label="Sub-Conta"
-                {...register("sub_account")}
-                placeholder="Selecione"
-                options={subAccounts?.map((subAccount) => ({ value: subAccount.id, label: subAccount.name }))}
-                onChange={(e) => {
-                  setSubAccount(e.target.value);
-                }}
-                value={subAccount}
-              />
-
+            
                <Input
                 label="Nome"
                 type="text"
@@ -161,10 +131,22 @@ export default function CreateBudget() {
                 error={errors.name}
                 {...register("name")}
                 onChange={(e) => {
-                  setAccounts(e.target.value);
+                  getSubAccount(e.target.value);
                 }}
-                value={accounts?.name}
+                value={subAccount?.name}
               />
+
+               <Input
+                label="Tipo"
+                type="number"
+                {...register("type")}
+                error={errors.amount}
+                onChange={(e) => {
+                  getSubAccount(e.target.value);
+                }}
+                value={subAccount?.type}
+              />
+              
             
             </SimpleGrid>
           </VStack>
@@ -177,21 +159,31 @@ export default function CreateBudget() {
                 {...register("amount")}
                 error={errors.amount}
                 onChange={(e) => {
-                  setAccounts(e.target.value);
+                  getSubAccount(e.target.value);
                 }}
-                value={accounts?.amount}
+                value={subAccount?.amount}
               />
 
               <Input
-                label="Número de parcelas"
+                label="Percentual"
                 type="number"
                 {...register("number_of_installments")}
                 error={errors.number_of_installments}
                 onChange={(e) => {
-                  setAccounts(e.target.value);
+                  getSubAccount(e.target.value);
                 }}
-                value={accounts?.number_of_installments}
+                value={subAccount?.percentage}
               />
+               {/* <Input
+                label="Principal"
+                type="number"
+                {...register("number_of_installments")}
+                error={errors.number_of_installments}
+                onChange={(e) => {
+                  getSubAccount(e.target.value);
+                }}
+                value={subAccount?.principal}
+              /> */}
             </SimpleGrid>
           </VStack>
           <Flex mt="8" justify="flex-end">

@@ -131,7 +131,7 @@ export default function MonthList() {
                   </Th>
                   <Th>Ano</Th>
                   <Th>Data de atualização</Th>
-                  <Th>Contas</Th>
+                  <Th>Lançamentos</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
@@ -163,7 +163,7 @@ export default function MonthList() {
                     <Td>
                       <Link href={`/entries?id=${budget.id}&budget=${budget.budget_id}`}>
                         <Text color="green.300" fontWeight="">
-                          Vizualizar
+                          Visualizar
                         </Text>
                       </Link>
                     </Td>

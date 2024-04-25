@@ -23,7 +23,6 @@ import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import {useRouter} from "next/router";
-import { EntryType } from "perf_hooks";
 
 
 type CreateEntryFormData = {
@@ -72,59 +71,37 @@ export default function CreateBudget() {
     router.push("/entries");
   };
 
-  const [balances, setBalance] = useState<Balance[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [entries, setEntries] = useState<EntryType[]>([]);
-  
-  function transformDataToOptions() {
-    let selectBalance = []
-    balances.map(
-      (balance) =>
-        (selectBalance.push({
-          id: balance.id,
-          value: balance.id,
-          label: balance.month
-        }),
-    ));
-   return selectBalance
- }
+  const [accounts, setAccounts] = useState([]);
+  const [entries, setEntries] = useState([]);
 
- function transformDataAccountToOptions() {
-  let selectAccount = []
+  async function getAccounts(){
+    await  api.get("accounts").then((response) => setAccounts(response.data));
+  }
 
-  accounts.map(
+  async function getEntry() {
+    await api.get(`entry/${id}`).then((response) => setEntries(response.data));
+  }
+
+  useEffect(() => {
+    getEntry()
+    getAccounts()
+  }, [id]);
+
+  const toast = useToast();
+
+  function transformDataAccountToOptions() {
+    let selectAccount = []
+
+    accounts?.map(
     (account) =>
       (selectAccount.push({
         id: account.id,
         value: account.id,
         label: account.name
       }),
-  ));
-  return selectAccount
+    ));
+   return selectAccount
   }
-
-
-  async function getAccount() {
-    await api.get(`account`).then((response) => setAccounts(response.data));
-  }
-
-
-async function getBalance() {
-  await api.get("balance").then((response) => setBalance(response.data));
-}
-
-async function getEntry() {
-  await api.get(`entry/${id}`).then((response) => setEntries(response.data));
-}
-
-useEffect(() => {
-  getAccount()
-  getBalance()
-  getEntry()
-}, [id]);
-
-
-const toast = useToast();
 
   return (
     <Box>
@@ -145,15 +122,11 @@ const toast = useToast();
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8" paddingY="6">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              <Select {...register("balance_id")} placeholder="Selecione" label="Mês" options={transformDataToOptions()}  onChange={(e) => {
-                  setEntries(e.target.value);
-                }}
-                value={entries?.description}/>
-              <Select {...register("account_id")} placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()} 
+              <Select  placeholder={entries?.account?.name} label="Conta" options={transformDataAccountToOptions()} 
                onChange={(e) => {
-                setEntries(e.target.value);
+                setAccount(e.target.value);
               }}
-              value={entries?.account}/>
+              value={entries?.account?.name}/>
             </SimpleGrid>
           </VStack>
           <VStack spacing="8">
@@ -186,7 +159,7 @@ const toast = useToast();
                 onChange={(e) => {
                   setEntries(e.target.value);
                 }}
-                value={entries?.number_of_installments}
+                value={entries?.installment}
               />
             </SimpleGrid>
           </VStack>
