@@ -18,9 +18,9 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-} from "@chakra-ui/react";
-import { SideBar } from "../../components/SideBar";
-import { Header } from "../../components/Header";
+} from '@chakra-ui/react'
+import { SideBar } from '../../components/SideBar'
+import { Header } from '../../components/Header'
 import {
   RiAddLine,
   RiArrowUpCircleLine,
@@ -29,66 +29,66 @@ import {
   RiPencilLine,
   RiDeleteBack2Line,
   RiDeleteBin6Line,
-} from "react-icons/ri";
-import { Pagination } from "../../components/Pagination";
-import Link from "next/link";
-import api from "../../services/api";
-import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import AlertDelete from "../../components/AlertDelete";
-import Summary from "../../components/Summary";
-import { SlOptionsVertical } from "react-icons/sl";
-import { useRouter } from "next/router";
+} from 'react-icons/ri'
+import { Pagination } from '../../components/Pagination'
+import Link from 'next/link'
+import api from '../../services/api'
+import { useEffect, useState } from 'react'
+import { format } from 'date-fns'
+import AlertDelete from '../../components/AlertDelete'
+import Summary from '../../components/Summary'
+import { SlOptionsVertical } from 'react-icons/sl'
+import { useRouter } from 'next/router'
 
 interface Budget {
-  id: string;
-  year: Number;
-  totalAmount: Number;
-  expenseAmount: Number;
-  incomeAmount: Number;
-  created_at: Date;
-  updated_at: Date;
+  id: string
+  year: Number
+  totalAmount: Number
+  expenseAmount: Number
+  incomeAmount: Number
+  created_at: Date
+  updated_at: Date
 }
 
 export default function MonthList() {
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,
-  });
+  })
 
-  const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [budgets, setBudgets] = useState<Budget[]>([])
 
-
-  
-  const router = useRouter();
-  const { id } = router.query;
+  const router = useRouter()
+  const { id } = router.query
 
   async function loadBudgets() {
-    await api.get(`months/budget/${id}`).then((response) => setBudgets(response.data));  
+    await api
+      .get(`months/budget/${id}`)
+      .then((response) => setBudgets(response.data))
   }
 
   useEffect(() => {
-    loadBudgets();
-  }, [setBudgets, id]);
+    loadBudgets()
+  }, [setBudgets, id])
 
   async function handleDelete(id: string) {
-    await api.delete(`budget/month/${id}`);
+    await api.delete(`budget/month/${id}`)
 
-    const budgetIndex = budgets.findIndex((b) => b.id === id);
-    const budget = [...budgets];
+    const budgetIndex = budgets.findIndex((b) => b.id === id)
+    const budget = [...budgets]
 
-    budget.splice(budgetIndex, 1);
-    setBudgets(budget);
+    budget.splice(budgetIndex, 1)
+    setBudgets(budget)
   }
 
-  const [modalRemoveTool, setModalRemoveTool] = useState(false);
+  const [modalRemoveTool, setModalRemoveTool] = useState(false)
 
   function openModalRemove() {
-    setModalRemoveTool(true);
+    setModalRemoveTool(true)
   }
 
   function toggleModalRemove(): void {
-    setModalRemoveTool(!modalRemoveTool);
+    setModalRemoveTool(!modalRemoveTool)
   }
 
   return (
@@ -97,14 +97,12 @@ export default function MonthList() {
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
         <Box flex="1">
-         
-            {/* <Summary
+          {/* <Summary
               id={1}
               income={balance?.incomeAmount}
               expense={balance?.expenseAmount}
               total={balance?.totalAmount}
             /> */}
-       
 
           <Box borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
@@ -126,60 +124,80 @@ export default function MonthList() {
             <Table colorScheme="whiteAlpha">
               <Thead>
                 <Tr>
-                  <Th px={["4", "4", "6"]} color="gray.300" width="8">
+                  <Th px={['4', '4', '6']} color="gray.300" width="8">
                     <Checkbox colorScheme="green"></Checkbox>
                   </Th>
-                  <Th>Ano</Th>
+                  <Th>Mês</Th>
                   <Th>Data de atualização</Th>
                   <Th>Lançamentos</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {Array.isArray(budgets) && budgets.map((budget) => (
-                  <Tr key={budget.id} cursor="pointer">
-                    <Td px={["4", "4", "6"]}>
-                      <Checkbox colorScheme="green"></Checkbox>
-                    </Td>
-                    <Td>
-                      <Box>
-                        <Text fontWeight="bold">{budget.month}</Text>
-                        <Text fontSize="sm" color="gray.300">
-                          {format(
-                            new Date(budget.created_at),
-                            "yyyy-MM-dd"
-                          )}
-                        </Text>
-                      </Box>
-                    </Td>
+                {Array.isArray(budgets) &&
+                  budgets.map((budget) => (
+                    <Tr key={budget.id} cursor="pointer">
+                      <Td px={['4', '4', '6']}>
+                        <Checkbox colorScheme="green"></Checkbox>
+                      </Td>
+                      <Td>
+                        <Box>
+                          <Text fontWeight="bold">{budget.month}</Text>
+                          <Text fontSize="sm" color="gray.300">
+                            {format(new Date(budget.created_at), 'yyyy-MM-dd')}
+                          </Text>
+                        </Box>
+                      </Td>
 
-                    <Td>
-                      {budget.updated_at ? (
-                        format(new Date(budget.updated_at), "yyyy-MM-dd")
-                      ) : (
-                        <>-</>
-                      )}
-                    </Td>
-                    <Td>
-                      <Link href={`/entries?id=${budget.id}&budget=${budget.budget_id}`}>
-                        <Text color="green.300" fontWeight="">
-                          Visualizar
-                        </Text>
-                      </Link>
-                    </Td>
-
-                    <Td>
-                      <Menu>
-                        <MenuButton
-                          bg="transparent"
-                          _hover={{ bg: "transparent" }}
-                          as={Button}
+                      <Td>
+                        {budget.updated_at ? (
+                          format(new Date(budget.updated_at), 'yyyy-MM-dd')
+                        ) : (
+                          <>-</>
+                        )}
+                      </Td>
+                      <Td>
+                        <Link
+                          href={`/entries?id=${budget.id}&budget=${budget.budget_id}`}
                         >
-                          <SlOptionsVertical />
-                        </MenuButton>
-                        <MenuList textColor="black">
-                          <Link href={`/budgets/edit?id=${budget.id}`}>
-                            <MenuItem as="button" _hover={{ bg: "gray.50" }}>
+                          <Text color="green.300" fontWeight="">
+                            Visualizar
+                          </Text>
+                        </Link>
+                      </Td>
+
+                      <Td>
+                        <Menu>
+                          <MenuButton
+                            bg="transparent"
+                            _hover={{ bg: 'transparent' }}
+                            as={Button}
+                          >
+                            <SlOptionsVertical />
+                          </MenuButton>
+                          <MenuList textColor="black">
+                            <Link href={`/months/edit?id=${budget.id}`}>
+                              <MenuItem as="button" _hover={{ bg: 'gray.50' }}>
+                                <Button
+                                  mr="2"
+                                  as="a"
+                                  size="sm"
+                                  fontSize="small"
+                                  colorScheme="gray.50"
+                                  textColor="black"
+                                  leftIcon={
+                                    <Icon as={RiPencilLine} fontSize="16" />
+                                  }
+                                >
+                                  Editar
+                                </Button>
+                              </MenuItem>
+                            </Link>
+                            <MenuItem
+                              onClick={() => openModalRemove()}
+                              as="button"
+                              _hover={{ bg: 'gray.50' }}
+                            >
                               <Button
                                 mr="2"
                                 as="a"
@@ -188,47 +206,27 @@ export default function MonthList() {
                                 colorScheme="gray.50"
                                 textColor="black"
                                 leftIcon={
-                                  <Icon as={RiPencilLine} fontSize="16" />
+                                  <Icon
+                                    textColor="red.400"
+                                    as={RiDeleteBin6Line}
+                                    fontSize="16"
+                                  />
                                 }
                               >
-                                Editar
+                                <Text textColor="red.400">Excluir</Text>
                               </Button>
                             </MenuItem>
-                          </Link>
-                          <MenuItem
-                            onClick={() => openModalRemove()}
-                            as="button"
-                            _hover={{ bg: "gray.50" }}
-                          >
-                            <Button
-                              mr="2"
-                              as="a"
-                              size="sm"
-                              fontSize="small"
-                              colorScheme="gray.50"
-                              textColor="black"
-                              leftIcon={
-                                <Icon
-                                  textColor="red.400"
-                                  as={RiDeleteBin6Line}
-                                  fontSize="16"
-                                />
-                              }
-                            >
-                              <Text textColor="red.400">Excluir</Text>
-                            </Button>
-                          </MenuItem>
-                        </MenuList>
-                      </Menu>
+                          </MenuList>
+                        </Menu>
 
-                      <AlertDelete
-                        isOpen={modalRemoveTool}
-                        setIsOpen={toggleModalRemove}
-                        handleRemove={() => handleDelete(budget.id)}
-                      />
-                    </Td>
-                  </Tr>
-                ))}
+                        <AlertDelete
+                          isOpen={modalRemoveTool}
+                          setIsOpen={toggleModalRemove}
+                          handleRemove={() => handleDelete(budget.id)}
+                        />
+                      </Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
             <Pagination />
@@ -236,5 +234,5 @@ export default function MonthList() {
         </Box>
       </Flex>
     </Box>
-  );
+  )
 }

@@ -92,16 +92,6 @@ export default function UserList() {
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
         <Box flex="1">
-          {/* {budgets.map((budget) => (
-            // eslint-disable-next-line react/jsx-key
-            <Summary
-              id={budget.id}
-              income={budget.incomeAmount}
-              expense={budget.expenseAmount}
-              total={budget.totalAmount}
-            />
-          ))} */}
-
           <Box borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
               <Heading size="lg" fontWeight="normal">
@@ -159,33 +149,33 @@ export default function UserList() {
                     </Td>
                     <Td>
                       <Link href={`/accounts?id=${budget.budget.id}`}>
-                      <Button
-                                mr="2"
-                                as="a"
-                                size="sm"
-                                fontSize="small"
-                                colorScheme="gray.50"
-                                textColor="white"
-                                leftIcon={
-                                  <Icon as={RiSearch2Line} fontSize="16" />
-                                }
-                              />
+                        <Button
+                          mr="2"
+                          as="a"
+                          size="sm"
+                          fontSize="small"
+                          colorScheme="gray.50"
+                          textColor="white"
+                          leftIcon={
+                            <Icon as={RiSearch2Line} fontSize="16" />
+                          }
+                        />
                       </Link>
                     </Td>
 
                     <Td>
                       <Link href={`/months?id=${budget.budget.id}`}>
-                      <Button
-                                mr="2"
-                                as="a"
-                                size="sm"
-                                fontSize="small"
-                                colorScheme="gray.50"
-                                textColor="white"
-                                leftIcon={
-                                  <Icon as={RiSearch2Line} fontSize="16" />
-                                }
-                              />
+                        <Button
+                          mr="2"
+                          as="a"
+                          size="sm"
+                          fontSize="small"
+                          colorScheme="gray.50"
+                          textColor="white"
+                          leftIcon={
+                            <Icon as={RiSearch2Line} fontSize="16" />
+                          }
+                        />
                       </Link>
                     </Td>
 

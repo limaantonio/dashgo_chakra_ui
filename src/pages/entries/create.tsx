@@ -61,8 +61,8 @@ interface Item {
 interface Entry {
   id: string; 
   description: string;
-  month: Number;
   installment: Number;
+  budget_month_id: string;
 }
 
 const createFormSchema = yup.object().shape({
@@ -99,17 +99,16 @@ export default function CreateBudget() {
     // setEntry(values);
     // console.log(entry);
     const entry = values
-    console.log(entry)
+    
     entry.budget_month_id = budget_month
 
     const data = {
-      items,
-      entry
+      entry,
+      items
     }
     
     const res = await api.post("item", data);
-    if (res && res.status === 200) {
-      console.log(data);
+    if (res) {
       router.push(`/entries?id=${data.entry.budget_month_id}`);
     } else {
       toast({

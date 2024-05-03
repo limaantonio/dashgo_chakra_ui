@@ -15,7 +15,7 @@ import {
   Icon,
   Td,
   Text,
-  
+
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
@@ -59,6 +59,20 @@ export default function CreateBudget() {
   });
 
   const errors = formState.errors;
+  const toast = useToast();
+  const [accounts, setAccounts] = useState<Account[]>([])
+  const [amount, setAmount] = useState<Number>(0);
+  const [number_of_installments, setNumberOfInstallments] = useState<Number>(0);
+  const [name, setName] = useState<string>("");
+  const [type, setType] = useState<string>("");
+  const [availableAmount, setAvailableAmount] = useState<Number>(0);
+  const [dotacao, setDotacao] = useState<Number>(0);
+  const [subAccounts, setSubAccounts] = useState<Account[]>([]);
+  const [subAccount, setSubAccount] = useState();
+
+  useEffect(() => {
+    api.get("subaccount").then((response) => setSubAccounts(response.data));
+  }, []);
 
   const hangleCreateBudget: SubmitHandler<CreateBudgetFormData> = async (
     values
@@ -69,14 +83,13 @@ export default function CreateBudget() {
 
     const data = {
       accounts,
-      budget :{
+      budget: {
         year: y,
-      } 
+      }
     }
 
-    console.log(data)
-
     const response = await api.post("account", data);
+    
     if (response.status === 200) {
       toast({
         title: "Orçamento criado.",
@@ -87,29 +100,19 @@ export default function CreateBudget() {
       });
       router.push("/budgets");
     } else {
-       toast({
+      toast({
         title: "Erro ao criar lançamento. Saldo insulficiente",
         status: "error",
         duration: 9000,
         isClosable: true,
       });
     }
-    
   };
 
-  const toast = useToast();
-  const [accounts, setAccounts] = useState<Account[]>([])
-  const [amount, setAmount] = useState<Number>(0);
-  const [number_of_installments, setNumberOfInstallments] = useState<Number>(0);
-  const [name, setName] = useState<string>("");
-  const [type, setType] = useState<string>("");
-  const [availableAmount, setAvailableAmount] = useState<Number>(0);
-  const [dotacao, setDotacao] = useState<Number>(0);
-  
   function addItem(e: Event) {
     e.preventDefault()
     const item = {
-      name, 
+      name,
       amount,
       number_of_installments,
       sub_account_id: subAccount?.id,
@@ -131,8 +134,7 @@ export default function CreateBudget() {
       setNumberOfInstallments(0);
       handleChangeAvailableAmount();
       setSubAccount("");
-    
-      
+
       toast({
         title: "Item adicionado.",
         description: "O item foi adicionado com sucesso.",
@@ -141,38 +143,28 @@ export default function CreateBudget() {
         isClosable: true,
       });
     }
-    
   }
 
   async function handleDelete(id: string) {
- 
     const itemIndex = accounts.findIndex((b) => b.id === id);
     const item = [...accounts];
-  
+
     item.splice(itemIndex, 1);
     setAccounts(item);
   }
 
-  useEffect(() => {
-    api.get("subaccount").then((response) => setSubAccounts(response.data));
-    
-  }, []);
-
-  const [subAccounts, setSubAccounts] = useState<Account[]>([]);
-  const [subAccount, setSubAccount] = useState();
- 
   function transformDataToOptions() {
 
     const selectSubAccounts = [];
     subAccounts?.map(
       (budget) =>
-        (selectSubAccounts.push({
-          id: budget.id,
-          value: budget.id,
-          label: budget.name
-        }),
+      (selectSubAccounts.push({
+        id: budget.id,
+        value: budget.id,
+        label: budget.name
+      }),
     ));
-    
+
     return selectSubAccounts
   }
 
@@ -184,7 +176,6 @@ export default function CreateBudget() {
     let used_value = 0;
 
     if (accounts.length > 0) {
-   
       accounts?.map((account) => {
         console.log(account.sub_account)
         console.log(subAccount.name)
@@ -193,34 +184,19 @@ export default function CreateBudget() {
         }
       });
     }
-
-    console.log(used_value)
-    console.log(subAccount?.amount)
-    
     setAvailableAmount(subAccount?.amount - used_value);
-    
-    
-   
-    
   }
 
   function handleChangeAvailableAmount() {
     let used_value = 0;
 
     if (accounts.length > 0) {
-   
       accounts?.map((account) => {
-        //console.log(account.sub_account)
-        //console.log(subAccount.name)
         if (account.sub_account == subAccount?.name) {
           used_value += Number(account.amount);
         }
       });
     }
-
-    console.log(used_value)
-    console.log(subAccount?.amount)
-    
     setAvailableAmount(subAccount?.amount - used_value);
   }
 
@@ -229,7 +205,7 @@ export default function CreateBudget() {
       <Header />
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
-        
+
 
         <Box
           as="form"
@@ -244,13 +220,13 @@ export default function CreateBudget() {
           </Heading>
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="6" paddingY="6">
-          <Input
-                label="Ano"
-                type="text"
-                {...register("year")}
-                error={errors.year}
-              />
-           
+            <Input
+              label="Ano"
+              type="text"
+              {...register("year")}
+              error={errors.year}
+            />
+
           </VStack>
 
           <Flex mt="8" justify="flex-end">
@@ -282,26 +258,26 @@ export default function CreateBudget() {
         </Box>
         <Box
           as="form"
-          onSubmit={addItem} 
+          onSubmit={addItem}
           flex="1"
           borderRightRadius={8}
           bg="gray.800"
           p={["6", "8"]}
         >
           <Heading size="md" fontWeight="normal">
-           Adicionar Item
+            Adicionar Item
           </Heading>
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8">
-          <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              
+            <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
+
               <Select
                 label="Sub-Conta"
                 //{...register("sub_account_id")}
                 value={subAccount?.id ? subAccount?.id : ""}
                 onChange={(e) => selectionSubAccount(e.target.value)}
                 placeholder="Selecione"
-              
+
                 options={transformDataToOptions()}
               />
 
@@ -332,88 +308,88 @@ export default function CreateBudget() {
                 label="Nome"
                 type="text"
                 value={name}
-          
+
                 onChange={(e) => {
                   setName(e.target.value);
                 }}
-               
-               // error={errors.description}
+
+              // error={errors.description}
               />
               <HStack>
 
-             
-              <Input
-                label="Valor"
-                type="number"
-                value={amount}
-                onChange={(e) => {
-                  setAmount(e.target.value);
-                }}
-               // error={errors.amount}
-              />
-              <Input
-                label="Parcelas"
-                type="qtde"
-                value={number_of_installments}
-                onChange={(e) => {
-                  setNumberOfInstallments(e.target.value);
-                }}
+
+                <Input
+                  label="Valor"
+                  type="number"
+                  value={amount}
+                  onChange={(e) => {
+                    setAmount(e.target.value);
+                  }}
+                // error={errors.amount}
+                />
+                <Input
+                  label="Parcelas"
+                  type="qtde"
+                  value={number_of_installments}
+                  onChange={(e) => {
+                    setNumberOfInstallments(e.target.value);
+                  }}
                 //error={errors.number_of_installments}
-              />
-               </HStack>
+                />
+              </HStack>
             </SimpleGrid>
           </VStack>
           <Table colorScheme="whiteAlpha">
             <Thead>
               <Tr>
                 <Th>Nome</Th>
-                <Th>Valor</Th>   
+                <Th>Valor</Th>
                 <Th>Parcelas</Th>
                 <Th>Tipo</Th>
                 <Th>Sub-Conta</Th>
-               
+
               </Tr>
             </Thead>
             <Tbody>
               {accounts.map((entry) => (
                 // eslint-disable-next-line react/jsx-key
-                  <Tr cursor="pointer">
-                    <Td>
-                      <Text fontWeight="bold">{entry.name}</Text>
-                    </Td>
-                    <Td>
-                      <Text fontWeight="bold">{entry.amount}</Text>
-                    </Td>
-                    <Td>
-                      <Text fontWeight="bold">{entry.number_of_installments}</Text>
-                    </Td>
-                    <Td>
-                      <Text fontWeight="bold">{entry.type}</Text>
-                    </Td>
-                    <Td>
-                      <Text fontWeight="bold">{entry.sub_account}</Text>
-                    </Td>
-                   
-                    <Td>
-                      <HStack>
-                        <Box ml="auto">
-                          <Button
-                            onClick={() => handleDelete(entry.id)}
-                            as="a"
-                            size="sm"
-                            fontSize="small"
-                            colorScheme="red"
-                            alignItems="center"
-                            justifyContent="center"
-                            flexDirection="row"
-                           >
-                             <Icon as={RiDeleteBin6Line} fontSize="16" />
-                          </Button>
-                         
-                        </Box>
-                      </HStack>
-                    </Td>
-                  </Tr>
+                <Tr cursor="pointer">
+                  <Td>
+                    <Text fontWeight="bold">{entry.name}</Text>
+                  </Td>
+                  <Td>
+                    <Text fontWeight="bold">{entry.amount}</Text>
+                  </Td>
+                  <Td>
+                    <Text fontWeight="bold">{entry.number_of_installments}</Text>
+                  </Td>
+                  <Td>
+                    <Text fontWeight="bold">{entry.type}</Text>
+                  </Td>
+                  <Td>
+                    <Text fontWeight="bold">{entry.sub_account}</Text>
+                  </Td>
+
+                  <Td>
+                    <HStack>
+                      <Box ml="auto">
+                        <Button
+                          onClick={() => handleDelete(entry.id)}
+                          as="a"
+                          size="sm"
+                          fontSize="small"
+                          colorScheme="red"
+                          alignItems="center"
+                          justifyContent="center"
+                          flexDirection="row"
+                        >
+                          <Icon as={RiDeleteBin6Line} fontSize="16" />
+                        </Button>
+
+                      </Box>
+                    </HStack>
+                  </Td>
+                </Tr>
               ))}
             </Tbody>
           </Table>
@@ -423,7 +399,7 @@ export default function CreateBudget() {
                 colorScheme="purple"
                 type="submit"
                 isLoading={formState.isSubmitting}
-                
+
                 leftIcon={<Icon as={RiAddLine} fontSize="20" />}
               >
                 Adicionar

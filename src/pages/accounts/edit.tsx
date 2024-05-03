@@ -85,12 +85,16 @@ export default function CreateBudget() {
     }
     console.log(values)
     await api.put(`account/${id}`, data);
-    router.push('/accounts')
+    console.log(accounts)
+    router.push(`/accounts?id=${accounts?.budget_id}`)
   };
 
   const [subAccounts, setSubAccounts] = useState();
   const [subAccount, setSubAccount] = useState();
   const [accounts, setAccounts] = useState<Account>();
+  const [name, setName] = useState();
+  const [amount, setAmount] = useState();
+  const [number_of_installments, setNumber_of_installments] = useState();
  
   async function getBudget() {
     await api.get("subaccount").then((response) => setSubAccounts(response.data));
@@ -98,6 +102,9 @@ export default function CreateBudget() {
 
   async function getAccount() {
     await api.get(`accountid/${id}`).then((response) => setAccounts(response.data));
+    setName(accounts?.name)
+    setAmount(accounts?.amount)
+    setNumber_of_installments(accounts?.number_of_installments)
   }
 
   function transformDataToOptions() {
@@ -113,7 +120,7 @@ export default function CreateBudget() {
     return selectBudget
   }
 
-  console.log(subAccount)
+  console.log(accounts)
 
   useEffect(() => {
     getAccount()
@@ -161,9 +168,9 @@ export default function CreateBudget() {
                 error={errors.name}
                 {...register("name")}
                 onChange={(e) => {
-                  setAccounts(e.target.value);
+                  setName(e.target.value);
                 }}
-                value={accounts?.name}
+                value={name}
               />
             
             </SimpleGrid>
@@ -177,9 +184,9 @@ export default function CreateBudget() {
                 {...register("amount")}
                 error={errors.amount}
                 onChange={(e) => {
-                  setAccounts(e.target.value);
+                  setAmount(e.target.value);
                 }}
-                value={accounts?.amount}
+                value={amount}
               />
 
               <Input
@@ -188,9 +195,9 @@ export default function CreateBudget() {
                 {...register("number_of_installments")}
                 error={errors.number_of_installments}
                 onChange={(e) => {
-                  setAccounts(e.target.value);
+                  setNumber_of_installments(e.target.value);
                 }}
-                value={accounts?.number_of_installments}
+                value={number_of_installments}
               />
             </SimpleGrid>
           </VStack>
