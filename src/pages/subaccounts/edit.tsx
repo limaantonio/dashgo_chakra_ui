@@ -7,12 +7,10 @@ import {
   SimpleGrid,
   HStack,
   Button,
-  FormLabel,
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Form/Input";
-import { Select } from "../../components/Form/Select";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import * as yup from "yup";
@@ -46,8 +44,7 @@ type CreateAccountFormData = {
   name: string;
   amount: Number;
   type: AccountType;
-  number_of_installments: Number;
-  sub_account: SubAccountType;
+  percentage: Number;
 };
 
 interface Budget {
@@ -63,46 +60,49 @@ const createFormSchema = yup.object().shape({
 });
 
 export default function CreateBudget() {
-  const router = useRouter()
-
+  const [subAccount, setSubAccount] = useState();
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [type, setType] = useState<AccountType>();
+  const [percentage, setPercentage] = useState(0);
+  const router = useRouter();
+  const toast = useToast();
+  const { id } = router.query;
+  
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(createFormSchema),
   });
-
   const errors = formState.errors;
-  const { id } = router.query;
 
-  const hangleCreateBudget: SubmitHandler<CreateAccountFormData> = async (
-    values
-  ) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    const data = {
-      name: values.name,
-      amount: values.amount,
-      type: values.type,
-      number_of_installments: values.number_of_installments,
-      sub_account_id: subAccount,
-    }
-    console.log(values)
-    await api.put(`account/${id}`, data);
-    router.push('/accounts')
-  };
-
-  const [subAccount, setSubAccount] = useState();
- 
   async function getSubAccount() {
-    await api.get(`subaccount/${id}`).then((response) => setSubAccount(response.data));
+    await api.get(`subaccount/${id}`).then((response) => {
+      setName(response.data.name);
+      setAmount(response.data.amount);
+      setType(response.data.type);
+      setPercentage(response.data.percentage);
+    });
   }
-
-
-  console.log(subAccount)
 
   useEffect(() => {
     getSubAccount()
   }, []);
 
-  const toast = useToast();
- 
+  const handleEditBudget: SubmitHandler<CreateAccountFormData> = async (
+    values
+  ) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    
+    const data  = {
+      name,
+      amount,
+      type,
+      percentage,
+    }
+   
+    await api.put(`subaccount/${id}`, data);
+    router.push('/subaccounts')
+  };
+
   return (
     <Box>
       <Header />
@@ -111,7 +111,7 @@ export default function CreateBudget() {
 
         <Box
           as="form"
-          onSubmit={handleSubmit(hangleCreateBudget)}
+          onSubmit={handleSubmit(handleEditBudget)}
           flex="1"
           borderRadius={8}
           bg="gray.800"
@@ -128,23 +128,21 @@ export default function CreateBudget() {
                 label="Nome"
                 type="text"
                 {...register("name")}
-                error={errors.name}
-                {...register("name")}
                 onChange={(e) => {
-                  getSubAccount(e.target.value);
+                  setName(e.target.value);
                 }}
-                value={subAccount?.name}
+                value={name}
               />
 
                <Input
                 label="Tipo"
-                type="number"
+                type="text"
                 {...register("type")}
-                error={errors.amount}
+                //error={errors.amount}
                 onChange={(e) => {
-                  getSubAccount(e.target.value);
+                  setType(e.target.value);
                 }}
-                value={subAccount?.type}
+                value={type}
               />
               
             
@@ -159,31 +157,21 @@ export default function CreateBudget() {
                 {...register("amount")}
                 error={errors.amount}
                 onChange={(e) => {
-                  getSubAccount(e.target.value);
+                  setAmount(e.target.value);
                 }}
-                value={subAccount?.amount}
+                value={amount}
               />
 
               <Input
                 label="Percentual"
                 type="number"
-                {...register("number_of_installments")}
-                error={errors.number_of_installments}
+                {...register("percentage")}
+                //error={errors.number_of_installments}
                 onChange={(e) => {
-                  getSubAccount(e.target.value);
+                 setPercentage(e.target.value);
                 }}
-                value={subAccount?.percentage}
+                value={percentage}
               />
-               {/* <Input
-                label="Principal"
-                type="number"
-                {...register("number_of_installments")}
-                error={errors.number_of_installments}
-                onChange={(e) => {
-                  getSubAccount(e.target.value);
-                }}
-                value={subAccount?.principal}
-              /> */}
             </SimpleGrid>
           </VStack>
           <Flex mt="8" justify="flex-end">

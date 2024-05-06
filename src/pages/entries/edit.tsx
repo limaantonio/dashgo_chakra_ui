@@ -67,12 +67,19 @@ export default function CreateBudget() {
     values
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    await api.post("entry", values);
-    router.push("/entries");
+    await api.put(`entry/${id}`, values);
+    router.push(`/entries?id=${entries?.budget_month?.id}`);
   };
 
   const [accounts, setAccounts] = useState([]);
   const [entries, setEntries] = useState([]);
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
+  const [number_of_installments, setNumber_of_installments] = useState("");
+
+
+
+  console.log(entries)
 
   async function getAccounts(){
     await  api.get("accounts").then((response) => setAccounts(response.data));
@@ -80,6 +87,9 @@ export default function CreateBudget() {
 
   async function getEntry() {
     await api.get(`entry/${id}`).then((response) => setEntries(response.data));
+    setDescription(entries?.description);
+    setAmount(entries?.amount);
+    setNumber_of_installments(entries?.number_of_installments);
   }
 
   useEffect(() => {
@@ -137,9 +147,9 @@ export default function CreateBudget() {
                 {...register("description")}
                 error={errors.description}
                 onChange={(e) => {
-                  setEntries(e.target.value);
+                  setDescription(e.target.value);
                 }}
-                value={entries?.description}
+                value={description}
               />
               <Input
                 label="Valor"
@@ -147,9 +157,9 @@ export default function CreateBudget() {
                 {...register("amount")}
                 error={errors.amount}
                 onChange={(e) => {
-                  setEntries(e.target.value);
+                  setAmount(e.target.value);
                 }}
-                value={entries?.amount}
+                value={amount}
               />
               <Input
                 label="Número de parcelas"
@@ -157,9 +167,9 @@ export default function CreateBudget() {
                 {...register("number_of_installments")}
                 error={errors.number_of_installments}
                 onChange={(e) => {
-                  setEntries(e.target.value);
+                  setNumber_of_installments(e.target.value);
                 }}
-                value={entries?.installment}
+                value={number_of_installments}
               />
             </SimpleGrid>
           </VStack>

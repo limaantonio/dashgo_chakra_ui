@@ -38,7 +38,7 @@ const AlertDelete: React.FC<IModalProps> = ({
 
   return (
     <>
-      <AlertDialog isOpen={isOpen} onClose={!isOpen}>
+      <AlertDialog isOpen={isOpen} onClose={() => setIsOpen()}>
         <AlertDialogOverlay>
           <AlertDialogContent as="form" onSubmit={handleSubmit}>
             <AlertDialogHeader

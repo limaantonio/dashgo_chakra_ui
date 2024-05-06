@@ -176,9 +176,6 @@ export default function CreateBudget() {
                 {...register("amount")}
                 error={errors.amount}
               />
-              
-              <Text>{id}</Text>
-          
              
               <Input
                 label="Número de parcelas"
@@ -190,7 +187,7 @@ export default function CreateBudget() {
           </VStack>
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
-              <Link href="/accounts" passHref>
+              <Link href={`/accounts?id=${id}`} passHref>
                 <Button as="a" colorScheme="whiteAlpha">
                   Cancelar
                 </Button>

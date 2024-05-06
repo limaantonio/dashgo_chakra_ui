@@ -7,6 +7,7 @@ import {
   SimpleGrid,
   HStack,
   Button,
+  Text,
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
@@ -44,8 +45,14 @@ export default function CreateBudget() {
   const errors = formState.errors;
   const router = useRouter();
   const { id } = router.query;
+  const toast = useToast();
+  const [budget, setBudget] = useState<Budget>();
 
-  const hangleCreateBudget: SubmitHandler<CreateBudgetFormData> = async (
+  useEffect(() => {
+    api.get(`budget/${id}`).then((response) => setBudget(response.data));
+  }, [id]);
+
+  const handleEditBudget: SubmitHandler<CreateBudgetFormData> = async (
     values
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -54,24 +61,14 @@ export default function CreateBudget() {
     router.push("/budgets");
   };
 
-  const [budgets, setBudgets] = useState<Budget>();
-
-  useEffect(() => {
-    api.get(`budget/${id}`).then((response) => setBudgets(response.data));
-    setBudgets(budgets?.year);
-  }, [id]);
-
-  const toast = useToast();
-
   return (
     <Box>
       <Header />
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
-
         <Box
           as="form"
-          onSubmit={handleSubmit(hangleCreateBudget)}
+          onSubmit={handleSubmit(handleEditBudget)}
           flex="1"
           borderRadius={8}
           bg="gray.800"
@@ -88,12 +85,13 @@ export default function CreateBudget() {
                 type="number"
                 {...register("year")}
                 onChange={(e) => {
-                  setBudgets(e.target.value);
+                  setBudget(e.target.value);
                 }}
-                value={budgets?.year}
+                value={budget?.budget?.year}
                 error={errors.name}
               />
             </SimpleGrid>
+           
           </VStack>
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">

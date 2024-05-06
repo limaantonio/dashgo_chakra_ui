@@ -20,9 +20,9 @@ import {
   Thead,
   Tr,
   useBreakpointValue,
-} from "@chakra-ui/react";
-import { SideBar } from "../../components/SideBar";
-import { Header } from "../../components/Header";
+} from '@chakra-ui/react'
+import { SideBar } from '../../components/SideBar'
+import { Header } from '../../components/Header'
 import {
   RiAddLine,
   RiArrowDownSFill,
@@ -38,160 +38,159 @@ import {
   RiMenuUnfoldFill,
   RiPencilLine,
   RiPlayCircleLine,
-} from "react-icons/ri";
-import { SlOptionsVertical } from "react-icons/sl";
-import { Pagination } from "../../components/Pagination";
-import Link from "next/link";
-import api from "../../services/api";
-import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import AlertDelete from "../../components/AlertDelete";
-import { useRouter } from "next/router";
-import Summary from "../../components/Summary";
-import { useHistory } from "next/router";
+} from 'react-icons/ri'
+import { SlOptionsVertical } from 'react-icons/sl'
+import { Pagination } from '../../components/Pagination'
+import Link from 'next/link'
+import api from '../../services/api'
+import { useEffect, useState } from 'react'
+import { format } from 'date-fns'
+import AlertDelete from '../../components/AlertDelete'
+import { useRouter } from 'next/router'
+import Summary from '../../components/Summary'
+import { useHistory } from 'next/router'
 
 interface Account {
-  id: string;
-  name: string;
-  amount: Number;
-  type: string;
-  entry: Entry;
-  number_of_installments: Number;
-  created_at: Date;
-  updated_at: Date;
+  id: string
+  name: string
+  amount: Number
+  type: string
+  entry: Entry
+  number_of_installments: Number
+  created_at: Date
+  updated_at: Date
 }
 
 interface Balance {
-  id: string;
-  month: Number;
+  id: string
+  month: Number
 }
 
 interface Entry {
-  id: string;
-  description: string;
-  amount: Number;
+  id: string
+  description: string
+  amount: Number
   account: {
-    id: string;
-    name: string;
-    amount: Number;
-    number_of_installments: Number;
-  };
-  number_of_installments: Number;
-  created_at: Date;
-  updated_at: Date;
+    id: string
+    name: string
+    amount: Number
+    number_of_installments: Number
+  }
+  number_of_installments: Number
+  created_at: Date
+  updated_at: Date
 }
 
 export default function UserList() {
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,
-  });
+  })
 
-  const router = useRouter();
-  const { id, budget } = router.query;
+  const router = useRouter()
+  const { id, budget } = router.query
 
   const balances = [
     {
       id: 1,
-      month: "Janeiro",
+      month: 'Janeiro',
     },
     {
       id: 2,
-      month: "Fevereiro",
+      month: 'Fevereiro',
     },
     {
       id: 3,
-      month: "Março",
+      month: 'Março',
     },
     {
       id: 4,
-      month: "Abril",
+      month: 'Abril',
     },
     {
       id: 5,
-      month: "Maio",
+      month: 'Maio',
     },
     {
       id: 6,
-      month: "Junho",
+      month: 'Junho',
     },
     {
       id: 7,
-      month: "Julho",
+      month: 'Julho',
     },
     {
       id: 8,
-      month: "Agosto",
+      month: 'Agosto',
     },
     {
       id: 9,
-      month: "Setembro",
+      month: 'Setembro',
     },
     {
       id: 10,
-      month: "Outubro",
+      month: 'Outubro',
     },
     {
       id: 11,
-      month: "Novembro",
+      month: 'Novembro',
     },
     {
       id: 12,
-      month: "Dezembro",
+      month: 'Dezembro',
     },
-  ];
+  ]
 
-  const [balance, setBalance] = useState();
-  const [account, setAccount] = useState(0);
-  const [entriesAccout, setAccountEntries] = useState<Entry[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const [accountsFilter, setAccountsFilter] = useState<Account[]>([]);
-  const [incomeAmount, setIncomeAmount] = useState(0);
-  const [expenseAmount, seTExpenseAmount] = useState(0);
-  const [status, setStatus] = useState();
-
+  const [balance, setBalance] = useState()
+  const [account, setAccount] = useState(0)
+  const [entriesAccout, setAccountEntries] = useState<Entry[]>([])
+  const [accounts, setAccounts] = useState<Account[]>([])
+  const [entries, setEntries] = useState<Entry[]>([])
+  const [accountsFilter, setAccountsFilter] = useState<Account[]>([])
+  const [incomeAmount, setIncomeAmount] = useState(0)
+  const [expenseAmount, seTExpenseAmount] = useState(0)
+  const [status, setStatus] = useState()
 
   async function loadAccount() {
-    await api.get(`entry/month/${id}`).then((response) => setEntries(response.data));
-    await api.get(`months/budget/balance/${id}`).then((response) => setBalance(response.data));
+    await api
+      .get(`entry/month/${id}`)
+      .then((response) => setEntries(response.data))
+    await api
+      .get(`months/budget/balance/${id}`)
+      .then((response) => setBalance(response.data))
   }
 
- 
-    useEffect(() => {
-      loadAccount();
-    }, [setEntries, setBalance, id]);
-  
+  useEffect(() => {
+    loadAccount()
+  }, [setEntries, setBalance, id])
 
   console.log(entries)
 
-  
   async function handleDelete(id: string) {
-    await api.delete(`entry/${id}`);
+    await api.delete(`entry/${id}`)
     console.log(id)
 
-    const entryIndex = entriesAccout.findIndex((b) => b.id === id);
-    const entry = [...entriesAccout];
+    const entryIndex = entriesAccout.findIndex((b) => b.id === id)
+    const entry = [...entriesAccout]
 
-    entry.splice(entryIndex, 1);
-    setEntries(entry);
+    entry.splice(entryIndex, 1)
+    setEntries(entry)
     loadAccount()
-    
   }
 
-  const [modalRemoveTool, setModalRemoveTool] = useState(false);
+  const [modalRemoveTool, setModalRemoveTool] = useState(false)
 
   function openModalRemove() {
-    setModalRemoveTool(true);
+    setModalRemoveTool(true)
   }
 
   function toggleModalRemove(): void {
-    setModalRemoveTool(!modalRemoveTool);
+    setModalRemoveTool(!modalRemoveTool)
   }
 
   async function handlePay(id: string) {
-    await api.post(`entry/${id}`);
-    getAccount();
+    await api.post(`entry/${id}`)
+    getAccount()
   }
 
   return (
@@ -201,10 +200,10 @@ export default function UserList() {
         <SideBar />
 
         <Box flex="1">
-          <Link href={`months?id=${budget}`} passHref>
+          <Link href={`accounts?id=${id}`} passHref>
             <Button
               mb="4"
-              _hover={{ bg: "transparent", textColor: "green.400" }}
+              _hover={{ bg: 'transparent', textColor: 'green.400' }}
               bg="transparent"
             >
               <RiArrowLeftLine fontSize="28" />
@@ -238,9 +237,9 @@ export default function UserList() {
                       {balances.map((b) => (
                         <MenuItem
                           as="button"
-                          bg={b.id === balance ? "green.400" : "white"}
-                          textColor={b.id === balance ? "white" : "black"}
-                          _hover={{ bg: "gray.50" }}
+                          bg={b.id === balance ? 'green.400' : 'white'}
+                          textColor={b.id === balance ? 'white' : 'black'}
+                          _hover={{ bg: 'gray.50' }}
                           key={b.id}
                           value={b.month}
                         >
@@ -250,7 +249,7 @@ export default function UserList() {
                       <MenuItem
                         bg="gray.50"
                         onClick={() => {
-                          setBalance(0);
+                          setBalance(0)
                         }}
                         as="button"
                       >
@@ -269,10 +268,12 @@ export default function UserList() {
                     >
                       Conta
                     </MenuButton>
-
                   </Menu>
                 )}
-                <Link href={`/entries/create?id=${budget}&budget_month=${id}`} passHref>
+                <Link
+                  href={`/entries/create?id=${budget}&budget_month=${id}`}
+                  passHref
+                >
                   <Button
                     as="a"
                     size="md"
@@ -288,7 +289,7 @@ export default function UserList() {
             <Table colorScheme="whiteAlpha">
               <Thead>
                 <Tr>
-                  <Th px={["4", "4", "6"]} color="gray.300" width="8">
+                  <Th px={['4', '4', '6']} color="gray.300" width="8">
                     <Checkbox colorScheme="green"></Checkbox>
                   </Th>
                   <Th>Titulo</Th>
@@ -302,20 +303,16 @@ export default function UserList() {
                 </Tr>
               </Thead>
               <Tbody>
-                {
-                    
-                 Array.isArray(entries) && entries.map((entry) => (
-                    <Tr
-                      key={entry?.id}
-                      cursor="pointer"
-                    >
-                      <Td px={["4", "4", "6"]}>
+                {Array.isArray(entries) &&
+                  entries.map((entry) => (
+                    <Tr key={entry?.id} cursor="pointer">
+                      <Td px={['4', '4', '6']}>
                         <Checkbox colorScheme="green"></Checkbox>
                       </Td>
                       <Td>
                         <Box>
                           <Text fontWeight="bold">{entry?.description}</Text>
-                          {entry?.account?.sub_account?.type === "INCOME" ? (
+                          {entry?.account?.sub_account?.type === 'INCOME' ? (
                             <Text fontSize="sm" color="blue.300">
                               Receita
                             </Text>
@@ -334,10 +331,10 @@ export default function UserList() {
                       </Td>
                       <Td>
                         <Text fontWeight="bold">
-                          {" "}
-                          {Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
+                          {' '}
+                          {Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
                           }).format(entry?.amount)}
                         </Text>
                       </Td>
@@ -346,13 +343,13 @@ export default function UserList() {
                       </Td>
 
                       <Td>
-                        {entry?.status === "PENDING"
-                          ? "Pendente"
-                          : entry?.status === "CLOSED"
-                          ? "Fechado"
-                          : entry?.status === "IN_PROGRESS"
-                          ? "Em andamento"
-                          : ""}
+                        {entry?.status === 'PENDING'
+                          ? 'Pendente'
+                          : entry?.status === 'CLOSED'
+                            ? 'Fechado'
+                            : entry?.status === 'IN_PROGRESS'
+                              ? 'Em andamento'
+                              : ''}
                       </Td>
 
                       <Td>
@@ -367,13 +364,13 @@ export default function UserList() {
                         <Menu>
                           <MenuButton
                             bg="transparent"
-                            _hover={{ bg: "transparent" }}
+                            _hover={{ bg: 'transparent' }}
                             as={Button}
                           >
                             <SlOptionsVertical />
                           </MenuButton>
                           <MenuList textColor="black">
-                            <MenuItem as="button" _hover={{ bg: "gray.50" }}>
+                            <MenuItem as="button" _hover={{ bg: 'gray.50' }}>
                               <Button
                                 mr="2"
                                 as="a"
@@ -382,7 +379,7 @@ export default function UserList() {
                                 colorScheme="gray.50"
                                 textColor="black"
                                 onClick={() => {
-                                  handlePay(entry?.id);
+                                  handlePay(entry?.id)
                                 }}
                                 leftIcon={
                                   <Icon
@@ -395,7 +392,7 @@ export default function UserList() {
                               </Button>
                             </MenuItem>
                             <Link href={`/entries/edit?id=${entry?.id}`}>
-                              <MenuItem as="button" _hover={{ bg: "gray.50" }}>
+                              <MenuItem as="button" _hover={{ bg: 'gray.50' }}>
                                 <Button
                                   mr="2"
                                   as="a"
@@ -414,7 +411,7 @@ export default function UserList() {
                             <MenuItem
                               onClick={() => openModalRemove()}
                               as="button"
-                              _hover={{ bg: "gray.50" }}
+                              _hover={{ bg: 'gray.50' }}
                             >
                               <Button
                                 mr="2"
@@ -439,8 +436,7 @@ export default function UserList() {
                         />
                       </Td>
                     </Tr>
-                  ))
-                }
+                  ))}
               </Tbody>
             </Table>
             <Pagination />
@@ -448,5 +444,5 @@ export default function UserList() {
         </Box>
       </Flex>
     </Box>
-  );
+  )
 }

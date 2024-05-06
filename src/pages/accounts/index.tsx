@@ -20,9 +20,9 @@ import {
   Thead,
   Tr,
   useBreakpointValue,
-} from "@chakra-ui/react";
-import { SideBar } from "../../components/SideBar";
-import { Header } from "../../components/Header";
+} from '@chakra-ui/react'
+import { SideBar } from '../../components/SideBar'
+import { Header } from '../../components/Header'
 import {
   RiAddLine,
   RiArrowDownSFill,
@@ -30,91 +30,88 @@ import {
   RiDeleteBin6Line,
   RiFilter2Line,
   RiPencilLine,
-  RiSearch2Line
-} from "react-icons/ri";
-import { Pagination } from "../../components/Pagination";
-import Link from "next/link";
-import api from "../../services/api";
-import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import AlertDelete from "../../components/AlertDelete";
-import Summary from "../../components/Summary";
-import SummaryAccount from "../../components/SummaryAccount";
-import { SlOptionsVertical } from "react-icons/sl";
-import { useRouter } from "next/router";
+  RiSearch2Line,
+} from 'react-icons/ri'
+import { Pagination } from '../../components/Pagination'
+import Link from 'next/link'
+import api from '../../services/api'
+import { useEffect, useState } from 'react'
+import { format } from 'date-fns'
+import AlertDelete from '../../components/AlertDelete'
+import Summary from '../../components/Summary'
+import SummaryAccount from '../../components/SummaryAccount'
+import { SlOptionsVertical } from 'react-icons/sl'
+import { useRouter } from 'next/router'
 
 interface Account {
-  id: string;
-  name: string;
-  amount: Number;
-  type: string;
-  number_of_installments: Number;
-  created_at: Date;
-  updated_at: Date;
+  id: string
+  name: string
+  amount: Number
+  type: string
+  number_of_installments: Number
+  created_at: Date
+  updated_at: Date
 }
 
 interface ListAccount {
-  account: Account[];
-  incomeAmount: Number;
-  expenseAmount: Number;
-  totalAmount: Number;
+  account: Account[]
+  incomeAmount: Number
+  expenseAmount: Number
+  totalAmount: Number
 }
 
 export default function UserList() {
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,
-  });
+  })
 
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [resultAccounts, setResultAccounts] = useState();
-  const [balance, setBalance] = useState();
+  const [accounts, setAccounts] = useState<Account[]>([])
+  const [resultAccounts, setResultAccounts] = useState()
+  const [balance, setBalance] = useState()
 
-
-  const router = useRouter();
-  const { id } = router.query;
+  const router = useRouter()
+  const { id } = router.query
 
   async function loadAccounts() {
     await api.get(`account/budget/${id}`).then((response) => {
-      setResultAccounts(response.data);
-    });
+      setResultAccounts(response.data)
+    })
 
     await api.get(`account/balance/budget/${id}`).then((response) => {
-      setBalance(response.data);
-    });
+      setBalance(response.data)
+    })
   }
 
   console.log(balance)
-  
 
   useEffect(() => {
-    loadAccounts();
-  }, [setResultAccounts, setBalance, id]);
+    loadAccounts()
+  }, [setResultAccounts, setBalance, id])
 
   //console.log(resultAccounts);
 
-
   async function handleDelete(id: string) {
-    await api.delete(`account/${id}`);
+    await api.delete(`account/${id}`)
     console.log(id)
 
-    const accoutIndex = resultAccounts.findIndex((b) => b.id === id);
-    const account = [...resultAccounts];
+    const accoutIndex = resultAccounts.findIndex((b) => b.id === id)
+    const account = [...resultAccounts]
 
-    account.splice(accoutIndex, 1);
-   
-    setResultAccounts(account);
+    account.splice(accoutIndex, 1)
+
+    setResultAccounts(account)
     loadAccounts()
   }
 
-  const [modalRemoveTool, setModalRemoveTool] = useState(false);
+  const [modalRemoveTool, setModalRemoveTool] = useState(false)
 
   function openModalRemove() {
-    setModalRemoveTool(true);
+    setModalRemoveTool(true)
   }
 
   function toggleModalRemove(): void {
-    setModalRemoveTool(!modalRemoveTool);
+    setModalRemoveTool(!modalRemoveTool)
   }
 
   return (
@@ -122,16 +119,19 @@ export default function UserList() {
       <Header />
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
+
         <Box flex="1">
           <Link href="/budgets" passHref>
             <Button
-              ml="6"
-              _hover={{ bg: "transparent", textColor: "green.400" }}
+              ml="-6"
+              mb="6"
+              _hover={{ bg: 'transparent', textColor: 'green.400' }}
               bg="transparent"
             >
               <RiArrowLeftLine fontSize="28" />
             </Button>
           </Link>
+
           <Summary
             id={1}
             income={balance?.income}
@@ -171,131 +171,131 @@ export default function UserList() {
                 </Tr>
               </Thead>
               <Tbody>
-                {Array.isArray(resultAccounts) && resultAccounts.map((account) => (
-                  <Tr key="account.id" cursor="pointer">
-                    <Td>
-                      <Box>
-                        <Text fontWeight="">{account.account.name}</Text>
-                        {account.account.sub_account.type === "INCOME" ? (
-                          <Text fontSize="sm" color="blue.300">
-                            Receita
-                          </Text>
-                        ) : (
-                          <Text fontSize="sm" color="red.300">
-                            Despesa
-                          </Text>
-                        )}
-                      </Box>
-                    </Td>
-                    <Td>
-                      <Text fontWeight="bold">
-                        {account.account.number_of_installments}
-                      </Text>
-                    </Td>
+                {Array.isArray(resultAccounts) &&
+                  resultAccounts.map((account) => (
+                    <Tr key="account.id" cursor="pointer">
+                      <Td>
+                        <Box>
+                          <Text fontWeight="">{account.account.name}</Text>
+                          {account.account.sub_account.type === 'INCOME' ? (
+                            <Text fontSize="sm" color="blue.300">
+                              Receita
+                            </Text>
+                          ) : (
+                            <Text fontSize="sm" color="red.300">
+                              Despesa
+                            </Text>
+                          )}
+                        </Box>
+                      </Td>
+                      <Td>
+                        <Text fontWeight="bold">
+                          {account.account.number_of_installments}
+                        </Text>
+                      </Td>
 
-                    <Td>
-                      <Text fontWeight="">
-                        {Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(account.account.amount)}
-                      </Text>
-                    </Td>
+                      <Td>
+                        <Text fontWeight="">
+                          {Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          }).format(account.account.amount)}
+                        </Text>
+                      </Td>
 
-                    <Td>
-                      <Text textColor="red.300" fontWeight="">
-                        {Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(account.balance.used_value)}
-                      </Text>
-                    </Td>
+                      <Td>
+                        <Text textColor="red.300" fontWeight="">
+                          {Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          }).format(account.balance.used_value)}
+                        </Text>
+                      </Td>
 
-                    <Td>
-                      <Text textColor="blue.300" fontWeight="">
-                        {Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(account.balance.available_value)}
-                      </Text>
-                    </Td>
+                      <Td>
+                        <Text textColor="blue.300" fontWeight="">
+                          {Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          }).format(account.balance.available_value)}
+                        </Text>
+                      </Td>
 
-                    <Td>
-                      <Link href={`/entries?id=${account.account.id}`}>
-                       
-                        <Button
-                                mr="2"
-                                as="a"
-                                size="sm"
-                                fontSize="small"
-                                colorScheme="gray.50"
-                                textColor="white"
-                                leftIcon={
-                                  <Icon as={RiSearch2Line} fontSize="16" />
-                                }
-                              />
-                               
-                       
-                      </Link>
-                    </Td>
-
-                    <Td>
-                      <Menu>
-                        <MenuButton
-                          bg="transparent"
-                          _hover={{ bg: "transparent" }}
-                          as={Button}
+                      <Td>
+                        <Link
+                          href={`/entries?id=${account.account.id}&budget=${id}`}
                         >
-                          <SlOptionsVertical />
-                        </MenuButton>
-                        <MenuList textColor="black">
-                          <Link href={`/accounts/edit?id=${account.account.id}`}>
-                            <MenuItem as="button" _hover={{ bg: "gray.50" }}>
+                          <Button
+                            mr="2"
+                            as="a"
+                            size="sm"
+                            fontSize="small"
+                            colorScheme="gray.50"
+                            textColor="white"
+                            leftIcon={<Icon as={RiSearch2Line} fontSize="16" />}
+                          />
+                        </Link>
+                      </Td>
+
+                      <Td>
+                        <Menu>
+                          <MenuButton
+                            bg="transparent"
+                            _hover={{ bg: 'transparent' }}
+                            as={Button}
+                          >
+                            <SlOptionsVertical />
+                          </MenuButton>
+                          <MenuList textColor="black">
+                            <Link
+                              href={`/accounts/edit?id=${account.account.id}`}
+                            >
+                              <MenuItem as="button" _hover={{ bg: 'gray.50' }}>
+                                <Button
+                                  mr="2"
+                                  as="a"
+                                  size="sm"
+                                  fontSize="small"
+                                  colorScheme="gray.50"
+                                  textColor="black"
+                                  leftIcon={
+                                    <Icon as={RiPencilLine} fontSize="16" />
+                                  }
+                                >
+                                  Editar
+                                </Button>
+                              </MenuItem>
+                            </Link>
+                            <MenuItem
+                              onClick={() => openModalRemove()}
+                              as="button"
+                              _hover={{ bg: 'gray.50' }}
+                            >
                               <Button
                                 mr="2"
                                 as="a"
                                 size="sm"
                                 fontSize="small"
                                 colorScheme="gray.50"
-                                textColor="black"
+                                textColor="red.400"
                                 leftIcon={
-                                  <Icon as={RiPencilLine} fontSize="16" />
+                                  <Icon as={RiDeleteBin6Line} fontSize="16" />
                                 }
                               >
-                                Editar
+                                <Text textColor="red.400">Excluir</Text>
                               </Button>
                             </MenuItem>
-                          </Link>
-                          <MenuItem
-                            onClick={() => openModalRemove()}
-                            as="button"
-                            _hover={{ bg: "gray.50" }}
-                          >
-                            <Button
-                              mr="2"
-                              as="a"
-                              size="sm"
-                              fontSize="small"
-                              colorScheme="gray.50"
-                              textColor="red.400"
-                              leftIcon={
-                                <Icon as={RiDeleteBin6Line} fontSize="16" />
-                              }
-                            >
-                              <Text textColor="red.400">Excluir</Text>
-                            </Button>
-                          </MenuItem>
-                        </MenuList>
-                      </Menu>
+                          </MenuList>
+                        </Menu>
 
-                      <AlertDelete
-                        isOpen={modalRemoveTool}
-                        setIsOpen={toggleModalRemove}
-                        handleRemove={() => handleDelete(account.account.id)}
-                      />
-                    </Td>
-                  </Tr>
-                ))}
+                        <AlertDelete
+                          isOpen={modalRemoveTool}
+                          setIsOpen={toggleModalRemove}
+                          handleRemove={() => handleDelete(account.account.id)}
+                        />
+                      </Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
             <Pagination />
@@ -303,5 +303,5 @@ export default function UserList() {
         </Box>
       </Flex>
     </Box>
-  );
+  )
 }
