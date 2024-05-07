@@ -6,14 +6,14 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Button,
-} from "@chakra-ui/react";
-import { useCallback } from "react";
-import { useToast } from "@chakra-ui/react";
+} from '@chakra-ui/react'
+import { useCallback } from 'react'
+import { useToast } from '@chakra-ui/react'
 
 interface IModalProps {
-  isOpen: boolean;
-  setIsOpen: () => void;
-  handleRemove: (id: string) => void;
+  isOpen: boolean
+  setIsOpen: () => void
+  handleRemove: (id: string) => void
 }
 
 const AlertDelete: React.FC<IModalProps> = ({
@@ -23,18 +23,18 @@ const AlertDelete: React.FC<IModalProps> = ({
 }) => {
   const handleSubmit = useCallback(
     (event) => {
-      event.preventDefault();
-      handleRemove();
-      setIsOpen();
+      event.preventDefault()
+      handleRemove()
+      setIsOpen()
     },
-    [handleRemove, setIsOpen]
-  );
+    [handleRemove, setIsOpen],
+  )
 
   function sair() {
-    setIsOpen();
+    setIsOpen()
   }
 
-  const toast = useToast();
+  const toast = useToast()
 
   return (
     <>
@@ -58,9 +58,9 @@ const AlertDelete: React.FC<IModalProps> = ({
               <Button
                 onClick={() =>
                   toast({
-                    title: "Registro excluído.",
-                    description: "O registro foi excluido com sucesso.",
-                    status: "success",
+                    title: 'Registro excluído.',
+                    description: 'O registro foi excluido com sucesso.',
+                    status: 'success',
                     duration: 9000,
                     isClosable: true,
                   })
@@ -76,7 +76,7 @@ const AlertDelete: React.FC<IModalProps> = ({
         </AlertDialogOverlay>
       </AlertDialog>
     </>
-  );
-};
+  )
+}
 
-export default AlertDelete;
+export default AlertDelete

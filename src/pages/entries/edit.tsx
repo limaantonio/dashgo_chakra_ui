@@ -86,10 +86,13 @@ export default function CreateBudget() {
   }
 
   async function getEntry() {
-    await api.get(`entry/${id}`).then((response) => setEntries(response.data));
-    setDescription(entries?.description);
-    setAmount(entries?.amount);
-    setNumber_of_installments(entries?.number_of_installments);
+    await api.get(`entry/${id}`).then((response) => {
+      setEntries(response.data)
+      setDescription(response.data?.description);
+      setAmount(response.data?.amount);
+      setNumber_of_installments(response.data?.installment)
+    });
+      
   }
 
   useEffect(() => {

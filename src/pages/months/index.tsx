@@ -82,9 +82,11 @@ export default function MonthList() {
   }
 
   const [modalRemoveTool, setModalRemoveTool] = useState(false)
+  const [selectedSubAccountId, setSelectedSubAccountId] = useState(null)
 
-  function openModalRemove() {
+  function openModalRemove(id: string) {
     setModalRemoveTool(true)
+    setSelectedSubAccountId(id)
   }
 
   function toggleModalRemove(): void {
@@ -194,7 +196,7 @@ export default function MonthList() {
                               </MenuItem>
                             </Link>
                             <MenuItem
-                              onClick={() => openModalRemove()}
+                              onClick={() => openModalRemove(budget.id)}
                               as="button"
                               _hover={{ bg: 'gray.50' }}
                             >
@@ -218,16 +220,15 @@ export default function MonthList() {
                             </MenuItem>
                           </MenuList>
                         </Menu>
-
-                        <AlertDelete
-                          isOpen={modalRemoveTool}
-                          setIsOpen={toggleModalRemove}
-                          handleRemove={() => handleDelete(budget.id)}
-                        />
                       </Td>
                     </Tr>
                   ))}
               </Tbody>
+              <AlertDelete
+                isOpen={modalRemoveTool}
+                setIsOpen={toggleModalRemove}
+                handleRemove={() => handleDelete(selectedSubAccountId)}
+              />
             </Table>
             <Pagination />
           </Box>

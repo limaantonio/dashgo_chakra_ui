@@ -18,9 +18,9 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-} from "@chakra-ui/react";
-import { SideBar } from "../../components/SideBar";
-import { Header } from "../../components/Header";
+} from '@chakra-ui/react'
+import { SideBar } from '../../components/SideBar'
+import { Header } from '../../components/Header'
 import {
   RiAddLine,
   RiArrowUpCircleLine,
@@ -29,61 +29,61 @@ import {
   RiPencilLine,
   RiDeleteBack2Line,
   RiDeleteBin6Line,
-  RiSearch2Line
-} from "react-icons/ri";
-import { Pagination } from "../../components/Pagination";
-import Link from "next/link";
-import api from "../../services/api";
-import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import AlertDelete from "../../components/AlertDelete";
-import Summary from "../../components/Summary";
-import { SlOptionsVertical } from "react-icons/sl";
+  RiSearch2Line,
+} from 'react-icons/ri'
+import { Pagination } from '../../components/Pagination'
+import Link from 'next/link'
+import api from '../../services/api'
+import { useEffect, useState } from 'react'
+import { format } from 'date-fns'
+import AlertDelete from '../../components/AlertDelete'
+import Summary from '../../components/Summary'
+import { SlOptionsVertical } from 'react-icons/sl'
 
 interface Budget {
-  id: string;
-  year: Number;
-  totalAmount: Number;
-  expenseAmount: Number;
-  incomeAmount: Number;
-  created_at: Date;
-  updated_at: Date;
+  id: string
+  year: Number
+  totalAmount: Number
+  expenseAmount: Number
+  incomeAmount: Number
+  created_at: Date
+  updated_at: Date
 }
 
 export default function UserList() {
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,
-  });
+  })
 
-  const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [budgets, setBudgets] = useState<Budget[]>([])
+  const [selectedSubAccountId, setSelectedSubAccountId] = useState(null)
 
   async function loadBudgets() {
-    await api.get("budget").then((response) => setBudgets(response.data));
+    await api.get('budget').then((response) => setBudgets(response.data))
   }
 
   useEffect(() => {
-    loadBudgets();
-  }, [setBudgets]);
+    loadBudgets()
+  }, [setBudgets])
 
   async function handleDelete(id: string) {
-    await api.delete(`budget/${id}`);
+    await api.delete(`budget/${id}`)
 
-    const budgetIndex = budgets.findIndex((b) => b.id === id);
-    const budget = [...budgets];
-
-    budget.splice(budgetIndex, 1);
-    setBudgets(budget);
+    const updatedBudgets = budgets.filter((budget) => budget.id !== id)
+    setBudgets(updatedBudgets)
+    loadBudgets()
   }
 
-  const [modalRemoveTool, setModalRemoveTool] = useState(false);
+  const [modalRemoveTool, setModalRemoveTool] = useState(false)
 
-  function openModalRemove() {
-    setModalRemoveTool(true);
+  function openModalRemove(id: string) {
+    setModalRemoveTool(true)
+    setSelectedSubAccountId(id)
   }
 
   function toggleModalRemove(): void {
-    setModalRemoveTool(!modalRemoveTool);
+    setModalRemoveTool(!modalRemoveTool)
   }
 
   return (
@@ -112,7 +112,7 @@ export default function UserList() {
             <Table colorScheme="whiteAlpha">
               <Thead>
                 <Tr>
-                  <Th px={["4", "4", "6"]} color="gray.300" width="8">
+                  <Th px={['4', '4', '6']} color="gray.300" width="8">
                     <Checkbox colorScheme="green"></Checkbox>
                   </Th>
                   <Th>Ano</Th>
@@ -125,7 +125,7 @@ export default function UserList() {
               <Tbody>
                 {budgets.map((budget) => (
                   <Tr key={budget.budget.id} cursor="pointer">
-                    <Td px={["4", "4", "6"]}>
+                    <Td px={['4', '4', '6']}>
                       <Checkbox colorScheme="green"></Checkbox>
                     </Td>
                     <Td>
@@ -134,7 +134,7 @@ export default function UserList() {
                         <Text fontSize="sm" color="gray.300">
                           {format(
                             new Date(budget.budget.created_at),
-                            "yyyy-MM-dd"
+                            'yyyy-MM-dd',
                           )}
                         </Text>
                       </Box>
@@ -142,7 +142,7 @@ export default function UserList() {
 
                     <Td>
                       {budget.updated_at ? (
-                        format(new Date(budget.updated_at), "yyyy-MM-dd")
+                        format(new Date(budget.updated_at), 'yyyy-MM-dd')
                       ) : (
                         <>-</>
                       )}
@@ -156,9 +156,7 @@ export default function UserList() {
                           fontSize="small"
                           colorScheme="gray.50"
                           textColor="white"
-                          leftIcon={
-                            <Icon as={RiSearch2Line} fontSize="16" />
-                          }
+                          leftIcon={<Icon as={RiSearch2Line} fontSize="16" />}
                         />
                       </Link>
                     </Td>
@@ -172,9 +170,7 @@ export default function UserList() {
                           fontSize="small"
                           colorScheme="gray.50"
                           textColor="white"
-                          leftIcon={
-                            <Icon as={RiSearch2Line} fontSize="16" />
-                          }
+                          leftIcon={<Icon as={RiSearch2Line} fontSize="16" />}
                         />
                       </Link>
                     </Td>
@@ -183,14 +179,14 @@ export default function UserList() {
                       <Menu>
                         <MenuButton
                           bg="transparent"
-                          _hover={{ bg: "transparent" }}
+                          _hover={{ bg: 'transparent' }}
                           as={Button}
                         >
                           <SlOptionsVertical />
                         </MenuButton>
                         <MenuList textColor="black">
                           <Link href={`/budgets/edit?id=${budget.budget.id}`}>
-                            <MenuItem as="button" _hover={{ bg: "gray.50" }}>
+                            <MenuItem as="button" _hover={{ bg: 'gray.50' }}>
                               <Button
                                 mr="2"
                                 as="a"
@@ -207,9 +203,9 @@ export default function UserList() {
                             </MenuItem>
                           </Link>
                           <MenuItem
-                            onClick={() => openModalRemove()}
+                            onClick={() => openModalRemove(budget.budget.id)}
                             as="button"
-                            _hover={{ bg: "gray.50" }}
+                            _hover={{ bg: 'gray.50' }}
                           >
                             <Button
                               mr="2"
@@ -231,21 +227,20 @@ export default function UserList() {
                           </MenuItem>
                         </MenuList>
                       </Menu>
-
-                      <AlertDelete
-                        isOpen={modalRemoveTool}
-                        setIsOpen={toggleModalRemove}
-                        handleRemove={() => handleDelete(budget.budget.id)}
-                      />
                     </Td>
                   </Tr>
                 ))}
               </Tbody>
+              <AlertDelete
+                isOpen={modalRemoveTool}
+                setIsOpen={toggleModalRemove}
+                handleRemove={() => handleDelete(selectedSubAccountId)}
+              />
             </Table>
             <Pagination />
           </Box>
         </Box>
       </Flex>
     </Box>
-  );
+  )
 }

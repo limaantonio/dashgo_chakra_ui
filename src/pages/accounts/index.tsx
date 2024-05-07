@@ -69,6 +69,7 @@ export default function UserList() {
   const [accounts, setAccounts] = useState<Account[]>([])
   const [resultAccounts, setResultAccounts] = useState()
   const [balance, setBalance] = useState()
+  const [selectedSubAccountId, setSelectedSubAccountId] = useState(null)
 
   const router = useRouter()
   const { id } = router.query
@@ -106,8 +107,9 @@ export default function UserList() {
 
   const [modalRemoveTool, setModalRemoveTool] = useState(false)
 
-  function openModalRemove() {
+  function openModalRemove(id: string) {
     setModalRemoveTool(true)
+    setSelectedSubAccountId(id)
   }
 
   function toggleModalRemove(): void {
@@ -267,7 +269,9 @@ export default function UserList() {
                               </MenuItem>
                             </Link>
                             <MenuItem
-                              onClick={() => openModalRemove()}
+                              onClick={() =>
+                                openModalRemove(account.account.id)
+                              }
                               as="button"
                               _hover={{ bg: 'gray.50' }}
                             >
@@ -287,16 +291,15 @@ export default function UserList() {
                             </MenuItem>
                           </MenuList>
                         </Menu>
-
-                        <AlertDelete
-                          isOpen={modalRemoveTool}
-                          setIsOpen={toggleModalRemove}
-                          handleRemove={() => handleDelete(account.account.id)}
-                        />
                       </Td>
                     </Tr>
                   ))}
               </Tbody>
+              <AlertDelete
+                isOpen={modalRemoveTool}
+                setIsOpen={toggleModalRemove}
+                handleRemove={() => handleDelete(selectedSubAccountId)}
+              />
             </Table>
             <Pagination />
           </Box>

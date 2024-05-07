@@ -150,6 +150,7 @@ export default function UserList() {
   const [incomeAmount, setIncomeAmount] = useState(0)
   const [expenseAmount, seTExpenseAmount] = useState(0)
   const [status, setStatus] = useState()
+  const [selectedSubAccountId, setSelectedSubAccountId] = useState(null)
 
   async function loadAccount() {
     await api
@@ -180,8 +181,9 @@ export default function UserList() {
 
   const [modalRemoveTool, setModalRemoveTool] = useState(false)
 
-  function openModalRemove() {
+  function openModalRemove(id: string) {
     setModalRemoveTool(true)
+    setSelectedSubAccountId(id)
   }
 
   function toggleModalRemove(): void {
@@ -409,7 +411,7 @@ export default function UserList() {
                               </MenuItem>
                             </Link>
                             <MenuItem
-                              onClick={() => openModalRemove()}
+                              onClick={() => openModalRemove(entry.id)}
                               as="button"
                               _hover={{ bg: 'gray.50' }}
                             >
@@ -429,15 +431,15 @@ export default function UserList() {
                             </MenuItem>
                           </MenuList>
                         </Menu>
-                        <AlertDelete
-                          isOpen={modalRemoveTool}
-                          setIsOpen={toggleModalRemove}
-                          handleRemove={() => handleDelete(entry.id)}
-                        />
                       </Td>
                     </Tr>
                   ))}
               </Tbody>
+              <AlertDelete
+                isOpen={modalRemoveTool}
+                setIsOpen={toggleModalRemove}
+                handleRemove={() => handleDelete(selectedSubAccountId)}
+              />
             </Table>
             <Pagination />
           </Box>

@@ -101,10 +101,13 @@ export default function CreateBudget() {
   }
 
   async function getAccount() {
-    await api.get(`accountid/${id}`).then((response) => setAccounts(response.data));
-    setName(accounts?.name)
-    setAmount(accounts?.amount)
-    setNumber_of_installments(accounts?.number_of_installments)
+    await api.get(`accountid/${id}`).then((response) => {
+      setAccounts(response.data)
+      setName((response.data?.name))
+      setAmount(response.data?.amount)
+      setNumber_of_installments(response.data?.number_of_installments);
+    });
+
   }
 
   function transformDataToOptions() {
@@ -125,7 +128,7 @@ export default function CreateBudget() {
   useEffect(() => {
     getAccount()
     getBudget()
-  }, [id]);
+  }, []);
 
   const toast = useToast();
  
