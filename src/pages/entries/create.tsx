@@ -19,6 +19,7 @@ import {
   Text,
   Td,
   Paragraph,
+  Tfoot,
 } from "@chakra-ui/react";
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
@@ -35,6 +36,7 @@ import { useToast } from "@chakra-ui/react";
 import router from "next/router";
 import { useRouter } from "next/router";
 import { RiAddLine, RiArrowLeftLine, RiDeleteBin6Line, RiPencilLine, RiSave2Fill } from "react-icons/ri";
+import { set } from "date-fns";
 
 type CreateEntryFormData = {
   description: string;
@@ -107,17 +109,20 @@ export default function CreateBudget() {
       items
     }
     
-    const res = await api.post("item", data);
-    if (res) {
+    try {
+      await api.post("item", data);
       router.push(`/entries?id=${data.entry.budget_month_id}`);
-    } else {
+    } catch (error) {
+      if (error.response.data.error == 'Insufficient funds') {
       toast({
-        title: "Erro ao criar lançamento.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
+              title: "Saldo insuficiente",
+              status: "error",
+              duration: 9000,
+              isClosable: true,
+          });
+      }     
     }
+
   };
 
   function addItem(e: Event) {
@@ -127,6 +132,9 @@ export default function CreateBudget() {
       amount
     }
     setItems([...items, item])
+    
+    // setAmountItem(item + 1)
+    // setAvaliableValue(amountItem - 10)
     
   }
 
@@ -141,6 +149,8 @@ async function handleDelete(id: string) {
 
 const [accounts, setAccounts] = useState<Account[]>([]);
 const [account, setAccount] = useState(0);
+const [amountItem, setAmountItem] = useState(0);
+const [available_value, setAvaliableValue] = useState(0);
 
   useEffect(() => {
     api.get(`account/budget/${id}`).then((response) => setAccounts(response.data));
@@ -158,7 +168,23 @@ function transformDataAccountToOptions() {
       }),
   ));
   return selectAccount
-}
+  }
+  
+  function selectionAccount(value) {
+    const _account = accounts.find((subAccount) => subAccount.account.id === value);
+    setAccount(_account);
+    
+  }
+
+  function verifyAvailableValue() {
+   const total = account?.balance?.available_value - items.reduce(
+                      (acc, item) => Number(acc) + Number(item.amount),
+                      0,
+    ) 
+
+
+    return total
+  }
 
 const toast = useToast();
 
@@ -190,11 +216,30 @@ const toast = useToast();
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8" paddingY="6">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              <Select {...register("account_id")} placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()}/>
+              <Select {...register("account_id")} placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()} onChange={(e) => selectionAccount(e.target.value)}/>
             </SimpleGrid>
           </VStack>
           <VStack spacing="8">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
+              <HStack>
+              <Input
+                label="Dotação"
+                type="number"
+                value={account?.balance?.available_value}
+                disabled={true}
+      //error={errors.description}
+              />
+               <Input
+                label="Disponível"
+                type="number"
+                value={
+                  verifyAvailableValue()
+                  }
+                disabled={true}
+              
+      //error={errors.description}
+                />
+                </HStack>
               <Input
                 label="Descrição"
                 type="text"
@@ -227,15 +272,6 @@ const toast = useToast();
                 colorScheme="green"
                 type="submit"
                 isLoading={formState.isSubmitting}
-                onClick={() =>
-                  toast({
-                    title: "Lançamento criado.",
-                    description: "O lançamento foi criado com sucesso.",
-                    status: "success",
-                    duration: 9000,
-                    isClosable: true,
-                  })
-                }
                 leftIcon={<RiSave2Fill />}
               >
                 Salvar
@@ -295,9 +331,10 @@ const toast = useToast();
               <Tr>
                 <Th>Nome</Th>
                 <Th>Valor</Th>
-                <Th>Mês</Th>
+                <Th>Quantidade</Th>
                
               </Tr>
+             
             </Thead>
             <Tbody>
               {items.map((entry) => (
@@ -331,6 +368,20 @@ const toast = useToast();
                   </Tr>
               ))}
             </Tbody>
+            <Tfoot>
+                <Tr>
+                  <Th>Total</Th>
+                  <Th></Th>
+                  <Th>
+                    {items.reduce(
+                      (acc, item) => Number(acc) + Number(item.amount),
+                      0,
+                    )}
+                  
+                  </Th>
+                  <Th></Th>
+                </Tr>
+              </Tfoot>
           </Table>
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
@@ -338,15 +389,7 @@ const toast = useToast();
                 colorScheme="purple"
                 type="submit"
                 isLoading={formState.isSubmitting}
-                onClick={() =>
-                  toast({
-                    title: "Item adicionado.",
-                    description: "O item foi adicionado com sucesso.",
-                    status: "success",
-                    duration: 9000,
-                    isClosable: true,
-                  })
-                }
+              
                 leftIcon={<Icon as={RiAddLine} fontSize="20" />}
               >
                 Adicionar

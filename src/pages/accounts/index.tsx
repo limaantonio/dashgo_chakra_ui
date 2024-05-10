@@ -168,7 +168,7 @@ export default function UserList() {
                   <Th>Total</Th>
                   <Th>Usado</Th>
                   <Th>Disponivel</Th>
-                  <Th>Lançamentos</Th>
+
                   <Th></Th>
                 </Tr>
               </Thead>
@@ -201,7 +201,10 @@ export default function UserList() {
                           {Intl.NumberFormat('pt-BR', {
                             style: 'currency',
                             currency: 'BRL',
-                          }).format(account.account.amount)}
+                          }).format(
+                            account.account.amount *
+                              account.account.number_of_installments,
+                          )}
                         </Text>
                       </Td>
 
@@ -221,22 +224,6 @@ export default function UserList() {
                             currency: 'BRL',
                           }).format(account.balance.available_value)}
                         </Text>
-                      </Td>
-
-                      <Td>
-                        <Link
-                          href={`/entries?id=${account.account.id}&budget=${id}`}
-                        >
-                          <Button
-                            mr="2"
-                            as="a"
-                            size="sm"
-                            fontSize="small"
-                            colorScheme="gray.50"
-                            textColor="white"
-                            leftIcon={<Icon as={RiSearch2Line} fontSize="16" />}
-                          />
-                        </Link>
                       </Td>
 
                       <Td>
