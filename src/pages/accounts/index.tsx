@@ -84,8 +84,6 @@ export default function UserList() {
     })
   }
 
-  console.log(balance)
-
   useEffect(() => {
     loadAccounts()
   }, [setResultAccounts, setBalance, id])

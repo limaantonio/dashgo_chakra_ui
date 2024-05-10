@@ -202,7 +202,7 @@ export default function UserList() {
         <SideBar />
 
         <Box flex="1">
-          <Link href={`accounts?id=${id}`} passHref>
+          <Link href={`months?id=${budget}`} passHref>
             <Button
               mb="4"
               _hover={{ bg: 'transparent', textColor: 'green.400' }}
@@ -226,14 +226,14 @@ export default function UserList() {
               </Heading>
               <Box>
                 <Menu>
-                  <MenuButton
+                  {/* <MenuButton
                     bg="gray.700"
                     as={Button}
                     mr="4"
                     rightIcon={<RiArrowDownSFill />}
                   >
                     Mês
-                  </MenuButton>
+                  </MenuButton> */}
                   <MenuList textColor="black">
                     <MenuGroup title="Balanço">
                       {balances.map((b) => (

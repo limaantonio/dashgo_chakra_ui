@@ -61,7 +61,7 @@ enum AccountType {
 }
 
 const createFormSchema = yup.object().shape({
-  description: yup.string().required('Valor obrigatório'),
+  name: yup.string().required('Nome obrigatório'),
 })
 
 export default function CreateSubAccount() {
@@ -168,7 +168,7 @@ export default function CreateSubAccount() {
                   onChange={(e) => {
                     setName(e.target.value)
                   }}
-                  // error={errors.amount}
+                  error={errors.name}
                 />
                 <SimpleGrid minChildWidth="248px" spacing={['6', '8']} w="100%">
                   <Select
@@ -202,6 +202,7 @@ export default function CreateSubAccount() {
                   isDisabled={type === 'INCOME' ? false : true}
                   //error={errors.number_of_installments}
                 />
+
                 <Input
                   label="Valor Disponivel"
                   type="number"
@@ -229,15 +230,6 @@ export default function CreateSubAccount() {
                 colorScheme="purple"
                 type="submit"
                 isLoading={formState.isSubmitting}
-                onClick={() =>
-                  toast({
-                    title: 'Item adicionado.',
-                    description: 'O item foi adicionado com sucesso.',
-                    status: 'success',
-                    duration: 9000,
-                    isClosable: true,
-                  })
-                }
                 leftIcon={<Icon as={RiAddLine} fontSize="20" />}
               >
                 Adicionar

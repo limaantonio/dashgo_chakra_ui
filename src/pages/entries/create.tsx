@@ -39,8 +39,10 @@ import { RiAddLine, RiArrowLeftLine, RiDeleteBin6Line, RiPencilLine, RiSave2Fill
 import { set } from "date-fns";
 
 type CreateEntryFormData = {
-  description: string;
-  installment: Number;
+  status: string;
+  account_id: string;
+  item: Item;
+
 };
 
 interface Account {
@@ -54,21 +56,23 @@ interface Account {
 
 interface Item {
   id: string;
-  name: string;
-  qtde: Number;
+  name?: string;
+  qtde?: Number;
   account: Account;
   entry: Entry;
 }
 
 interface Entry {
   id: string; 
-  description: string;
-  installment: Number;
+  description?: string;
+  installment?: Number;
   budget_month_id: string;
 }
 
 const createFormSchema = yup.object().shape({
-  description: yup.string().required("Valor obrigatório"),
+  //description: yup.string().required("Valor obrigatório"),
+  installment: yup.string().required("Parcela obrigatória"),
+  //amount: yup.string().required("Valor obrigatório"),
 });
 
 const status = [{
@@ -98,8 +102,6 @@ export default function CreateBudget() {
     values
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    // setEntry(values);
-    // console.log(entry);
     const entry = values
     
     entry.budget_month_id = budget_month
@@ -111,7 +113,7 @@ export default function CreateBudget() {
     
     try {
       await api.post("item", data);
-      router.push(`/entries?id=${data.entry.budget_month_id}`);
+      router.push(`/entries?id=${data.entry.budget_month_id}&budget=${id}`);
     } catch (error) {
       if (error.response.data.error == 'Insufficient funds') {
       toast({
@@ -132,10 +134,6 @@ export default function CreateBudget() {
       amount
     }
     setItems([...items, item])
-    
-    // setAmountItem(item + 1)
-    // setAvaliableValue(amountItem - 10)
-    
   }
 
 async function handleDelete(id: string) {
@@ -182,7 +180,6 @@ function transformDataAccountToOptions() {
                       0,
     ) 
 
-
     return total
   }
 
@@ -227,7 +224,6 @@ const toast = useToast();
                 type="number"
                 value={account?.balance?.available_value}
                 disabled={true}
-      //error={errors.description}
               />
                <Input
                 label="Disponível"
@@ -236,22 +232,20 @@ const toast = useToast();
                   verifyAvailableValue()
                   }
                 disabled={true}
-              
-      //error={errors.description}
                 />
                 </HStack>
               <Input
                 label="Descrição"
                 type="text"
                 {...register("description")}
-      //error={errors.description}
+                isRequired={false}
               />
               <HStack>
               <Input
                 label="Parcela"
                 type="number"
                 {...register("installment")}
-               // error={errors.month}
+                error={errors.installment}
               />
               <Select
                 label="Status"
@@ -306,8 +300,6 @@ const toast = useToast();
                // error={errors.description}
               />
               <HStack>
-
-             
               <Input
                 label="Valor"
                 type="number"
@@ -315,7 +307,7 @@ const toast = useToast();
                 onChange={(e) => {
                   setAmount(e.target.value);
                 }}
-               // error={errors.amount}
+               //error={errors.amount}
               />
               <Input
                 label="Quantidade"
