@@ -1,6 +1,6 @@
-import { Stack } from "@chakra-ui/react";
-import { NavLink } from "./NavLink";
-import { NavSection } from "./NavSection";
+import { Stack } from '@chakra-ui/react'
+import { NavLink } from './NavLink'
+import { NavSection } from './NavSection'
 import {
   RiDashboardLine,
   RiMoneyDollarBoxFill,
@@ -8,7 +8,7 @@ import {
   RiInputMethodLine,
   RiAddFill,
   RiGitMergeLine,
-} from "react-icons/ri";
+} from 'react-icons/ri'
 
 export function SideBarNav() {
   return (
@@ -23,6 +23,15 @@ export function SideBarNav() {
         <NavLink icon={RiMoneyDollarBoxFill} href="/subaccounts">
           Classificação de contas
         </NavLink>
+        {/* <NavLink icon={RiMoneyDollarBoxFill} href="/accounts">
+          Contas
+        </NavLink>
+        <NavLink icon={RiMoneyDollarBoxFill} href="/months">
+          Orçamento mensal
+        </NavLink>
+        <NavLink icon={RiMoneyDollarBoxFill} href="/entries">
+          Lançamentos
+        </NavLink> */}
       </NavSection>
       <NavSection title="INVESTIMENTO">
         <NavLink icon={RiInputMethodLine} href="/forms">
@@ -33,5 +42,5 @@ export function SideBarNav() {
         </NavLink>
       </NavSection>
     </Stack>
-  );
+  )
 }

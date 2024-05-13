@@ -27,6 +27,7 @@ import {
   RiAddLine,
   RiArrowDownSFill,
   RiArrowDropLeftFill,
+  RiSearch2Line,
   RiArrowLeftLine,
   RiArrowRightCircleFill,
   RiDeleteBack2Line,
@@ -226,14 +227,14 @@ export default function UserList() {
               </Heading>
               <Box>
                 <Menu>
-                  {/* <MenuButton
+                  <MenuButton
                     bg="gray.700"
                     as={Button}
                     mr="4"
                     rightIcon={<RiArrowDownSFill />}
                   >
                     Mês
-                  </MenuButton> */}
+                  </MenuButton>
                   <MenuList textColor="black">
                     <MenuGroup title="Balanço">
                       {balances.map((b) => (
@@ -356,9 +357,15 @@ export default function UserList() {
 
                       <Td>
                         <Link href={`/items?id=${entry?.id}`}>
-                          <Text color="green.300" fontWeight="">
-                            Visualizar
-                          </Text>
+                          <Button
+                            mr="2"
+                            as="a"
+                            size="sm"
+                            fontSize="small"
+                            colorScheme="gray.50"
+                            textColor="white"
+                            leftIcon={<Icon as={RiSearch2Line} fontSize="16" />}
+                          />
                         </Link>
                       </Td>
 

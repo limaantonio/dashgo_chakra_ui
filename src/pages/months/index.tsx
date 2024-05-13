@@ -29,6 +29,7 @@ import {
   RiPencilLine,
   RiDeleteBack2Line,
   RiDeleteBin6Line,
+  RiSearch2Line,
 } from 'react-icons/ri'
 import { Pagination } from '../../components/Pagination'
 import Link from 'next/link'
@@ -158,13 +159,20 @@ export default function MonthList() {
                           <>-</>
                         )}
                       </Td>
+
                       <Td>
                         <Link
                           href={`/entries?id=${budget.id}&budget=${budget.budget_id}`}
                         >
-                          <Text color="green.300" fontWeight="">
-                            Visualizar
-                          </Text>
+                          <Button
+                            mr="2"
+                            as="a"
+                            size="sm"
+                            fontSize="small"
+                            colorScheme="gray.50"
+                            textColor="white"
+                            leftIcon={<Icon as={RiSearch2Line} fontSize="16" />}
+                          />
                         </Link>
                       </Td>
 
