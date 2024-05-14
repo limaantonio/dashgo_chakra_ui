@@ -21,6 +21,7 @@ import { Tooltip } from '@chakra-ui/react'
 import { useToast } from '@chakra-ui/react'
 import router from 'next/router'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 type CreateBudgetFormData = {
   year: Number
@@ -44,9 +45,29 @@ export default function CreateBudget() {
     values,
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000))
-    await api.post('budget', values)
+    const data = {
+      year: values.year,
+      user_id: user,
+    }
+    await api.post('budget', data)
     router.push(`/budgets`)
   }
+
+  const getFromLocalStorage = (key) => {
+    try {
+      const item = localStorage.getItem(key)
+      return item ? JSON.parse(item) : null
+    } catch (error) {
+      console.error('Erro ao recuperar do localStorage:', error)
+      return null
+    }
+  }
+
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    setUser(getFromLocalStorage('user'))
+  }, [])
 
   const toast = useToast()
 

@@ -7,12 +7,26 @@ import { useEffect, useState } from 'react'
 import { set } from 'date-fns'
 import { m } from 'framer-motion'
 import axios from 'axios'
+import { useRouter } from 'next/router'
 
 const Chart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
 })
 
 export default function Dashboard() {
+  // const router = useRouter()
+
+  // const checkAuth = () => {
+  //   const userToken = localStorage.getItem('user')
+  //   if (userToken == 'undefined' || userToken == 'null' || userToken == '') {
+  //     router.push('/')
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   checkAuth()
+  // }, [])
+
   const [budgets, setBudgets] = useState([])
   const [subAccount, setSubAccount] = useState([])
 
@@ -160,11 +174,11 @@ export default function Dashboard() {
 
   useEffect(() => {
     api.get('budget').then((response) => {
-      setBudgets(response.data[0].budget.budget_months)
+      setBudgets(response.data[0]?.budget.budget_months)
     })
   }, [setBudgets])
 
-  budgets.map((budget) => {
+  budgets?.map((budget) => {
     budget.entry.map((entry) => {
       entry.items.map((item) => {
         let amount = 0

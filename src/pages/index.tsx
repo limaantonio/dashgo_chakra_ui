@@ -1,78 +1,78 @@
-import { Flex, Button, Stack } from "@chakra-ui/react";
-import { Input } from "../components/Form/Input";
-import { useForm } from "react-hook-form";
-import { SubmitHandler } from "react-hook-form/dist/types";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Link from "next/link";
+import { Flex, Button, useToast } from '@chakra-ui/react'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useRouter } from 'next/router'
+import { Input } from '../components/Form/Input'
+import api from '../services/api'
 
-type SingInFormData = {
-  email: string;
-  password: string;
-};
+const schema = yup.object().shape({
+  email: yup.string().required('E-mail obrigatório'),
+  password: yup.string().required('Senha obrigatória'),
+})
 
-const singInFormSchema = yup.object().shape({
-  email: yup.string().required("E-mail obrigatório").email("E-mail inválido"),
-  password: yup.string().required("Senha obrigatória"),
-});
+export default function Login() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(schema),
+  })
+  const toast = useToast()
+  const router = useRouter()
 
-export default function SingIn() {
-  const { register, handleSubmit, formState } = useForm({
-    resolver: yupResolver(singInFormSchema),
-  });
-
-  const errors = formState.errors;
-
-  const hangleSignIn: SubmitHandler<SingInFormData> = async (values) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(values);
-    console.log(errors);
-  };
+  const onSubmit = async (data) => {
+    try {
+      const response = await api.post('/authenticate', data)
+      localStorage.setItem('user', JSON.stringify(response.data.user.id))
+      localStorage.setItem('token', JSON.stringify(response.data.token))
+      router.push(`/dashboard`)
+    } catch (error) {
+      toast({
+        title: 'Erro',
+        description:
+          'Falha ao fazer login. Por favor, verifique suas credenciais.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+    }
+  }
 
   return (
-    <Flex
-      w="100vw"
-      h="100vh"
-      alignItems="center"
-      justifyContent="center"
-      flexDir="column"
-    >
+    <Flex align="center" justify="center" h="100vh">
       <Flex
         as="form"
-        w="100%"
-        maxWidth={360}
+        onSubmit={handleSubmit(onSubmit)}
+        direction="column"
         bg="gray.800"
-        p={8}
-        borderRadius={8}
-        flexDir="column"
-        onSubmit={handleSubmit(hangleSignIn)}
+        p={12}
+        rounded={8}
+        w="100%"
+        maxW="400px"
       >
-        <Stack spacing="4">
-          <Input
-            type="email"
-            label="E-mail"
-            {...register("email")}
-            error={errors.email}
-          />
-          <Input
-            type="password"
-            label="Senha"
-            {...register("password")}
-            error={errors.password}
-          />
-        </Stack>
-        <Link href="/dashboard" passHref>
-          <Button
-            as="a"
-            mt="6"
-            colorScheme="green"
-            size="lg"
-            isLoading={formState.isSubmitting}
-          >
-            Entrar
-          </Button>
-        </Link>
+        <Input
+          label="Usuário"
+          type="email"
+          {...register('email')}
+          error={errors.email}
+        />
+        <Input
+          label="Senha"
+          type="password"
+          {...register('password')}
+          error={errors.password}
+        />
+        <Button
+          type="submit"
+          colorScheme="green"
+          mt={4}
+          isLoading={isSubmitting}
+        >
+          Entrar
+        </Button>
       </Flex>
     </Flex>
-  );
+  )
 }
