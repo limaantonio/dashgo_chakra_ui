@@ -183,9 +183,9 @@ export default function CreateSubAccount() {
                     options={typeAccount}
                     value={type}
                      //@ts-ignore
-                    onChange={(e) => {
+                    onChange={(value) => {
                       //@ts-ignore
-                      setType(e.target.value)
+                      setType(value)
                     }}
                   />
                 </SimpleGrid>

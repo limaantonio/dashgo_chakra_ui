@@ -20,8 +20,16 @@ function Select({ name, options = [], label, onChange, ...rest }: SelectProps) {
 
   return (
     <div>
-      {label && <label htmlFor={name}>{label}</label>}
-      <select name={name} id={name} onChange={handleChange} value={selectedValue} {...rest}>
+       {label && <label htmlFor={name} style={{ fontSize: "16px", marginBottom: "8px", display: "block", color: "#fff" }}>{label}</label>}
+      <select name={name} id={name} onChange={handleChange} value={selectedValue} {...rest} style={{
+          fontSize: "20px",
+          border: "none",
+          padding: "10px",
+          borderRadius: "5px",
+          width: "100%",
+          appearance: "none",
+          backgroundColor: "#171923",
+        }}>
         <option value="">Select...</option>
         {options.map((option) => (
           <option key={option.id} value={option.value}>
