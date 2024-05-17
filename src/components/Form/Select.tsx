@@ -1,61 +1,36 @@
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Select as ChakraSelect,
-  InputProps as ChakraInputProps,
-  Option,
-} from "@chakra-ui/react";
+import React, { useState } from "react";
 
-import { forwardRef, ForwardRefRenderFunction } from "react";
-import { FieldError } from "react-hook-form";
-
-interface Options {
-  id: string;
-  value: string;
-  label: string;
-}
-
-interface InputProps extends ChakraInputProps {
-  name: string;
+interface SelectProps {
+  name: string; // Definindo o tipo para a propriedade 'name'
+  options?: { id: string; value: string; label: string }[];
   label?: string;
-  options?: Options[];
-  error?: FieldError;
+  onChange?: (value: string) => void;
 }
-const SelectBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
-  { name, options, label, error = null, ...rest },
-  ref
-) => {
-  return (
-    <FormControl isInvalid={!!error}>
-      {!!label && <FormLabel htmlFor={label}>{label}</FormLabel>}
-      <ChakraSelect
-        name={name}
-        id={name}
-        focusBorderColor="green.500"
-        bgColor="gray.900"
-        variant="filled"
-        _hover={{ bgColor: "gray.900" }}
-        size="lg"
-        ref={ref}
-        {...rest}
-      >
-        {options &&
-          options.map((option) => (
-            <option
-              style={{
-                color: "black",
-              }}
-              key={option.id}
-              value={option.value}
-            >
-              {option.label}
-            </option>
-          ))}
-      </ChakraSelect>
-      {!!error && <FormErrorMessage>{error.message}</FormErrorMessage>}
-    </FormControl>
-  );
-};
 
-export const Select = forwardRef(SelectBase);
+function Select({ name, options = [], label, onChange, ...rest }: SelectProps) {
+  const [selectedValue, setSelectedValue] = useState("");
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setSelectedValue(value);
+    if (onChange) {
+      onChange(value);
+    }
+  };
+
+  return (
+    <div>
+      {label && <label htmlFor={name}>{label}</label>}
+      <select name={name} id={name} onChange={handleChange} value={selectedValue} {...rest}>
+        <option value="">Select...</option>
+        {options.map((option) => (
+          <option key={option.id} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+export default Select;

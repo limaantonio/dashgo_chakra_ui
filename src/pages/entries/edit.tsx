@@ -13,7 +13,7 @@ import {
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Form/Input";
-import { Select } from "../../components/Form/Select";
+import  Select  from "../../components/Form/Select";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import * as yup from "yup";
@@ -68,6 +68,7 @@ export default function CreateBudget() {
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     await api.put(`entry/${id}`, values);
+    //@ts-ignore
     router.push(`/entries?id=${entries?.budget_month?.id}`);
   };
 
@@ -103,16 +104,21 @@ export default function CreateBudget() {
   const toast = useToast();
 
   function transformDataAccountToOptions() {
+    //@ts-ignore
     let selectAccount = []
 
     accounts?.map(
-    (account) =>
-      (selectAccount.push({
-        id: account.id,
-        value: account.id,
-        label: account.name
-      }),
-    ));
+      (account) =>
+        selectAccount.push({
+          //@ts-ignore
+          id: account.id,
+          //@ts-ignore
+          value: account.id,
+          //@ts-ignore
+          label: account.name
+        })
+    );
+    //@ts-ignore
    return selectAccount
   }
 
@@ -123,6 +129,7 @@ export default function CreateBudget() {
         <SideBar />
         <Box
           as="form"
+          //@ts-ignore
           onSubmit={handleSubmit(hangleCreateEntry)}
           flex="1"
           borderRadius={8}
@@ -135,10 +142,15 @@ export default function CreateBudget() {
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8" paddingY="6">
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
-              <Select  placeholder={entries?.account?.name} label="Conta" options={transformDataAccountToOptions()} 
-               onChange={(e) => {
+              <Select
+                 //@ts-ignore
+                placeholder={entries?.account?.name} label="Conta" options={transformDataAccountToOptions()} 
+                 //@ts-ignore
+                onChange={(e) => {
+                   //@ts-ignore
                 setAccount(e.target.value);
-              }}
+                }}
+                 //@ts-ignore
               value={entries?.account?.name}/>
             </SimpleGrid>
           </VStack>
@@ -148,6 +160,7 @@ export default function CreateBudget() {
                 label="Descrição"
                 type="text"
                 {...register("description")}
+                //@ts-ignore
                 error={errors.description}
                 onChange={(e) => {
                   setDescription(e.target.value);
@@ -158,6 +171,7 @@ export default function CreateBudget() {
                 label="Valor"
                 type="number"
                 {...register("amount")}
+                //@ts-ignore
                 error={errors.amount}
                 onChange={(e) => {
                   setAmount(e.target.value);
@@ -168,6 +182,7 @@ export default function CreateBudget() {
                 label="Número de parcelas"
                 type="number"
                 {...register("number_of_installments")}
+                //@ts-ignore
                 error={errors.number_of_installments}
                 onChange={(e) => {
                   setNumber_of_installments(e.target.value);

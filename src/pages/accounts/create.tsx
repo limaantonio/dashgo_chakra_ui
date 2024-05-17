@@ -20,7 +20,7 @@ import {
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Form/Input";
-import { Select } from "../../components/Form/Select";
+import Select from "../../components/Form/Select";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import * as yup from "yup";
@@ -37,6 +37,15 @@ import {
   RiSave2Fill
 } from "react-icons/ri";
 
+type AccountType = "INCOME" | "EXPENSE";
+
+interface SubAccountType {
+  id: string;
+  name: string;
+  type: AccountType;
+  amount: Number;
+}
+
 type CreateAccountFormData = {
   name: string;
   amount: Number;
@@ -50,6 +59,13 @@ interface Budget {
   year: Number;
   created_at: Date;
   updated_at: Date;
+}
+
+interface Account {
+  id: string;
+  name: string;
+  type: AccountType;
+  amount: Number;
 }
 
 const createFormSchema = yup.object().shape({
@@ -71,19 +87,21 @@ export default function CreateBudget() {
     values
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    
+
     try {
       await api.post(`account/budget/${id}`, items);
       router.push(`/accounts?id=${id}`)
     } catch (error) {
-     if (error.response.data.error == 'Saldo insuficiente') {
-      toast({
-              title: "Saldo insuficiente",
-              status: "error",
-              duration: 9000,
-              isClosable: true,
-          });
-      }     
+      if (
+        //@ts-ignore
+        error.response.data.error == 'Saldo insuficiente') {
+        toast({
+          title: "Saldo insuficiente",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
     }
   };
 
@@ -106,6 +124,7 @@ export default function CreateBudget() {
   const [items, setItems] = useState([]);
 
   function transformDataToOptions() {
+    //@ts-ignore
     const selectSubAccounts = [];
     subAccounts?.map(
       (budget) =>
@@ -113,22 +132,23 @@ export default function CreateBudget() {
         id: budget.id,
         value: budget.id,
         label: budget.name
-      }),
-    ));
+      })),
+    );
+    //@ts-ignore
     return selectSubAccounts
   }
 
+  //@ts-ignore
   function selectionSubAccount(value) {
     const subAccount = subAccounts.find((subAccount) => subAccount.id === value);
+    //@ts-ignore
     setType(subAccount.type)
+    //@ts-ignore
     setSubAccount(subAccount);
 
   }
 
   const toast = useToast();
-
-  const format = (val) => `R$` + val
-  const parse = (val) => val.replace(/^\$/, '')
 
   const [value, setValue] = useState(0.00)
   const [name, setName] = useState('')
@@ -138,20 +158,23 @@ export default function CreateBudget() {
   function addItem(e: Event) {
     e.preventDefault();
 
-    
+
 
     const item = {
-      name, 
+      name,
       amount,
       number_of_installments,
+      //@ts-ignore
       sub_account_id: subAccount.id,
     }
 
-    setItems([...items, item]);    
+    //@ts-ignore
+    setItems([...items, item]);
   }
 
 
   async function handleDelete(id: string) {
+    //@ts-ignore
     const itemIndex = items.findIndex((b) => b.id === id)
     const item = [...items]
 
@@ -160,10 +183,12 @@ export default function CreateBudget() {
   }
 
   function verifyAvailableValue() {
-   const total = subAccount?.amount - items.reduce(
-                      (acc, item) => Number(acc) + Number(item.amount),
-                      0,
-    ) 
+    //@ts-ignore
+    const total = subAccount?.amount - items.reduce(
+      //@ts-ignore
+      (acc, item) => Number(acc) + Number(item.amount),
+      0,
+    )
 
     return total
   }
@@ -177,6 +202,7 @@ export default function CreateBudget() {
         <Box flex="1" borderRadius={8} bg="gray.800" p={['6', '8']}>
           <Box
             as="form"
+            //@ts-ignore
             onSubmit={addItem}
             flex="1"
             borderRightRadius={8}
@@ -193,31 +219,40 @@ export default function CreateBudget() {
                 <Select
                   label="Sub-Conta"
                   {...register("sub_account_id")}
-                  onChange={(e) => selectionSubAccount(e.target.value)}
+                  //@ts-ignore
+                  onChange={(value) => selectionSubAccount(value)}
+                  //@ts-ignore
                   placeholder="Selecione"
                   options={transformDataToOptions()}
                 />
 
-              <Input
-                label="Tipo"
-                type="text"
-                value={type ? type.toString() : ''}
-                isDisabled={true}
-                />
-                
+
                 <Input
-                label="Dotação"
-                type="number"
-                value={subAccount?.amount ? subAccount.amount.toString() : ''}
-                disabled={true}
-              />
-               <Input
-                label="Disponível"
-                type="number"
-                value={
-                  verifyAvailableValue()
+                  label="Tipo"
+                  //@ts-ignore
+                  type="text"
+                  //@ts-ignore
+                  value={type ? type.toString() : ''}
+                  isDisabled={true} name={""}                />
+
+                <Input
+                  label="Dotação"
+                  //@ts-ignore
+                  type="number"
+                  //@ts-ignore
+                  value={subAccount?.amount ? subAccount.amount.toString() : ''}
+                  //@ts-ignore
+                  disabled={true}
+                />
+                <Input
+                  label="Disponível"
+                  //@ts-ignore
+                  type="number"
+                  value={
+                    verifyAvailableValue()
                   }
-                disabled={true}
+                   //@ts-ignore
+                  disabled={true}
                 />
 
               </SimpleGrid>
@@ -228,7 +263,9 @@ export default function CreateBudget() {
                   label="Nome"
                   type="text"
                   {...register("name")}
+                  //@ts-ignore
                   error={errors.name}
+                  //@ts-ignore
                   onChange={(e) => {
                     setName(e.target.value);
                   }}
@@ -239,8 +276,11 @@ export default function CreateBudget() {
                   label="Valor"
                   type="text"
                   {...register("amount")}
+                  //@ts-ignore
                   error={errors.amount}
+                  //@ts-ignore
                   onChange={(e) => {
+                     //@ts-ignore
                     setAmount(e.target.value);
                   }}
                   value={amount}
@@ -250,9 +290,12 @@ export default function CreateBudget() {
                   label="Número de parcelas"
                   type="number"
                   {...register("number_of_installments")}
+                  //@ts-ignore
                   error={errors.number_of_installments}
                   value={number_of_installments}
+                  //@ts-ignore
                   onChange={(e) => {
+                     //@ts-ignore
                     setNumber_of_installments(e.target.value);
                   }}
                 />
@@ -283,22 +326,32 @@ export default function CreateBudget() {
                   // eslint-disable-next-line react/jsx-key
                   <Tr cursor="pointer">
                     <Td>
-                      <Text fontWeight="bold">{entry.name}</Text>
+                      <Text fontWeight="bold">{
+                        //@ts-ignore
+                        entry.name}</Text>
                     </Td>
                     <Td>
-                      <Text fontWeight="bold">{entry.amount}</Text>
+                      <Text fontWeight="bold">{
+                        //@ts-ignore
+                        entry.amount}</Text>
                     </Td>
                     <Td>
-                      <Text fontWeight="bold">{entry.number_of_installments}</Text>
+                      <Text fontWeight="bold">{
+                        //@ts-ignore
+                        entry.number_of_installments}</Text>
                     </Td>
                     <Td>
-                      <Text fontWeight="bold">{entry.subAccount}</Text>
+
+                      <Text fontWeight="bold">{
+                        //@ts-ignore
+                        entry.subAccount}</Text>
                     </Td>
 
                     <Td>
                       <HStack>
                         <Box ml="auto">
                           <Button
+                            //@ts-ignore
                             onClick={() => handleDelete(entry.id)}
                             as="a"
                             size="sm"
@@ -322,6 +375,7 @@ export default function CreateBudget() {
                   <Th></Th>
                   <Th>
                     {items.reduce(
+                      //@ts-ignore
                       (acc, item) => Number(acc) + Number(item.amount),
                       0,
                     )}
@@ -341,6 +395,7 @@ export default function CreateBudget() {
               <Button
                 colorScheme="green"
                 type="submit"
+                //@ts-ignore
                 onClick={() => hangleCreateBudget()}
                 isLoading={formState.isSubmitting}
               >

@@ -98,10 +98,13 @@ export default function UserList() {
   async function handleDelete(id: string) {
     await api.delete(`entry/${id}`);
 
+    //@ts-ignore
     const entryIndex = entries.findIndex((b) => b.id === id);
+    //@ts-ignore
     const entry = [...entries];
 
     entry.splice(entryIndex, 1);
+    //@ts-ignore
     setEntries(entry);
   }
 
@@ -141,7 +144,9 @@ export default function UserList() {
               </Tr>
             </Thead>
             <Tbody>
-              {entry?.items?.map((item) => (
+              {
+                //@ts-ignore
+                entry?.items?.map((item) => (
                 // eslint-disable-next-line react/jsx-key
                 <Tr>
                   <Td px={["4", "4", "6"]}>

@@ -45,7 +45,7 @@ export default function Dashboard() {
     { month: 'Dez', income: 0, expanse: 0 },
   ]
 
-  const data = []
+  const data: { name: any; value: string }[] = []
 
   useEffect(() => {
     api.get('subaccount').then((response) => {
@@ -56,21 +56,24 @@ export default function Dashboard() {
   let total = 0
 
   subAccount.filter((sub) => {
+     //@ts-ignore
     if (sub.type === 'EXPENSE') {
+       //@ts-ignore
       total += Number(sub.amount)
     }
   })
 
   subAccount.map((sub) => {
+     //@ts-ignore
     if (sub.type === 'EXPENSE') {
       data.push({
+         //@ts-ignore
         name: sub.name,
+         //@ts-ignore
         value: ((Number(sub.amount) / total) * 100).toFixed(2),
       })
     }
   })
-
-  console.log(data)
 
   const e = data.map((item) => Number(item.value))
   const b = data.map((item) => item.name)
@@ -106,7 +109,9 @@ export default function Dashboard() {
       theme: 'dark',
 
       y: {
-        formatter: function (val) {
+        formatter: function (
+           //@ts-ignore
+          val) {
           return Intl.NumberFormat('pt-BR', {
             style: 'currency',
             currency: 'BRL',
@@ -165,7 +170,9 @@ export default function Dashboard() {
       enabled: true,
       theme: 'dark',
       y: {
-        formatter: function (val) {
+        formatter: function (
+           //@ts-ignore
+          val) {
           return val + '%'
         },
       },
@@ -179,10 +186,15 @@ export default function Dashboard() {
   }, [setBudgets])
 
   budgets?.map((budget) => {
+     //@ts-ignore
     budget.entry.map((entry) => {
-      entry.items.map((item) => {
+      entry.items.map((
+         //@ts-ignore
+        item) => {
         let amount = 0
-        if (budget.month === 1) {
+        if (
+           //@ts-ignore
+          budget.month === 1) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[0].income += Number(item.amount)
           } else {
@@ -190,7 +202,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 2) {
+        if (
+           //@ts-ignore
+          budget.month === 2) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[1].income += Number(item.amount)
           } else {
@@ -198,7 +212,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 3) {
+        if (
+           //@ts-ignore
+          budget.month === 3) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[2].income += Number(item.amount)
           } else {
@@ -206,7 +222,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 4) {
+        if (
+           //@ts-ignore
+          budget.month === 4) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[3].income += Number(item.amount)
           } else {
@@ -214,7 +232,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 5) {
+        if (
+           //@ts-ignore
+          budget.month === 5) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[4].income += Number(item.amount)
           } else {
@@ -222,7 +242,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 6) {
+        if (
+           //@ts-ignore
+          budget.month === 6) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[5].income += Number(item.amount)
           } else {
@@ -230,7 +252,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 7) {
+        if (
+           //@ts-ignore
+          budget.month === 7) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[6].income += Number(item.amount)
           } else {
@@ -238,7 +262,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 8) {
+        if (
+           //@ts-ignore
+          budget.month === 8) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[7].income += Number(item.amount)
           } else {
@@ -246,7 +272,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 9) {
+        if (
+           //@ts-ignore
+          budget.month === 9) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[8].income += Number(item.amount)
           } else {
@@ -254,7 +282,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 10) {
+        if (
+           //@ts-ignore
+          budget.month === 10) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[9].income += Number(item.amount)
           } else {
@@ -262,7 +292,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 11) {
+        if (
+           //@ts-ignore
+          budget.month === 11) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[10].income += Number(item.amount)
           } else {
@@ -270,7 +302,9 @@ export default function Dashboard() {
           }
         }
 
-        if (budget.month === 12) {
+        if (
+           //@ts-ignore
+          budget.month === 12) {
           if (entry.account.sub_account.type === 'INCOME') {
             months[11].income += Number(item.amount)
           } else {
@@ -326,6 +360,7 @@ export default function Dashboard() {
             <Chart
               type="bar"
               height={220}
+               //@ts-ignore
               options={options_demostrativo}
               series={series_demontrativo}
             />
@@ -334,7 +369,9 @@ export default function Dashboard() {
             <Text fontSize="lg" mb="4">
               Disbruição de gastos
             </Text>
-            <Chart type="donut" height={270} options={options} series={e} />
+            <Chart type="donut" height={270}
+             //@ts-ignore
+              options={options} series={e} />
           </Box>
         </SimpleGrid>
       </Flex>

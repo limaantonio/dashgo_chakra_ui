@@ -16,13 +16,13 @@ export function ActiveLink({
 
   if (
     !shouldMatchExactHref &&
-    (asPath.startsWith(String(rest.href)) || asPath.startsWith(String(rest.as)))
+    (asPath.startsWith(String((rest as { href?: string, as?: string }).href)) || asPath.startsWith(String((rest as { href?: string, as?: string }).as)))
   ) {
     isActive = true;
   }
 
   return (
-    <Link {...rest}>
+    <Link href={(rest as { href?: string }).href || ''} {...rest}>
       {cloneElement(children, {
         color: isActive ? "green.400" : "gray.50",
       })}

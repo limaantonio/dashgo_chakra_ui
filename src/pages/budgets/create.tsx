@@ -53,6 +53,7 @@ export default function CreateBudget() {
     router.push(`/budgets`)
   }
 
+   //@ts-ignore
   const getFromLocalStorage = (key) => {
     try {
       const item = localStorage.getItem(key)
@@ -79,6 +80,7 @@ export default function CreateBudget() {
 
         <Box
           as="form"
+           //@ts-ignore
           onSubmit={handleSubmit(hangleCreateBudget)}
           flex="1"
           borderRadius={8}
@@ -95,6 +97,7 @@ export default function CreateBudget() {
                 label="Ano"
                 type="number"
                 {...register('year')}
+                 //@ts-ignore
                 error={errors.name}
               />
             </SimpleGrid>

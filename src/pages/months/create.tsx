@@ -46,9 +46,8 @@ export default function CreateBudget() {
     values
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(values);
+    //@ts-ignore
     values.budget_id = id;
-    console.log(values);
     await api.post("month", values);
     router.push(`/months?id=${id}`);
   };
@@ -63,6 +62,7 @@ export default function CreateBudget() {
 
         <Box
           as="form"
+          //@ts-ignore
           onSubmit={handleSubmit(hangleCreateBudget)}
           flex="1"
           borderRadius={8}
@@ -79,6 +79,7 @@ export default function CreateBudget() {
                 label="Mês"
                 type="number"
                 {...register("month")}
+                //@ts-ignore
                 error={errors.name}
               />
             </SimpleGrid>

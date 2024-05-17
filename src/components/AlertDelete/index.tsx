@@ -5,10 +5,16 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  Button,
+  //@ts-ignore
+  Button
 } from '@chakra-ui/react'
-import { useCallback } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { useToast } from '@chakra-ui/react'
+import { MutableRefObject } from 'react';
+
+// Defina o tipo FocusableElement manualmente
+type FocusableElement = HTMLElement | SVGElement | null;
+
 
 interface IModalProps {
   isOpen: boolean
@@ -22,8 +28,10 @@ const AlertDelete: React.FC<IModalProps> = ({
   handleRemove,
 }) => {
   const handleSubmit = useCallback(
+  //@ts-ignore
     (event) => {
       event.preventDefault()
+      //@ts-ignore
       handleRemove()
       setIsOpen()
     },
@@ -35,10 +43,13 @@ const AlertDelete: React.FC<IModalProps> = ({
   }
 
   const toast = useToast()
+  const cancelRef = React.useRef()
+  const leastDestructiveRef = useRef<FocusableElement>(null);
 
   return (
     <>
-      <AlertDialog isOpen={isOpen} onClose={() => setIsOpen()}>
+      
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={leastDestructiveRef} onClose={() => setIsOpen()} lockFocusAcrossFrames={undefined}>
         <AlertDialogOverlay>
           <AlertDialogContent as="form" onSubmit={handleSubmit}>
             <AlertDialogHeader

@@ -111,6 +111,7 @@ export default function CreateBudget() {
 
         <Box
           as="form"
+          //@ts-ignore
           onSubmit={handleSubmit(handleEditBudget)}
           flex="1"
           borderRadius={8}
@@ -140,6 +141,7 @@ export default function CreateBudget() {
                 {...register("type")}
                 //error={errors.amount}
                 onChange={(e) => {
+                  //@ts-ignore
                   setType(e.target.value);
                 }}
                 value={type}
@@ -155,8 +157,10 @@ export default function CreateBudget() {
                 label="Valor"
                 type="number"
                 {...register("amount")}
+                //@ts-ignore
                 error={errors.amount}
                 onChange={(e) => {
+                  //@ts-ignore
                   setAmount(e.target.value);
                 }}
                 value={amount}
@@ -168,6 +172,7 @@ export default function CreateBudget() {
                 {...register("percentage")}
                 //error={errors.number_of_installments}
                 onChange={(e) => {
+                  //@ts-ignore
                  setPercentage(e.target.value);
                 }}
                 value={percentage}

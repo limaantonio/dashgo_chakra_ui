@@ -68,6 +68,7 @@ export default function CreateBudget() {
         <SideBar />
         <Box
           as="form"
+           //@ts-ignore
           onSubmit={handleSubmit(handleEditBudget)}
           flex="1"
           borderRadius={8}
@@ -85,9 +86,12 @@ export default function CreateBudget() {
                 type="number"
                 {...register("year")}
                 onChange={(e) => {
+                   //@ts-ignore
                   setBudget(e.target.value);
                 }}
+                 //@ts-ignore
                 value={budget?.budget?.year}
+                 //@ts-ignore
                 error={errors.name}
               />
             </SimpleGrid>

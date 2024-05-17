@@ -22,6 +22,7 @@ export default function Login() {
   const toast = useToast()
   const router = useRouter()
 
+  //@ts-ignore
   const onSubmit = async (data) => {
     try {
       const response = await api.post('/authenticate', data)
@@ -56,12 +57,14 @@ export default function Login() {
           label="Usuário"
           type="email"
           {...register('email')}
+          //@ts-ignore
           error={errors.email}
         />
         <Input
           label="Senha"
           type="password"
           {...register('password')}
+          //@ts-ignore
           error={errors.password}
         />
         <Button

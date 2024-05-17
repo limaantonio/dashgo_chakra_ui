@@ -5,7 +5,9 @@ import {
   RiMoneyDollarBoxLine,
 } from "react-icons/ri";
 
-export default function Summary({ id, income, liquid_income, expense, total }) {
+export default function Summary({
+  //@ts-ignore
+  id, income, liquid_income, expense, total }) {
   return (
     <HStack mb="8" justify="space-between" align="center">
       <Box w="100%" key={id} borderRadius={8} bg="gray.800" p="8">

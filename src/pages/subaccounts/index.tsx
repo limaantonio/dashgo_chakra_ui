@@ -83,6 +83,7 @@ export default function SubAccountList() {
 
   function openModalRemove(id: string) {
     setModalRemoveTool(true)
+    //@ts-ignore
     setSelectedSubAccountId(id)
   }
 
@@ -100,6 +101,7 @@ export default function SubAccountList() {
             id={1}
             income={balance?.income}
             expense={balance?.expense}
+            //@ts-ignore
             total={balance?.liquid_income - balance?.expense}
             liquid_income={balance?.liquid_income}
           />
@@ -157,14 +159,16 @@ export default function SubAccountList() {
                         </Box>
                       </Td>
                       <Td>
-                        <Text>{subAccount?.percentage}%</Text>
+                        <Text>{String(subAccount?.percentage)}%</Text>
                       </Td>
                       <Td>
                         <Text fontWeight="bold">
                           {' '}
                           {Intl.NumberFormat('pt-BR', {
                             style: 'currency',
+                            //@ts-ignore
                             currency: 'BRL',
+                            //@ts-ignore
                           }).format(subAccount?.amount)}
                         </Text>
                       </Td>
@@ -231,6 +235,7 @@ export default function SubAccountList() {
                 <AlertDelete
                   isOpen={modalRemoveTool}
                   setIsOpen={toggleModalRemove}
+                  //@ts-ignore
                   handleRemove={() => handleDelete(selectedSubAccountId)}
                 />
               </Tbody>

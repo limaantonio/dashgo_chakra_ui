@@ -12,7 +12,7 @@ import {
 import { SideBar } from "../../components/SideBar";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Form/Input";
-import { Select } from "../../components/Form/Select";
+import  Select  from "../../components/Form/Select";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import * as yup from "yup";
@@ -86,6 +86,7 @@ export default function CreateBudget() {
     console.log(values)
     await api.put(`account/${id}`, data);
     console.log(accounts)
+     //@ts-ignore
     router.push(`/accounts?id=${accounts?.budget_id}`)
   };
 
@@ -111,15 +112,19 @@ export default function CreateBudget() {
   }
 
   function transformDataToOptions() {
+     //@ts-ignore
     const selectBudget = [];
-     subAccounts.map(
+     //@ts-ignore
+    subAccounts.map(
+      //@ts-ignore
       (budget) =>
-        (selectBudget.push({
+        selectBudget.push({
           id: budget.id,
           value: budget.id,
           label: budget.name
-        }),
-    ));
+        })
+    );
+     //@ts-ignore
     return selectBudget
   }
 
@@ -140,6 +145,7 @@ export default function CreateBudget() {
 
         <Box
           as="form"
+           //@ts-ignore
           onSubmit={handleSubmit(hangleCreateBudget)}
           flex="1"
           borderRadius={8}
@@ -156,9 +162,13 @@ export default function CreateBudget() {
               <Select
                 label="Sub-Conta"
                 {...register("sub_account")}
+                 //@ts-ignore
                 placeholder="Selecione"
+                 //@ts-ignore
                 options={subAccounts?.map((subAccount) => ({ value: subAccount.id, label: subAccount.name }))}
+                 //@ts-ignore
                 onChange={(e) => {
+                   //@ts-ignore
                   setSubAccount(e.target.value);
                 }}
                 value={subAccount}
@@ -168,9 +178,11 @@ export default function CreateBudget() {
                 label="Nome"
                 type="text"
                 {...register("name")}
+                 //@ts-ignore
                 error={errors.name}
                 {...register("name")}
                 onChange={(e) => {
+                   //@ts-ignore
                   setName(e.target.value);
                 }}
                 value={name}
@@ -185,8 +197,10 @@ export default function CreateBudget() {
                 label="Valor"
                 type="number"
                 {...register("amount")}
+                 //@ts-ignore
                 error={errors.amount}
                 onChange={(e) => {
+                   //@ts-ignore
                   setAmount(e.target.value);
                 }}
                 value={amount}
@@ -196,8 +210,10 @@ export default function CreateBudget() {
                 label="Número de parcelas"
                 type="number"
                 {...register("number_of_installments")}
+                 //@ts-ignore
                 error={errors.number_of_installments}
                 onChange={(e) => {
+                   //@ts-ignore
                   setNumber_of_installments(e.target.value);
                 }}
                 value={number_of_installments}

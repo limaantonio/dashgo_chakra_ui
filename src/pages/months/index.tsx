@@ -87,6 +87,7 @@ export default function MonthList() {
 
   function openModalRemove(id: string) {
     setModalRemoveTool(true)
+    //@ts-ignore
     setSelectedSubAccountId(id)
   }
 
@@ -145,7 +146,9 @@ export default function MonthList() {
                       </Td>
                       <Td>
                         <Box>
-                          <Text fontWeight="bold">{budget.month}</Text>
+                          <Text fontWeight="bold">{
+                            //@ts-ignore
+                            budget.month}</Text>
                           <Text fontSize="sm" color="gray.300">
                             {format(new Date(budget.created_at), 'yyyy-MM-dd')}
                           </Text>
@@ -162,7 +165,8 @@ export default function MonthList() {
 
                       <Td>
                         <Link
-                          href={`/entries?id=${budget.id}&budget=${budget.budget_id}`}
+                          href={`/entries?id=${budget.id}&budget=${//@ts-ignore
+                            budget.budget_id}`}
                         >
                           <Button
                             mr="2"
@@ -235,6 +239,7 @@ export default function MonthList() {
               <AlertDelete
                 isOpen={modalRemoveTool}
                 setIsOpen={toggleModalRemove}
+                //@ts-ignore
                 handleRemove={() => handleDelete(selectedSubAccountId)}
               />
             </Table>

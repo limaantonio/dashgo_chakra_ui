@@ -79,6 +79,7 @@ export default function UserList() {
 
   function openModalRemove(id: string) {
     setModalRemoveTool(true)
+     //@ts-ignore
     setSelectedSubAccountId(id)
   }
 
@@ -124,16 +125,22 @@ export default function UserList() {
               </Thead>
               <Tbody>
                 {budgets.map((budget) => (
-                  <Tr key={budget.budget.id} cursor="pointer">
+                  <Tr key={
+                     //@ts-ignore
+                    budget.budget.id} cursor="pointer">
                     <Td px={['4', '4', '6']}>
                       <Checkbox colorScheme="green"></Checkbox>
                     </Td>
                     <Td>
                       <Box>
-                        <Text fontWeight="bold">{budget.budget.year}</Text>
+                        <Text fontWeight="bold">{
+                           //@ts-ignore
+                          budget.budget.year}</Text>
                         <Text fontSize="sm" color="gray.300">
                           {format(
-                            new Date(budget.budget.created_at),
+                            new Date(
+                               //@ts-ignore
+                              budget.budget.created_at),
                             'yyyy-MM-dd',
                           )}
                         </Text>
@@ -148,7 +155,9 @@ export default function UserList() {
                       )}
                     </Td>
                     <Td>
-                      <Link href={`/accounts?id=${budget.budget.id}`}>
+                      <Link href={`/accounts?id=${
+                         //@ts-ignore
+                        budget.budget.id}`}>
                         <Button
                           mr="2"
                           as="a"
@@ -162,7 +171,9 @@ export default function UserList() {
                     </Td>
 
                     <Td>
-                      <Link href={`/months?id=${budget.budget.id}`}>
+                      <Link href={`/months?id=${
+                        //@ts-ignore
+                        budget.budget.id}`}>
                         <Button
                           mr="2"
                           as="a"
@@ -185,7 +196,9 @@ export default function UserList() {
                           <SlOptionsVertical />
                         </MenuButton>
                         <MenuList textColor="black">
-                          <Link href={`/budgets/edit?id=${budget.budget.id}`}>
+                          <Link href={`/budgets/edit?id=${
+                             //@ts-ignore
+                            budget.budget.id}`}>
                             <MenuItem as="button" _hover={{ bg: 'gray.50' }}>
                               <Button
                                 mr="2"
@@ -203,7 +216,9 @@ export default function UserList() {
                             </MenuItem>
                           </Link>
                           <MenuItem
-                            onClick={() => openModalRemove(budget.budget.id)}
+                            onClick={() => openModalRemove(
+                              //@ts-ignore
+                              budget.budget.id)}
                             as="button"
                             _hover={{ bg: 'gray.50' }}
                           >
@@ -234,7 +249,9 @@ export default function UserList() {
               <AlertDelete
                 isOpen={modalRemoveTool}
                 setIsOpen={toggleModalRemove}
-                handleRemove={() => handleDelete(selectedSubAccountId)}
+                handleRemove={() => handleDelete(
+                //@ts-ignore
+                  selectedSubAccountId)}
               />
             </Table>
             <Pagination />

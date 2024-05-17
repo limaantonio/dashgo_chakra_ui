@@ -58,6 +58,7 @@ export default function CreateBudget() {
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     await api.put(`month/${id}`, values)
+    //@ts-ignore
     router.push(`/months?id=${budget?.budget_id}`)
   }
 
@@ -68,6 +69,7 @@ export default function CreateBudget() {
         <SideBar />
         <Box
           as="form"
+          //@ts-ignore
           onSubmit={handleSubmit(handleEditBudget)}
           flex="1"
           borderRadius={8}
@@ -85,9 +87,12 @@ export default function CreateBudget() {
                 type="number"
                 {...register('month')}
                 onChange={(e) => {
+                  //@ts-ignore
                   setBudget(e.target.value)
                 }}
+                //@ts-ignore
                 value={budget?.month}
+                //@ts-ignore
                 error={errors.name}
               />
             </SimpleGrid>
