@@ -113,7 +113,7 @@ export function Profile({ showProfileData = true }: ProfileProps) {
               onClick={() => {
                 localStorage.removeItem('user')
                 localStorage.removeItem('token')
-                window.location.href = '/'
+                window.location.href = '/login'
               }}
             >
               Sair

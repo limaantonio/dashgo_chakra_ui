@@ -35,8 +35,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Verifica a autenticação antes de renderizar a página
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/')
+    if (!isAuthenticated && router.pathname !== '/register') {
+      router.push('/login');
     }
   }, [isAuthenticated])
 

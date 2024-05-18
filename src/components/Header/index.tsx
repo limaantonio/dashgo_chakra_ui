@@ -2,7 +2,7 @@ import {
   Flex,
   Icon,
   IconButton,
-  useBreakpoint,
+  Link,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { useSideBarDrawer } from "../../context/SiderbarDrawerContext";
@@ -46,8 +46,10 @@ export function Header() {
           icon={<Icon as={RiMenuLine} />}
         ></IconButton>
       )}
-    
-      <Image src={logo} alt="logo" width={100} height={100} />
+
+      <Link href="/">
+        <Image src={logo} alt="logo" width={100} height={100} />
+      </Link>
 
       {/* {isWideVersion && <SeachBox />} */}
       <Flex align="center" ml="auto">
