@@ -1,10 +1,12 @@
-import { Flex, Button, useToast } from '@chakra-ui/react'
+import { Flex, Button, useToast, Box, VStack } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import { Input } from '../components/Form/Input'
 import api from '../services/api'
+import Image from 'next/image'
+const logo = require('../assets/logo.png')
 
 const schema = yup.object().shape({
   email: yup.string().required('E-mail obrigatório'),
@@ -42,7 +44,11 @@ export default function Login() {
   }
 
   return (
-    <Flex align="center" justify="center" h="100vh">
+    <Flex align="center" justify="center" h="100vh" >
+      <VStack spacing={12}>
+
+        <Image src={logo} alt="logo" width={150} height={150} />
+        
       <Flex
         as="form"
         onSubmit={handleSubmit(onSubmit)}
@@ -53,6 +59,7 @@ export default function Login() {
         w="100%"
         maxW="400px"
       >
+         
         <Input
           label="Usuário"
           type="email"
@@ -75,7 +82,8 @@ export default function Login() {
         >
           Entrar
         </Button>
-      </Flex>
+        </Flex>
+         </VStack>
     </Flex>
   )
 }

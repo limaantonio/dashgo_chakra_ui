@@ -6,11 +6,12 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { useSideBarDrawer } from "../../context/SiderbarDrawerContext";
-import { Logo } from "../Header/Logo";
 import { NotificationNav } from "../Header/NotificationNav";
 import { Profile } from "../Header/Profile";
 // import { SeachBox } from "../Header/SeachBox";
 import { RiMenuLine } from "react-icons/ri";
+import Image from 'next/image'
+const logo = require('../../assets/logo.png')
 
 export function Header() {
   const { onOpen } = useSideBarDrawer();
@@ -45,7 +46,8 @@ export function Header() {
           icon={<Icon as={RiMenuLine} />}
         ></IconButton>
       )}
-      <Logo />
+    
+      <Image src={logo} alt="logo" width={100} height={100} />
 
       {/* {isWideVersion && <SeachBox />} */}
       <Flex align="center" ml="auto">

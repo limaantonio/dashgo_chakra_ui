@@ -4,10 +4,6 @@ import { SideBar } from '../components/SideBar'
 import { Header } from '../components/Header'
 import api from '../services/api'
 import { useEffect, useState } from 'react'
-import { set } from 'date-fns'
-import { m } from 'framer-motion'
-import axios from 'axios'
-import { useRouter } from 'next/router'
 
 const Chart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -359,6 +355,7 @@ export default function Dashboard() {
             </Text>
             <Chart
               type="bar"
+              width={"100%"}
               height={220}
                //@ts-ignore
               options={options_demostrativo}
@@ -369,9 +366,12 @@ export default function Dashboard() {
             <Text fontSize="lg" mb="4">
               Disbruição de gastos
             </Text>
+          
             <Chart type="donut" height={270}
              //@ts-ignore
-              options={options} series={e} />
+              options={options} series={e}
+              width={"100%"}
+            />
           </Box>
         </SimpleGrid>
       </Flex>
