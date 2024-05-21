@@ -61,6 +61,7 @@ export default function SubAccountList() {
   const [selectedSubAccountId, setSelectedSubAccountId] = useState(null)
   const [budget, setBudget] = useState(null)
 
+    //@ts-ignore
    const getFromLocalStorage = (key) => {
     try {
       const item = localStorage.getItem(key)

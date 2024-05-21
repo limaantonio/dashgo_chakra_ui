@@ -26,6 +26,7 @@ interface Account {
   name: string;
   type: AccountType;
   amount: Number;
+  sub_account: Account;
 }
 
 interface Budget {
@@ -104,7 +105,8 @@ export default function Dashboard() {
   }, [budget]);
 
   async function loadSubAccounts() {
-    await api.get(`subaccount/budget/${budget.budget.id}`).then((response) => {
+     //@ts-ignore
+    await api.get(`subaccount/budget/${budget?.budget?.id}`).then((response) => {
       setSubAccount(response.data)
     })   
   }
@@ -407,7 +409,9 @@ export default function Dashboard() {
          <Box flex="1">
           <Flex mb="8" justify="space-between" align="center">
              <Heading size="lg" fontWeight="normal">
-                Orçamentos de {budget?.budget?.year}
+              Orçamentos de {
+                //@ts-ignore
+                budget?.budget?.year}
               </Heading>
             <HStack>
              
@@ -436,18 +440,30 @@ export default function Dashboard() {
                       {budgets.map((b) => (
                         <MenuItem
                           as="button"
-                          bg={b.budget.id === budget ? 'green.400' : 'white'}
-                          textColor={b.budget.id === budget ? 'white' : 'black'}
+                          bg={
+                            //@ts-ignore
+                            b.budget.id === budget ? 'green.400' : 'white'}
+                          textColor={
+                              //@ts-ignore
+                            b.budget.id === budget ? 'white' : 'black'}
                           _hover={{ bg: 'gray.50' }}
-                          key={b.budget.id}
-                          value={b.budget.year}
+                          key={
+                              //@ts-ignore
+                            b.budget.id}
+                          value={
+                              //@ts-ignore
+                            b.budget.year}
                           onClick={() => {
                             //@ts-ignore
                             setBudget(b)
-                            localStorage.setItem('budget', JSON.stringify(b.budget.id))
+                            localStorage.setItem('budget', JSON.stringify(
+                                //@ts-ignore
+                              b.budget.id))
                           }}
                         >
-                          {b.budget.year}
+                          {
+                              //@ts-ignore
+                            b.budget.year}
                         </MenuItem>
                       ))}
                       <MenuItem

@@ -99,6 +99,7 @@ export default function CreateBudget() {
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const entry = values
+    //@ts-ignore
     entry.account_id = account
     
     //@ts-ignore
