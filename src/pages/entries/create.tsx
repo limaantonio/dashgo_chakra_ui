@@ -99,6 +99,7 @@ export default function CreateBudget() {
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const entry = values
+    entry.account_id = account
     
     //@ts-ignore
     entry.budget_month_id = budget_month
@@ -130,7 +131,7 @@ export default function CreateBudget() {
     e.preventDefault()
     const item = {
       name, 
-      amount
+      amount,
     }
     //@ts-ignore
     setItems([...items, item])
@@ -180,8 +181,12 @@ const [available_value, setAvaliableValue] = useState(0);
     const _account = accounts.find((subAccount) => subAccount.account.id === value);
     //@ts-ignore
     setAccount(_account);
+
+    console.log(value)
     
   }
+
+  
 
   function verifyAvailableValue() {
     //@ts-ignore

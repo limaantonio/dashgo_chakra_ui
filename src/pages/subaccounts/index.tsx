@@ -59,19 +59,41 @@ export default function SubAccountList() {
   const [subAccounts, setSubAccounts] = useState<SubAccount[]>([])
   const [modalRemoveTool, setModalRemoveTool] = useState(false)
   const [selectedSubAccountId, setSelectedSubAccountId] = useState(null)
+  const [budget, setBudget] = useState(null)
+
+   const getFromLocalStorage = (key) => {
+    try {
+      const item = localStorage.getItem(key)
+      return item ? JSON.parse(item) : null
+    } catch (error) {
+      console.error('Erro ao recuperar do localStorage:', error)
+      return null
+    }
+  }
 
   async function loadAccount() {
     await api
-      .get('subaccount')
+      .get(`subaccount/budget/${budget}`)
       .then((response) => setSubAccounts(response.data))
     await api
-      .get(`subaccount/balance`)
+      .get(`subaccount/balance/budget/${budget}`)
       .then((response) => setBalance(response.data))
   }
 
   useEffect(() => {
-    loadAccount()
+   
+    const budgetIt = getFromLocalStorage('budget')
+    if (budgetIt) {
+      setBudget(budgetIt) 
+    }
+     
   }, [setSubAccounts, setBalance, id])
+
+  useEffect(() => {
+    if (budget) {
+      loadAccount()
+    }
+  }, [budget])
 
   async function handleDelete(id: string) {
     await api.delete(`subaccount/${id}`)
@@ -90,6 +112,8 @@ export default function SubAccountList() {
   function toggleModalRemove(): void {
     setModalRemoveTool(!modalRemoveTool)
   }
+
+  console.log(subAccounts)
 
   return (
     <Box>
@@ -111,7 +135,7 @@ export default function SubAccountList() {
                 Classificação de contas
               </Heading>
               <Box>
-                <Link href="/subaccounts/create" passHref>
+                <Link href={`/subaccounts/create?budget=${budget}`} passHref>
                   <Button
                     as="a"
                     size="sm"
@@ -244,7 +268,7 @@ export default function SubAccountList() {
                   <Th>Total</Th>
                   <Th></Th>
                   <Th>
-                    {subAccounts.reduce(
+                    {subAccounts?.reduce(
                       (acc, item) => Number(acc) + Number(item.percentage),
                       0,
                     )}

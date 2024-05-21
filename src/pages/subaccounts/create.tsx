@@ -88,7 +88,7 @@ export default function CreateSubAccount() {
 
   useEffect(() => {
     api
-      .get('subaccount/balance')
+      .get(`subaccount/balance/budget/${r.query.budget}`)
       .then((response) => setIncomeAmount(response.data.liquid_income))
   }, [])
 
@@ -130,6 +130,7 @@ export default function CreateSubAccount() {
       type,
       amount,
       principal,
+      budget_id: r.query.budget,
     }
     //@ts-ignore
     setItems([...items, item])

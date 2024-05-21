@@ -35,7 +35,7 @@ import { Pagination } from '../../components/Pagination'
 import Link from 'next/link'
 import api from '../../services/api'
 import { useEffect, useState } from 'react'
-import { format } from 'date-fns'
+import { format, set } from 'date-fns'
 import AlertDelete from '../../components/AlertDelete'
 import Summary from '../../components/Summary'
 import { SlOptionsVertical } from 'react-icons/sl'
@@ -59,13 +59,35 @@ export default function UserList() {
   const [budgets, setBudgets] = useState<Budget[]>([])
   const [selectedSubAccountId, setSelectedSubAccountId] = useState(null)
 
-  async function loadBudgets() {
-    await api.get('budget').then((response) => setBudgets(response.data))
+  //@ts-ignore
+  const getFromLocalStorage = (key) => {
+    try {
+      const item = localStorage.getItem(key)
+      return item ? JSON.parse(item) : null
+    } catch (error) {
+      console.error('Erro ao recuperar do localStorage:', error)
+      return null
+    }
   }
 
+  async function loadBudgets() {
+    await api.get(`budget/user/${user}`).then((response) => setBudgets(response.data))
+  }
+
+  const [user, setUser] = useState(null)
+
   useEffect(() => {
-    loadBudgets()
-  }, [setBudgets])
+    const userId = getFromLocalStorage('user')
+    if (userId) {
+      setUser(userId) 
+    }
+  }, [])
+
+  useEffect(() => {
+    if (user) {
+      loadBudgets()
+    }
+  }, [user])
 
   async function handleDelete(id: string) {
     await api.delete(`budget/${id}`)

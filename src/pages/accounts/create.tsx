@@ -106,15 +106,9 @@ export default function CreateBudget() {
   };
 
 
-  const [budgets, setBudgets] = useState<Budget[]>([]);
-
 
   useEffect(() => {
-    api.get("budget").then((response) => setBudgets(response.data));
-  }, []);
-
-  useEffect(() => {
-    api.get("subaccount").then((response) => setSubAccounts(response.data));
+    api.get(`subaccount/budget/${id}`).then((response) => setSubAccounts(response.data));
   }, []);
 
 

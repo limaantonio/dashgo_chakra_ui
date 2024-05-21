@@ -1,13 +1,44 @@
-import { Flex, Box, SimpleGrid, Text, theme, color } from '@chakra-ui/react'
+import { Flex, Box, SimpleGrid, Text, theme, color, Heading, Button, Icon,   Menu,
+  MenuButton,
+  MenuDivider,
+  MenuGroup,
+  MenuItem,
+  MenuList, 
+  HStack} from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { SideBar } from '../../components/SideBar'
 import { Header } from '../../components/Header'
 import api from '../../services/api'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
+import Link from 'next/link'
+import { RiAddLine, RiArrowDownSFill } from 'react-icons/ri'
+import Select from '../../components/Form/Select'
+import { set } from 'date-fns'
 
 const Chart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
 })
+
+type AccountType = "INCOME" | "EXPENSE";
+
+interface Account {
+  id: string;
+  name: string;
+  type: AccountType;
+  amount: Number;
+}
+
+interface Budget {
+  id: string;
+  year: Number;
+  month: Number;
+  entry: {
+    account: Account;
+    items: {
+      amount: Number;
+    }[];
+  }[];
+}
 
 export default function Dashboard() {
   // const router = useRouter()
@@ -23,8 +54,61 @@ export default function Dashboard() {
   //   checkAuth()
   // }, [])
 
-  const [budgets, setBudgets] = useState([])
+  //@ts-ignore
+  const getFromLocalStorage = (key) => {
+    try {
+      const item = localStorage.getItem(key)
+      return item ? JSON.parse(item) : null
+    } catch (error) {
+      console.error('Erro ao recuperar do localStorage:', error)
+      return null
+    }
+  }
+
+ 
+ async function loadBudgets() {
+    await api.get(`budget/user/${user}`).then((response) => setBudgets(response.data))
+  }
+
+  const [user, setUser] = useState(null)
+  const [budgets, setBudgets] = useState<Budget[]>([])
   const [subAccount, setSubAccount] = useState([])
+  const [budget, setBudget] = useState()
+
+  useEffect(() => {
+    const userId = getFromLocalStorage('user')
+    if (userId) {
+      setUser(userId) 
+    }
+  }, [])
+
+  useEffect(() => {
+    if (user) {
+      loadBudgets()
+    }
+  
+  }, [user])
+
+  useEffect(() => {
+    if (budgets.length > 0) {
+      const lastBudget = budgets[budgets.length - 1];
+        //@ts-ignore
+        setBudget(lastBudget);
+    }
+  }, [budgets]);
+
+  useEffect(() => {
+    if (budget) {
+      loadSubAccounts();
+    }
+  }, [budget]);
+
+  async function loadSubAccounts() {
+    await api.get(`subaccount/budget/${budget.budget.id}`).then((response) => {
+      setSubAccount(response.data)
+    })   
+  }
+
 
   let months = [
     { month: 'Jan', income: 0, expanse: 0 },
@@ -43,15 +127,11 @@ export default function Dashboard() {
 
   const data: { name: any; value: string }[] = []
 
-  useEffect(() => {
-    api.get('subaccount').then((response) => {
-      setSubAccount(response.data)
-    })
-  }, [])
+
 
   let total = 0
 
-  subAccount.filter((sub) => {
+  subAccount?.filter((sub) => {
      //@ts-ignore
     if (sub.type === 'EXPENSE') {
        //@ts-ignore
@@ -175,15 +255,9 @@ export default function Dashboard() {
     },
   }
 
-  useEffect(() => {
-    api.get('budget').then((response) => {
-      setBudgets(response.data[0]?.budget.budget_months)
-    })
-  }, [setBudgets])
-
   budgets?.map((budget) => {
      //@ts-ignore
-    budget.entry.map((entry) => {
+    budget?.entry?.map((entry) => {
       entry.items.map((
          //@ts-ignore
         item) => {
@@ -322,20 +396,7 @@ export default function Dashboard() {
     },
   ]
 
-  //Demonstrativo do que foi gasto e por categoria
-  // const series = subAccount.map((sub) => {
-  //   let total = 0
-  //   budgets.map((budget) => {
-  //     budget.entry.map((entry) => {
-  //       entry.items.map((item) => {
-  //         if (entry.account.sub_account.name === sub.name) {
-  //           total += Number(item.amount)
-  //         }
-  //       })
-  //     })
-  //   })
-  //   return total
-  // })
+  const [subAccounts, setSubAccounts] = useState<Account[]>([]);
 
   return (
     <Flex direction="column" h="100vh">
@@ -343,6 +404,68 @@ export default function Dashboard() {
 
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
+         <Box flex="1">
+          <Flex mb="8" justify="space-between" align="center">
+             <Heading size="lg" fontWeight="normal">
+                Orçamentos de {budget?.budget?.year}
+              </Heading>
+            <HStack>
+             
+              <Link href="/budgets/create" passHref>
+                <Button
+                  as="a"
+                  size="sm"
+                  fontSize="small"
+                  colorScheme="green"
+                  leftIcon={<Icon as={RiAddLine} fontSize="20" />}
+                >
+                  Criar novo
+                </Button>
+            </Link>
+             <Menu>
+                  <MenuButton
+                    bg="gray.700"
+                    as={Button}
+                    mr="4"
+                    rightIcon={<RiArrowDownSFill />}
+                  >
+                    Ano
+                  </MenuButton>
+                  <MenuList textColor="black">
+                    <MenuGroup title="Orçamentos">
+                      {budgets.map((b) => (
+                        <MenuItem
+                          as="button"
+                          bg={b.budget.id === budget ? 'green.400' : 'white'}
+                          textColor={b.budget.id === budget ? 'white' : 'black'}
+                          _hover={{ bg: 'gray.50' }}
+                          key={b.budget.id}
+                          value={b.budget.year}
+                          onClick={() => {
+                            //@ts-ignore
+                            setBudget(b)
+                            localStorage.setItem('budget', JSON.stringify(b.budget.id))
+                          }}
+                        >
+                          {b.budget.year}
+                        </MenuItem>
+                      ))}
+                      <MenuItem
+                        bg="gray.50"
+                        onClick={() => {
+                          //@ts-ignore
+                          setBudget('')
+                        }}
+                        as="button"
+                      >
+                        Limpar filtro
+                      </MenuItem>
+                    </MenuGroup>
+                  </MenuList>
+              </Menu>
+          
+              </HStack>
+            </Flex>
         <SimpleGrid
           flex="1"
           gap="4"
@@ -356,7 +479,7 @@ export default function Dashboard() {
             <Chart
               type="bar"
               width={"100%"}
-              height={220}
+              height={"100%"}
                //@ts-ignore
               options={options_demostrativo}
               series={series_demontrativo}
@@ -367,13 +490,14 @@ export default function Dashboard() {
               Disbruição de gastos
             </Text>
           
-            <Chart type="donut" height={270}
+            <Chart type="donut" height={"100%"}
              //@ts-ignore
               options={options} series={e}
               width={"100%"}
             />
           </Box>
-        </SimpleGrid>
+          </SimpleGrid>
+          </Box>
       </Flex>
     </Flex>
   )
