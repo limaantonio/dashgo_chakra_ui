@@ -139,7 +139,6 @@ export default function UserList() {
     await api
       .get(`entry?month=${balance}`)
       .then((response) => setEntries(response.data));
-    console.log(entries);
   }
 
   async function getByMonth(month: Number) {

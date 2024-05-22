@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 interface SelectProps {
-  name: string; // Definindo o tipo para a propriedade 'name'
+  name: string;
   options?: { id: string; value: string; label: string }[];
   label?: string;
   onChange?: (value: string) => void;

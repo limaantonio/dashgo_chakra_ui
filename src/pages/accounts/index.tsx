@@ -88,11 +88,8 @@ export default function UserList() {
     loadAccounts()
   }, [setResultAccounts, setBalance, id])
 
-  //console.log(resultAccounts);
-
   async function handleDelete(id: string) {
     await api.delete(`account/${id}`)
-    console.log(id)
 
      //@ts-ignore
     const accoutIndex = resultAccounts.findIndex((b) => b.id === id)

@@ -114,8 +114,6 @@ export default function SubAccountList() {
     setModalRemoveTool(!modalRemoveTool)
   }
 
-  console.log(subAccounts)
-
   return (
     <Box>
       <Header />

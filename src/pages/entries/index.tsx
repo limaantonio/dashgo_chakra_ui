@@ -165,12 +165,8 @@ export default function UserList() {
     loadAccount()
   }, [setEntries, setBalance, id])
 
-  console.log(entries)
-
   async function handleDelete(id: string) {
     await api.delete(`entry/${id}`)
-    console.log(id)
-
     const entryIndex = entriesAccout.findIndex((b) => b.id === id)
     const entry = [...entriesAccout]
 
@@ -365,7 +361,7 @@ export default function UserList() {
                             ? 'Pendente'
                             //@ts-ignore
                           : entry?.status === 'CLOSED'
-                              ? 'Fechado'
+                              ? 'Pago'
                               //@ts-ignore
                             : entry?.status === 'IN_PROGRESS'
                               ? 'Em andamento'

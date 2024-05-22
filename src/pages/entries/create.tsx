@@ -71,7 +71,7 @@ const createFormSchema = yup.object().shape({
   //amount: yup.string().required("Valor obrigatório"),
 });
 
-const status = [{
+const statusList = [{
   id: 1,
   label: 'Pendente',
   value: 'PENDING'
@@ -91,6 +91,7 @@ export default function CreateBudget() {
   const [items, setItems] = useState<Item[]>([])
   const [amount, setAmount] = useState<Number>(0);
   const [name, setName] = useState<string>("");
+  const [status, setStatus] = useState()
   const r = useRouter();
   const { id, budget_month } = r.query;
 
@@ -100,8 +101,9 @@ export default function CreateBudget() {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const entry = values
     //@ts-ignore
-    entry.account_id = account
-    
+    entry.account_id = account.account.id
+    //@ts-ignore
+    entry.status = status
     //@ts-ignore
     entry.budget_month_id = budget_month
 
@@ -182,8 +184,6 @@ const [available_value, setAvaliableValue] = useState(0);
     const _account = accounts.find((subAccount) => subAccount.account.id === value);
     //@ts-ignore
     setAccount(_account);
-
-    console.log(value)
     
   }
 
@@ -233,7 +233,7 @@ const toast = useToast();
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
               <Select {...register("account_id")}
                  //@ts-ignore
-                placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()} onChange={(e) => selectionAccount(e.target.value)} />
+                placeholder="Selecione" label="Conta" options={transformDataAccountToOptions()} onChange={(value) => selectionAccount(value)} />
             </SimpleGrid>
           </VStack>
           <VStack spacing="8">
@@ -278,7 +278,9 @@ const toast = useToast();
                 {...register("status")}
                   placeholder="Selecione"
                    //@ts-ignore
-                options={status}
+                  options={statusList}
+                  //@ts-ignore
+                  onChange={(value) => setStatus(value)}           
               />
                  
               </HStack>

@@ -257,132 +257,133 @@ export default function Dashboard() {
     },
   }
 
-  budgets?.map((budget) => {
      //@ts-ignore
-    budget?.entry?.map((entry) => {
-      entry.items.map((
-         //@ts-ignore
-        item) => {
-        let amount = 0
-        if (
-           //@ts-ignore
-          budget.month === 1) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[0].income += Number(item.amount)
-          } else {
-            months[0].expanse += Number(item.amount)
+    budget?.budget?.budget_months?.map((month) => {
+       //@ts-ignore
+      month?.entry.map((entry) => {
+        entry.items.map((
+          //@ts-ignore
+          item) => {    
+          
+          if (
+            //@ts-ignore
+            month.month === 1) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[0].income += Number(item.amount)
+            } else {
+              months[0].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 2) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[1].income += Number(item.amount)
-          } else {
-            months[1].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 2) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[1].income += Number(item.amount)
+            } else {
+              months[1].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 3) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[2].income += Number(item.amount)
-          } else {
-            months[2].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 3) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[2].income += Number(item.amount)
+            } else {
+              months[2].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 4) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[3].income += Number(item.amount)
-          } else {
-            months[3].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 4) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[3].income += Number(item.amount)
+            } else {
+              months[3].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 5) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[4].income += Number(item.amount)
-          } else {
-            months[4].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 5) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[4].income += Number(item.amount)
+            } else {
+              months[4].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 6) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[5].income += Number(item.amount)
-          } else {
-            months[5].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 6) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[5].income += Number(item.amount)
+            } else {
+              months[5].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 7) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[6].income += Number(item.amount)
-          } else {
-            months[6].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 7) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[6].income += Number(item.amount)
+            } else {
+              months[6].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 8) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[7].income += Number(item.amount)
-          } else {
-            months[7].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 8) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[7].income += Number(item.amount)
+            } else {
+              months[7].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 9) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[8].income += Number(item.amount)
-          } else {
-            months[8].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 9) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[8].income += Number(item.amount)
+            } else {
+              months[8].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 10) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[9].income += Number(item.amount)
-          } else {
-            months[9].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 10) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[9].income += Number(item.amount)
+            } else {
+              months[9].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 11) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[10].income += Number(item.amount)
-          } else {
-            months[10].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 11) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[10].income += Number(item.amount)
+            } else {
+              months[10].expanse += Number(item.amount)
+            }
           }
-        }
 
-        if (
-           //@ts-ignore
-          budget.month === 12) {
-          if (entry.account.sub_account.type === 'INCOME') {
-            months[11].income += Number(item.amount)
-          } else {
-            months[11].expanse += Number(item.amount)
+          if (
+            //@ts-ignore
+            month.month === 12) {
+            if (entry.account.sub_account.type === 'INCOME') {
+              months[11].income += Number(item.amount)
+            } else {
+              months[11].expanse += Number(item.amount)
+            }
           }
-        }
       })
     })
   })

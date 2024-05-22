@@ -78,10 +78,6 @@ export default function CreateBudget() {
   const [amount, setAmount] = useState("");
   const [number_of_installments, setNumber_of_installments] = useState("");
 
-
-
-  console.log(entries)
-
   async function getAccounts(){
     await  api.get("accounts").then((response) => setAccounts(response.data));
   }

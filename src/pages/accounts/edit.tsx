@@ -83,9 +83,7 @@ export default function CreateBudget() {
       number_of_installments: values.number_of_installments,
       sub_account_id: subAccount,
     }
-    console.log(values)
     await api.put(`account/${id}`, data);
-    console.log(accounts)
      //@ts-ignore
     router.push(`/accounts?id=${accounts?.budget_id}`)
   };
@@ -127,8 +125,6 @@ export default function CreateBudget() {
      //@ts-ignore
     return selectBudget
   }
-
-  console.log(accounts)
 
   useEffect(() => {
     getAccount()
