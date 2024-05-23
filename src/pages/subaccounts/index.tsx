@@ -220,6 +220,7 @@ export default function SubAccountList() {
                             bg="transparent"
                             _hover={{ bg: 'transparent' }}
                             as={Button}
+                            textColor="white.300"
                           >
                             <SlOptionsVertical />
                           </MenuButton>

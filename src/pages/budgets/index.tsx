@@ -225,7 +225,7 @@ export default function UserList() {
                           <Link href={`/budgets/edit?id=${
                              //@ts-ignore
                             budget.budget.id}`}>
-                            <MenuItem as="button" _hover={{ bg: 'gray.50' }}>
+                            <MenuItem as="button" _hover={{ bg: 'gray.50' }}  bg="transparent"  textColor="white.300">
                               <Button
                                 mr="2"
                                 as="a"
