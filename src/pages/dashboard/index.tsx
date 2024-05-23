@@ -75,6 +75,7 @@ export default function Dashboard() {
   const [budgets, setBudgets] = useState<Budget[]>([])
   const [subAccount, setSubAccount] = useState([])
   const [budget, setBudget] = useState()
+  const [year, setYear] = useState()
 
   useEffect(() => {
     const userId = getFromLocalStorage('user')
@@ -403,30 +404,18 @@ export default function Dashboard() {
 
   return (
     <Flex direction="column" h="100vh">
-      <Header />
+      <Header value={`Contas de ${
+        //@ts-ignore
+        budget?.budget?.year}`} budgets={budgets} />
 
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
          <Box flex="1">
           <Flex mb="8" justify="space-between" align="center">
-             <Heading size="lg" fontWeight="normal">
-              Orçamentos de {
-                //@ts-ignore
-                budget?.budget?.year}
-              </Heading>
+            
             <HStack>
              
-              <Link href="/budgets/create" passHref>
-                <Button
-                  as="a"
-                  size="sm"
-                  fontSize="small"
-                  colorScheme="green"
-                  leftIcon={<Icon as={RiAddLine} fontSize="20" />}
-                >
-                  Criar novo
-                </Button>
-            </Link>
+      
              <Menu>
                   <MenuButton
                     bg="gray.700"
@@ -496,7 +485,7 @@ export default function Dashboard() {
             <Chart
               type="bar"
               width={"100%"}
-              height={"100%"}
+              
                //@ts-ignore
               options={options_demostrativo}
               series={series_demontrativo}
@@ -507,7 +496,7 @@ export default function Dashboard() {
               Disbruição de gastos
             </Text>
           
-            <Chart type="donut" height={"100%"}
+            <Chart type="donut" 
              //@ts-ignore
               options={options} series={e}
               width={"100%"}

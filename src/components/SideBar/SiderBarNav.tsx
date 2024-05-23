@@ -8,6 +8,8 @@ import {
   RiInputMethodLine,
   RiAddFill,
   RiGitMergeLine,
+  RiFileListLine,
+  RiFileList2Line,
 } from 'react-icons/ri'
 
 export function SideBarNav() {
@@ -18,10 +20,10 @@ export function SideBarNav() {
           Dashboard
         </NavLink>
         <NavLink icon={RiMoneyDollarBoxFill} href="/budgets">
-          Minhas contas
+          Orçamentos
         </NavLink>
-        <NavLink icon={RiMoneyDollarBoxFill} href="/subaccounts">
-          Classificação de contas
+        <NavLink icon={ RiFileList2Line} href="/subaccounts">
+          Planejamento de gastos
         </NavLink>
         {/* <NavLink icon={RiMoneyDollarBoxFill} href="/accounts">
           Contas

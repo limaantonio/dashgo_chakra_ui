@@ -9,16 +9,16 @@ import {
   Button,
   FormLabel,
 } from "@chakra-ui/react";
-import { SideBar } from "../../components/SideBar";
-import { Header } from "../../components/Header";
-import { Input } from "../../components/Form/Input";
-import  Select  from "../../components/Form/Select";
+import { SideBar } from "../../../components/SideBar";
+import { Header } from "../../../components/Header";
+import { Input } from "../../../components/Form/Input";
+import  Select  from "../../../components/Form/Select";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler } from "react-hook-form/dist/types";
-import api from "../../services/api";
+import api from "../../../services/api";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router'
 import { useToast } from "@chakra-ui/react";

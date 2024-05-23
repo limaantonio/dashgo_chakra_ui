@@ -11,6 +11,7 @@ import {
   Text,
   Menu,
   MenuButton,
+  HStack,
   MenuItem,
   MenuList,
   Th,
@@ -131,10 +132,21 @@ export default function SubAccountList() {
           <Box flex="1" borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
               <Heading size="lg" fontWeight="normal">
-                Classificação de contas
+                Planejamento de gastos
               </Heading>
-              <Box>
-                <Link href={`/subaccounts/create?budget=${budget}`} passHref>
+              <HStack>
+                <Link href={`/subaccounts/create_income?budget=${budget}`} passHref>
+                  <Button
+                    as="a"
+                    size="sm"
+                    fontSize="small"
+                    colorScheme="purple"
+                    leftIcon={<Icon as={RiAddLine} fontSize="20" />}
+                  >
+                    Receitas
+                  </Button>
+                </Link>
+                 <Link href={`/subaccounts/create_expense?budget=${budget}`} passHref>
                   <Button
                     as="a"
                     size="sm"
@@ -142,10 +154,10 @@ export default function SubAccountList() {
                     colorScheme="green"
                     leftIcon={<Icon as={RiAddLine} fontSize="20" />}
                   >
-                    Criar Subcontas
+                    Despesas
                   </Button>
                 </Link>
-              </Box>
+              </HStack>
             </Flex>
             <Table colorScheme="whiteAlpha">
               <Thead>

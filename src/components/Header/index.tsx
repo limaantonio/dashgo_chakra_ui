@@ -1,25 +1,42 @@
 import {
+  Box,
   Flex,
   Icon,
   IconButton,
   Link,
+  Text,
+    Menu,
+  MenuButton,
+  MenuDivider,
+  MenuGroup,
+  MenuItem,
+  MenuList, 
+  Button,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { useSideBarDrawer } from "../../context/SiderbarDrawerContext";
 import { NotificationNav } from "../Header/NotificationNav";
 import { Profile } from "../Header/Profile";
 // import { SeachBox } from "../Header/SeachBox";
-import { RiMenuLine } from "react-icons/ri";
+import { RiArrowDownSFill, RiMenuLine } from "react-icons/ri";
 import Image from 'next/image'
+import { Logo } from "./Logo";
+import { SeachBox } from "./SeachBox";
+import { useState } from "react";
 const logo = require('../../assets/logo.png')
 
-export function Header() {
+export function Header({
+  value = '',
+  budgets = ''
+}) {
   const { onOpen } = useSideBarDrawer();
 
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,
   });
+
+  const [budget, setBudget] = useState()
 
   return (
     <Flex
@@ -47,13 +64,68 @@ export function Header() {
         ></IconButton>
       )}
 
-      <Link href="/">
-        <Image src={logo} alt="logo" width={100} height={100} />
-      </Link>
+      <Logo />
 
-      {/* {isWideVersion && <SeachBox />} */}
+
+
+      {isWideVersion && <SeachBox value={value} />}
+
+       {/* <Menu>
+                  <MenuButton
+                    bg="gray.700"
+                    as={Button}
+                    mr="4"
+                    rightIcon={<RiArrowDownSFill />}
+                  >
+                    Ano
+                  </MenuButton>
+                  <MenuList textColor="black">
+                    <MenuGroup title="Orçamentos">
+                      {budgets.map((b) => (
+                        <MenuItem
+                          as="button"
+                          bg={
+                            //@ts-ignore
+                            b.budget.id === budget ? 'green.400' : 'white'}
+                          textColor={
+                              //@ts-ignore
+                            b.budget.id === budget ? 'white' : 'black'}
+                          _hover={{ bg: 'gray.50' }}
+                          key={
+                              //@ts-ignore
+                            b.budget.id}
+                          value={
+                              //@ts-ignore
+                            b.budget.year}
+                          onClick={() => {
+                            //@ts-ignore
+                            setBudget(b)
+                            localStorage.setItem('budget', JSON.stringify(
+                                //@ts-ignore
+                              b.budget.id))
+                          }}
+                        >
+                          {
+                              //@ts-ignore
+                            b.budget.year}
+                        </MenuItem>
+                      ))}
+                      <MenuItem
+                        bg="gray.50"
+                        onClick={() => {
+                          //@ts-ignore
+                          setBudget('')
+                        }}
+                        as="button"
+                      >
+                        Limpar filtro
+                      </MenuItem>
+                    </MenuGroup>
+                  </MenuList>
+              </Menu> */}
       <Flex align="center" ml="auto">
-        <NotificationNav />
+        
+        {/* <NotificationNav /> */}
         <Profile showProfileData={isWideVersion} />
       </Flex>
     </Flex>

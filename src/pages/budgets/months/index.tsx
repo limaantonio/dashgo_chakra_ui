@@ -19,8 +19,8 @@ import {
   MenuList,
   MenuItem,
 } from '@chakra-ui/react'
-import { SideBar } from '../../components/SideBar'
-import { Header } from '../../components/Header'
+import { SideBar } from '../../../components/SideBar'
+import { Header } from '../../../components/Header'
 import {
   RiAddLine,
   RiArrowUpCircleLine,
@@ -30,14 +30,15 @@ import {
   RiDeleteBack2Line,
   RiDeleteBin6Line,
   RiSearch2Line,
+  RiArrowLeftLine,
 } from 'react-icons/ri'
-import { Pagination } from '../../components/Pagination'
+import { Pagination } from '../../../components/Pagination'
 import Link from 'next/link'
-import api from '../../services/api'
+import api from '../../../services/api'
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import AlertDelete from '../../components/AlertDelete'
-import Summary from '../../components/Summary'
+import AlertDelete from '../../../components/AlertDelete'
+import Summary from '../../../components/Summary'
 import { SlOptionsVertical } from 'react-icons/sl'
 import { useRouter } from 'next/router'
 
@@ -107,6 +108,16 @@ export default function MonthList() {
               expense={balance?.expenseAmount}
               total={balance?.totalAmount}
             /> */}
+           <Link href="/budgets" passHref>
+            <Button
+              ml="-6"
+              mb="6"
+              _hover={{ bg: 'transparent', textColor: 'green.400' }}
+              bg="transparent"
+            >
+              <RiArrowLeftLine fontSize="28" />
+            </Button>
+          </Link>
 
           <Box borderRadius={8} bg="gray.800" p="8">
             <Flex mb="8" justify="space-between" align="center">
@@ -165,7 +176,7 @@ export default function MonthList() {
 
                       <Td>
                         <Link
-                          href={`/entries?id=${budget.id}&budget=${//@ts-ignore
+                          href={`/budgets/months/entries?id=${budget.id}&budget=${//@ts-ignore
                             budget.budget_id}`}
                         >
                           <Button

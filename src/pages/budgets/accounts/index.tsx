@@ -21,8 +21,8 @@ import {
   Tr,
   useBreakpointValue,
 } from '@chakra-ui/react'
-import { SideBar } from '../../components/SideBar'
-import { Header } from '../../components/Header'
+import { SideBar } from '../../../components/SideBar'
+import { Header } from '../../../components/Header'
 import {
   RiAddLine,
   RiArrowDownSFill,
@@ -32,14 +32,14 @@ import {
   RiPencilLine,
   RiSearch2Line,
 } from 'react-icons/ri'
-import { Pagination } from '../../components/Pagination'
+import { Pagination } from '../../../components/Pagination'
 import Link from 'next/link'
-import api from '../../services/api'
+import api from '../../../services/api'
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import AlertDelete from '../../components/AlertDelete'
-import Summary from '../../components/Summary'
-import SummaryAccount from '../../components/SummaryAccount'
+import AlertDelete from '../../../components/AlertDelete'
+import Summary from '../../../components/Summary'
+import SummaryAccount from '../../../components/SummaryAccount'
 import { SlOptionsVertical } from 'react-icons/sl'
 import { useRouter } from 'next/router'
 

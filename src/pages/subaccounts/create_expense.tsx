@@ -55,10 +55,7 @@ interface Item {
   principal: boolean
 }
 
-enum AccountType {
-  income = 'INCOME',
-  expanse = 'EXPENSE',
-}
+const type = 'EXPENSE'
 
 const createFormSchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
@@ -71,25 +68,20 @@ export default function CreateSubAccount() {
 
   const errors = formState.errors
 
-  const typeAccount = [
-    { id: 1, value: 'INCOME', label: 'Receita' },
-    { id: 2, value: 'EXPENSE', label: 'Despesa' },
-  ]
-
   const [items, setItems] = useState<Item[]>([])
   const [percentage, setPercentage] = useState<Number>(0.0)
   const [name, setName] = useState<string>('')
-  const [type, setType] = useState<AccountType>(AccountType.income)
   const [income, setIncome] = useState<Number>(0.0)
   const [incomeAmount, setIncomeAmount] = useState(0.0)
   const [flagPrincipal, setFlagPrincipal] = useState(0)
+  const [availableAmount, setAvailableAmount] = useState(0.0)
   const r = useRouter()
   const toast = useToast()
 
   useEffect(() => {
     api
       .get(`subaccount/balance/budget/${r.query.budget}`)
-      .then((response) => setIncomeAmount(response.data.liquid_income))
+      .then((response) => setIncomeAmount(response.data.liquid_income - response.data.expense))
   }, [])
 
   const hangleCreateSubAccount: SubmitHandler<
@@ -117,12 +109,16 @@ export default function CreateSubAccount() {
     const principal = flagPrincipal == 1 ? true : false
     let amount = 0.0
 
-    if (type === 'INCOME') {
+    if (
+      //@ts-ignore
+      type === 'INCOME') {
       //@ts-ignore
       amount = income
     } else {
       amount = calculed_expense
     }
+
+    setIncomeAmount(incomeAmount - amount)
 
     const item = {
       name,
@@ -161,11 +157,19 @@ export default function CreateSubAccount() {
             p={['6', '8']}
           >
             <Heading size="md" fontWeight="normal">
-              Adicionar Classificação
+              Quais serão suas despesas?
             </Heading>
             <Divider my="6" borderColor="gray.700" />
             <VStack spacing="8">
               <SimpleGrid minChildWidth="248px" spacing={['6', '8']} w="100%">
+                  <Input
+                  label="Valor Disponivel"
+                  type="number"
+                  value={incomeAmount}
+                  onChange={(e) => {
+                    //@ts-ignore
+                    setIncomeAmount(e.target.value)
+                  } } isDisabled={true} name={''}                />
                 <Input
                   label="Nome"
                   type="text"
@@ -176,20 +180,7 @@ export default function CreateSubAccount() {
                   //@ts-ignore
                   error={errors.name}
                 />
-                <SimpleGrid minChildWidth="248px" spacing={['6', '8']} w="100%">
-                  <Select
-                    label="Tipo"
-                    placeholder="Selecione"
-                     //@ts-ignore
-                    options={typeAccount}
-                    value={type}
-                     //@ts-ignore
-                    onChange={(value) => {
-                      //@ts-ignore
-                      setType(value)
-                    }}
-                  />
-                </SimpleGrid>
+
                 <Input
                   label="Percentual"
                   type="number"
@@ -203,39 +194,8 @@ export default function CreateSubAccount() {
                   isDisabled={type === 'EXPENSE' ? false : true}
                 />
 
-                <Input
-                  label="Valor"
-                  type="number"
-                  //@ts-ignore
-                  value={income}
-                  onChange={(e) => {
-                    //@ts-ignore
-                    setIncome(e.target.value)
-                  }}
-                  isDisabled={type === 'INCOME' ? false : true}
-                  //error={errors.number_of_installments}
-                />
-
-                <Input
-                  label="Valor Disponivel"
-                  type="number"
-                  value={incomeAmount}
-                  onChange={(e) => {
-                    //@ts-ignore
-                    setIncomeAmount(e.target.value)
-                  } }
-                  isDisabled={true} name={''}                  //error={errors.number_of_installments}
-                />
-                <Input
-                  label="Receita principal"
-                  type="number"
-                  value={flagPrincipal}
-                  onChange={(e) => {
-                    //@ts-ignore
-                    setFlagPrincipal(e.target.value)
-                  } }
-                  isDisabled={type === 'EXPENSE' ? true : false} name={''}                  //error={errors.number_of_installments}
-                />
+            
+                
               </SimpleGrid>
             </VStack>
             <Box my="8">
@@ -325,6 +285,7 @@ export default function CreateSubAccount() {
                   ml="6"
                   _hover={{ bg: 'transparent', textColor: 'green.400' }}
                   bg="transparent"
+                  textColor="white.300"
                 >
                   Cancelar
                 </Button>

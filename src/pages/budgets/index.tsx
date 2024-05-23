@@ -170,14 +170,18 @@ export default function UserList() {
                     </Td>
 
                     <Td>
-                      {budget.updated_at ? (
-                        format(new Date(budget.updated_at), 'yyyy-MM-dd')
+                      {
+                        //@ts-ignore
+                        budget.budget.updated_at ? (
+                          format(new Date(
+                             //@ts-ignore
+                            budget.budget.updated_at), 'yyyy-MM-dd')
                       ) : (
                         <>-</>
                       )}
                     </Td>
                     <Td>
-                      <Link href={`/accounts?id=${
+                      <Link href={`/budgets/accounts?id=${
                          //@ts-ignore
                         budget.budget.id}`}>
                         <Button
@@ -193,7 +197,7 @@ export default function UserList() {
                     </Td>
 
                     <Td>
-                      <Link href={`/months?id=${
+                      <Link href={`/budgets/months?id=${
                         //@ts-ignore
                         budget.budget.id}`}>
                         <Button
@@ -242,6 +246,7 @@ export default function UserList() {
                               //@ts-ignore
                               budget.budget.id)}
                             as="button"
+                            textColor={'white'}
                             _hover={{ bg: 'gray.50' }}
                           >
                             <Button

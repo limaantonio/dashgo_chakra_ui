@@ -19,15 +19,15 @@ import {
   MenuList,
   MenuItem,
 } from "@chakra-ui/react";
-import { SideBar } from "../../components/SideBar";
-import { Header } from "../../components/Header";
-import { RiAddLine, RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
-import { Pagination } from "../../components/Pagination";
+import { SideBar } from "../../../../../components/SideBar";
+import { Header } from "../../../../../components/Header";
+import { RiAddLine, RiArrowLeftLine, RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
+import { Pagination } from "../../../../../components/Pagination";
 import Link from "next/link";
-import api from "../../services/api";
+import api from "../../../../../services/api";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import AlertDelete from "../../components/AlertDelete";
+import AlertDelete from "../../../../../components/AlertDelete";
 import { useRouter } from "next/router";
 import { SlOptionsVertical } from "react-icons/sl";
 
@@ -82,13 +82,30 @@ export default function UserList() {
   });
 
   const router = useRouter();
-  const { id } = router.query;
+  const { id, month } = router.query;
 
   const [items, setItems] = useState<Item[]>([]);
   const [entry, setEntry] = useState<Entry>();
 
+  const [budget, setBudget] = useState(null)
+
+  //@ts-ignore
+  const getFromLocalStorage = (key) => {
+    try {
+      const item = localStorage.getItem(key)
+      return item ? JSON.parse(item) : null
+    } catch (error) {
+      console.error('Erro ao recuperar do localStorage:', error)
+      return null
+    }
+  }
+
   useEffect(() => {
     getAccount();
+    const budgetIt = getFromLocalStorage('budget')
+    if (budgetIt) {
+      setBudget(budgetIt) 
+    }
   }, [id]);
 
   async function getAccount() {
@@ -125,6 +142,15 @@ export default function UserList() {
         <SideBar />
 
         <Box flex="1" borderRadius={8} bg="gray.800" p="8">
+           <Link href={`/budgets/months/entries?id=${month}&budget=${budget}`} passHref>
+            <Button
+              mb="4"
+              _hover={{ bg: 'transparent', textColor: 'green.400' }}
+              bg="transparent"
+            >
+              <RiArrowLeftLine fontSize="28" />
+            </Button>
+          </Link>
           <Flex mb="8" justify="space-between" align="center">
             <Heading size="lg" fontWeight="normal">
               Items

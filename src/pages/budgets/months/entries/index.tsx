@@ -21,8 +21,8 @@ import {
   Tr,
   useBreakpointValue,
 } from '@chakra-ui/react'
-import { SideBar } from '../../components/SideBar'
-import { Header } from '../../components/Header'
+import { SideBar } from '../../../../components/SideBar'
+import { Header } from '../../../../components/Header'
 import {
   RiAddLine,
   RiArrowDownSFill,
@@ -41,14 +41,14 @@ import {
   RiPlayCircleLine,
 } from 'react-icons/ri'
 import { SlOptionsVertical } from 'react-icons/sl'
-import { Pagination } from '../../components/Pagination'
+import { Pagination } from '../../../../components/Pagination'
 import Link from 'next/link'
-import api from '../../services/api'
+import api from '../../../../services/api'
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import AlertDelete from '../../components/AlertDelete'
+import AlertDelete from '../../../../components/AlertDelete'
+import Summary from '../../../../components/Summary'
 import { useRouter } from 'next/router'
-import Summary from '../../components/Summary'
 
 interface Account {
   id: string
@@ -200,7 +200,7 @@ export default function UserList() {
         <SideBar />
 
         <Box flex="1">
-          <Link href={`months?id=${budget}`} passHref>
+          <Link href={`/budgets/months?id=${budget}`} passHref>
             <Button
               mb="4"
               _hover={{ bg: 'transparent', textColor: 'green.400' }}
@@ -369,7 +369,7 @@ export default function UserList() {
                       </Td>
 
                       <Td>
-                        <Link href={`/items?id=${entry?.id}`}>
+                        <Link href={`/budgets/months/entries/items?id=${entry?.id}&month=${id}`}>
                           <Button
                             mr="2"
                             as="a"
