@@ -46,7 +46,7 @@ export default function Login() {
 
   return (
    <Flex align="center" justify="center" h="100vh" >
-      <VStack spacing={12}>
+      <VStack spacing={2} bg="gray.800"  w="30%" p={8} rounded={8} maxW="400px">
       
         <Image src={logo} alt="logo" width={150} height={150} />
         
@@ -86,7 +86,7 @@ export default function Login() {
          
         </Flex>
          <Link href="/register">
-            <Text mt="5">Casdastrar-se</Text>
+            <Text mt="5">Cadastrar-se</Text>
           </Link>
          </VStack>
     </Flex>

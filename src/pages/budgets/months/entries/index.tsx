@@ -274,7 +274,7 @@ export default function UserList() {
                   </Menu>
                 )}
                 <Link
-                  href={`/entries/create?id=${budget}&budget_month=${id}`}
+                  href={`/budgets/months/entries/create?id=${budget}&budget_month=${id}`}
                   passHref
                 >
                   <Button
@@ -388,6 +388,7 @@ export default function UserList() {
                             bg="transparent"
                             _hover={{ bg: 'transparent' }}
                             as={Button}
+                            textColor="white.300"
                           >
                             <SlOptionsVertical />
                           </MenuButton>

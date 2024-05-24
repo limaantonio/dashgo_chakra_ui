@@ -218,6 +218,7 @@ export default function UserList() {
                           bg="transparent"
                           _hover={{ bg: 'transparent' }}
                           as={Button}
+                          textColor="white.300"
                         >
                           <SlOptionsVertical />
                         </MenuButton>
@@ -225,7 +226,7 @@ export default function UserList() {
                           <Link href={`/budgets/edit?id=${
                              //@ts-ignore
                             budget.budget.id}`}>
-                            <MenuItem as="button" _hover={{ bg: 'gray.50' }}  bg="transparent"  textColor="white.300">
+                            <MenuItem as="button" _hover={{ bg: 'gray.50' }} >
                               <Button
                                 mr="2"
                                 as="a"

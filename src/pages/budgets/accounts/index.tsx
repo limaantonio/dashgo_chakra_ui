@@ -148,7 +148,7 @@ export default function UserList() {
                 Contas
               </Heading>
               <Box>
-                <Link href={`/accounts/create?id=${id}`} passHref>
+                <Link href={`/budgets/accounts/create?id=${id}`} passHref>
                   <Button
                     as="a"
                     size="md"
@@ -234,6 +234,7 @@ export default function UserList() {
                             bg="transparent"
                             _hover={{ bg: 'transparent' }}
                             as={Button}
+                            textColor="white.300"
                           >
                             <SlOptionsVertical />
                           </MenuButton>

@@ -205,7 +205,8 @@ export default function UserList() {
                       <MenuButton
                         bg="transparent"
                         _hover={{ bg: "transparent" }}
-                        as={Button}
+                          as={Button}
+                          textColor="white.300"
                       >
                         <SlOptionsVertical />
                       </MenuButton>

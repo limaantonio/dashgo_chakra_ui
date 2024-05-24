@@ -124,7 +124,7 @@ export default function MonthList() {
               <Heading size="lg" fontWeight="normal">
                 Orçamento Mensal
               </Heading>
-              <Link href={`/months/create?id=${id}`} passHref>
+              <Link href={`/budgets/months/create?id=${id}`} passHref>
                 <Button
                   as="a"
                   size="sm"
@@ -197,6 +197,7 @@ export default function MonthList() {
                             bg="transparent"
                             _hover={{ bg: 'transparent' }}
                             as={Button}
+                            textColor="white.300"
                           >
                             <SlOptionsVertical />
                           </MenuButton>
