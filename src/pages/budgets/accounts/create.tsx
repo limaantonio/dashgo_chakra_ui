@@ -90,7 +90,7 @@ export default function CreateBudget() {
 
     try {
       await api.post(`account/budget/${id}`, items);
-      router.push(`/accounts?id=${id}`)
+      router.push(`/budgets/accounts?id=${id}`)
     } catch (error) {
       if (
         //@ts-ignore

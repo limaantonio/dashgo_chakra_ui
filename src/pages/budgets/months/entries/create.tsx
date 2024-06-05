@@ -115,7 +115,7 @@ export default function CreateBudget() {
     try {
       await api.post("item", data);
       //@ts-ignore
-      router.push(`/entries?id=${data.entry.budget_month_id}&budget=${id}`);
+      router.push(`/budgets/months/entries?id=${data.entry.budget_month_id}&budget=${id}`);
     } catch (error) {
       //@ts-ignore
       if (error.response.data.error == 'Insufficient funds') {

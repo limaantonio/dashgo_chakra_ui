@@ -414,7 +414,7 @@ export default function UserList() {
                                 Pagar
                               </Button>
                             </MenuItem>
-                            <Link href={`/entries/edit?id=${entry?.id}`}>
+                            <Link href={`/budgets/months/entries/edit?id=${entry?.id}`}>
                               <MenuItem as="button" _hover={{ bg: 'gray.50' }}>
                                 <Button
                                   mr="2"

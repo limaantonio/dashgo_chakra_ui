@@ -202,7 +202,7 @@ export default function MonthList() {
                             <SlOptionsVertical />
                           </MenuButton>
                           <MenuList textColor="black">
-                            <Link href={`/months/edit?id=${budget.id}`}>
+                            <Link href={`/budgets/months/edit?id=${budget.id}`}>
                               <MenuItem as="button" _hover={{ bg: 'gray.50' }}>
                                 <Button
                                   mr="2"

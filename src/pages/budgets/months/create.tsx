@@ -49,7 +49,7 @@ export default function CreateBudget() {
     //@ts-ignore
     values.budget_id = id;
     await api.post("month", values);
-    router.push(`/months?id=${id}`);
+    router.push(`/budgets/months?id=${id}`);
   };
 
   const toast = useToast();

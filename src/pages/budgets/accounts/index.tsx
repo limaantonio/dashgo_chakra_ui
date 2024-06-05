@@ -240,7 +240,7 @@ export default function UserList() {
                           </MenuButton>
                           <MenuList textColor="black">
                             <Link
-                              href={`/accounts/edit?id=${account.account.id}`}
+                              href={`/budgets/accounts/edit?id=${account.account.id}`}
                             >
                               <MenuItem as="button" _hover={{ bg: 'gray.50' }}>
                                 <Button
