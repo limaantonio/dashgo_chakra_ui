@@ -404,7 +404,7 @@ export default function Dashboard() {
 
   return (
     <Flex direction="column" h="100vh">
-      <Header value={`Contas de ${
+      <Header value={`Orçamento de ${
         //@ts-ignore
         budget?.budget?.year}`} budgets={budgets} />
 
@@ -485,7 +485,7 @@ export default function Dashboard() {
             <Chart
               type="bar"
               width={"100%"}
-              
+              height={300}
                //@ts-ignore
               options={options_demostrativo}
               series={series_demontrativo}
@@ -499,7 +499,8 @@ export default function Dashboard() {
             <Chart type="donut" 
              //@ts-ignore
               options={options} series={e}
-              width={"100%"}
+                width={"100%"}
+                height={300}
             />
           </Box>
           </SimpleGrid>

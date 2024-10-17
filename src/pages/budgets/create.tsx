@@ -49,8 +49,28 @@ export default function CreateBudget() {
       year: values.year,
       user_id: user,
     }
-    await api.post('budget', data)
-    router.push(`/budgets`)
+    try {
+      await api.post('budget', data)
+   
+      toast({
+        title: 'Orçamento criado.',
+        description: 'O orçamento foi criado com sucesso.',
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      })
+
+      router.push(`/budgets`)
+                
+    } catch (error) {
+      toast({
+        title: 'Erro ao criar orçamento.',
+        description: `${(error as any).response.data.Error}`,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      })
+    }
   }
 
    //@ts-ignore
@@ -114,15 +134,6 @@ export default function CreateBudget() {
                 colorScheme="green"
                 type="submit"
                 isLoading={formState.isSubmitting}
-                onClick={() =>
-                  toast({
-                    title: 'Orçamento criado.',
-                    description: 'O orçamento foi criado com sucesso.',
-                    status: 'success',
-                    duration: 9000,
-                    isClosable: true,
-                  })
-                }
               >
                 Salvar
               </Button>
