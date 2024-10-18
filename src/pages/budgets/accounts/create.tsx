@@ -221,16 +221,16 @@ export default function CreateBudget() {
                 />
 
 
-                <Input
+                {/* <Input
                   label="Tipo"
                   //@ts-ignore
                   type="text"
                   //@ts-ignore
                   value={type ? type.toString() : ''}
-                  isDisabled={true} name={""}                />
+                  isDisabled={true} name={""}                /> */}
 
                 <Input
-                  label="Dotação"
+                  label="Valor Planejado"
                   //@ts-ignore
                   type="number"
                   //@ts-ignore
