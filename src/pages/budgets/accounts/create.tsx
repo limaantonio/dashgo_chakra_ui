@@ -36,6 +36,7 @@ import {
   RiDeleteBin6Line,
   RiSave2Fill
 } from "react-icons/ri";
+import { set } from "date-fns";
 
 type AccountType = "INCOME" | "EXPENSE";
 
@@ -94,7 +95,7 @@ export default function CreateBudget() {
     } catch (error) {
       if (
         //@ts-ignore
-        error.response.data.error == 'Saldo insuficiente') {
+        error.response?.data.error == 'Saldo insuficiente') {
         toast({
           title: "Saldo insuficiente",
           status: "error",
@@ -105,17 +106,16 @@ export default function CreateBudget() {
     }
   };
 
-
-
   useEffect(() => {
     api.get(`subaccount/budget/${id}`).then((response) => setSubAccounts(response.data));
   }, []);
 
 
   const [subAccounts, setSubAccounts] = useState<Account[]>([]);
-  const [subAccount, setSubAccount] = useState();
+  const [subAccount, setSubAccount] = useState<Account | undefined>();
   const [type, setType] = useState();
   const [items, setItems] = useState([]);
+  const [accounts, setAccounts] = useState<[]>([]);
 
   function transformDataToOptions() {
     //@ts-ignore
@@ -149,21 +149,50 @@ export default function CreateBudget() {
   const [amount, setAmount] = useState(0.00)
   const [number_of_installments, setNumber_of_installments] = useState(0)
 
+  const [availableAmount, setAvailableAmount] = useState(0.00)
+  const [totalAmount, setTotalAmount] = useState(0.00)
+  
+  useEffect(() => {
+    api.get(`account/budget/${id}`).then((response) => setAccounts(response.data));
+  }, []);
+
   function addItem(e: Event) {
     e.preventDefault();
 
+    const newSubAccount = {
+      id: subAccount?.id,
+      name: subAccount?.name,
+      type: subAccount?.type,
+    }
 
+    let totalAmount = Number(amount)
+    
+    items.map((item) => {
+      //@ts-ignore
+      if (item.sub_account_id === newSubAccount.id) {
+        //@ts-ignore
+        totalAmount += Number(item.amount)
+      }
+    })
+
+    //@ts-ignore
+    const amount_available = subAccount?.amount - totalAmount
+
+    setAvailableAmount(amount_available)
 
     const item = {
       name,
       amount,
       number_of_installments,
-      //@ts-ignore
-      sub_account_id: subAccount.id,
+      sub_account_id: newSubAccount.id,
+      sub_acount_name: newSubAccount.name
     }
 
     //@ts-ignore
     setItems([...items, item]);
+    setName('')
+    setAmount(0.00)
+    setNumber_of_installments(0)
   }
 
 
@@ -174,17 +203,6 @@ export default function CreateBudget() {
 
     item.splice(itemIndex, 1)
     setItems(item)
-  }
-
-  function verifyAvailableValue() {
-    //@ts-ignore
-    const total = subAccount?.amount - items.reduce(
-      //@ts-ignore
-      (acc, item) => Number(acc) + Number(item.amount),
-      0,
-    )
-
-    return total
   }
 
   return (
@@ -221,16 +239,16 @@ export default function CreateBudget() {
                 />
 
 
-                <Input
+                {/* <Input
                   label="Tipo"
                   //@ts-ignore
                   type="text"
                   //@ts-ignore
                   value={type ? type.toString() : ''}
-                  isDisabled={true} name={""}                />
+                  isDisabled={true} name={""}                /> */}
 
                 <Input
-                  label="Dotação"
+                  label="Valor Planejado"
                   //@ts-ignore
                   type="number"
                   //@ts-ignore
@@ -243,7 +261,7 @@ export default function CreateBudget() {
                   //@ts-ignore
                   type="number"
                   value={
-                    verifyAvailableValue()
+                    availableAmount
                   }
                    //@ts-ignore
                   disabled={true}
@@ -311,7 +329,7 @@ export default function CreateBudget() {
                   <Th>Nome</Th>
                   <Th>Valor</Th>
                   <Th>Parcelas</Th>
-                  <Th>Subconta</Th>
+                  <Th>Categoria</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
@@ -338,7 +356,7 @@ export default function CreateBudget() {
 
                       <Text fontWeight="bold">{
                         //@ts-ignore
-                        entry.subAccount}</Text>
+                        entry.sub_acount_name}</Text>
                     </Td>
 
                     <Td>
@@ -366,7 +384,6 @@ export default function CreateBudget() {
               <Tfoot>
                 <Tr>
                   <Th>Total</Th>
-                  <Th></Th>
                   <Th>
                     {items.reduce(
                       //@ts-ignore
@@ -381,7 +398,7 @@ export default function CreateBudget() {
 
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
-              <Link href={`/accounts?id=${id}`} passHref>
+              <Link href={`/budgets/accounts?id=${id}`} passHref>
                 <Button as="a" colorScheme="whiteAlpha">
                   Cancelar
                 </Button>

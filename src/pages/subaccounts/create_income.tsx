@@ -183,7 +183,7 @@ export default function CreateSubAccount() {
                 />
 
                 <Input
-                  label="Receita principal"
+                  label="Receita principal ?"
                   type="number"
                   value={flagPrincipal}
                   onChange={(e) => {
