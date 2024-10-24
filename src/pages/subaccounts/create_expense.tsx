@@ -84,7 +84,7 @@ export default function CreateSubAccount() {
     api
       .get(`subaccount/budget/${r.query.budget}`)
       .then((response) => {
-        const filteredItems = response.data.filter(item => item.type === 'EXPENSE');
+        const filteredItems = response.data.filter((item: { type: string }) => item.type === 'EXPENSE');
         setItems(filteredItems); // Atualiza o estado com os itens filtrados
       })
       .catch((error) => {
