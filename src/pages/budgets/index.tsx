@@ -139,7 +139,7 @@ export default function UserList() {
                     <Checkbox colorScheme="green"></Checkbox>
                   </Th>
                   <Th>Ano</Th>
-                  <Th>Data de atualização</Th>
+                  <Th>Ultima atualização</Th>
                   <Th>Contas</Th>
                   <Th>Orçamento Mensal</Th>
                   <Th></Th>

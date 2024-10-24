@@ -140,6 +140,18 @@ export default function CreateBudget() {
     //@ts-ignore
     setSubAccount(subAccount);
 
+    let totalAmount = Number(amount)
+    
+    accounts.map((item) => {
+      //@ts-ignore
+      if (item.account.sub_account.id === subAccount.id) {
+        //@ts-ignore
+        totalAmount += Number(item.account.amount)
+      }
+    })
+
+    setAvailableAmount(subAccount?.amount - totalAmount)
+
   }
 
   const toast = useToast();
@@ -181,9 +193,9 @@ export default function CreateBudget() {
     setAvailableAmount(amount_available)
 
     const item = {
-      name,
+      name: name ? name : newSubAccount.name,
       amount,
-      number_of_installments,
+      number_of_installments: number_of_installments ? number_of_installments : 1,
       sub_account_id: newSubAccount.id,
       sub_acount_name: newSubAccount.name
     }
