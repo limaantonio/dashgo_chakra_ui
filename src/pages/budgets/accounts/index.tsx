@@ -165,6 +165,7 @@ export default function UserList() {
               <Thead>
                 <Tr>
                   <Th>Nome</Th>
+                  <Th>Categoria</Th>
                   <Th>Parcelas</Th>
                   <Th>Total</Th>
                   <Th>Usado</Th>
@@ -191,6 +192,11 @@ export default function UserList() {
                             </Text>
                           )}
                         </Box>
+                      </Td>
+                      <Td>
+                        <Text fontWeight="bold">
+                          {account.account.sub_account?.name}
+                        </Text>
                       </Td>
                       <Td>
                         <Text fontWeight="bold">

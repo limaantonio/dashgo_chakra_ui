@@ -203,6 +203,21 @@ export default function CreateBudget() {
 
     item.splice(itemIndex, 1)
     setItems(item)
+
+    let totalAmount = Number(amount)
+
+    items.map((item) => {
+      //@ts-ignore
+      if (item.sub_account_id === id) {
+        //@ts-ignore
+        totalAmount += Number(item.amount)
+      }
+    })
+
+    //@ts-ignore
+    const amount_available = subAccount?.amount - totalAmount
+
+    setAvailableAmount(amount_available)
   }
 
   return (
