@@ -240,7 +240,7 @@ const toast = useToast();
             <SimpleGrid minChildWidth="248px" spacing={["6", "8"]} w="100%">
               <HStack>
               <Input
-                label="Dotação"
+                label="Orçamento anual"
                   type="number"
                   //@ts-ignore
                   value={account?.balance?.available_value}
@@ -256,14 +256,17 @@ const toast = useToast();
                   //@ts-ignore
                 disabled={true}
                 />
-                </HStack>
-              <Input
-                label="Descrição"
-                type="text"
-                {...register("description")}
-                 //@ts-ignore
-                isRequired={false}
+                 <Input
+                label="Orçamento Mensal"
+                  type="number"
+                  //@ts-ignore
+                  value={account?.balance?.available_value / account?.account?.number_of_installments}
+                  //@ts-ignore
+                disabled={true}
               />
+              </HStack>
+            
+             
               <HStack>
               <Input
                 label="Parcela"

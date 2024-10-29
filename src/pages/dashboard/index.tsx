@@ -93,11 +93,18 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (budgets.length > 0) {
-      const lastBudget = budgets[budgets.length - 1];
-        //@ts-ignore
-        setBudget(lastBudget);
+      const dataAtual = new Date();
+      const anoAtual = dataAtual.getFullYear();
+
+      const currentBudget = budgets.find((b) => b.budget.year === anoAtual);
+      if (currentBudget) {
+        setBudget(currentBudget);
+        //console.log(currentBudget.budget);
+      }
     }
+   // console.log(budget);
   }, [budgets]);
+
 
   useEffect(() => {
     if (budget) {
@@ -110,6 +117,7 @@ export default function Dashboard() {
     await api.get(`subaccount/budget/${budget?.budget?.id}`).then((response) => {
       setSubAccount(response.data)
     })   
+    console.log(budget.budget);
   }
 
 
@@ -134,13 +142,17 @@ export default function Dashboard() {
 
   let total = 0
 
-  subAccount?.filter((sub) => {
-     //@ts-ignore
-    if (sub.type === 'EXPENSE') {
-       //@ts-ignore
-      total += Number(sub.amount)
-    }
-  })
+  console.log(subAccount);
+
+  if (subAccount) {
+      subAccount?.filter((sub) => {
+      //@ts-ignore
+      if (sub.type === 'EXPENSE') {
+        //@ts-ignore
+        total += Number(sub.amount)
+      }
+    })
+  }
 
   subAccount.map((sub) => {
      //@ts-ignore
